@@ -3,6 +3,46 @@
 Newest first. One short entry each: decision, reason, source. Gaps filled on 2026-10-16 from the team's notes; items
 already recorded elsewhere are only pointed to. Citations below are from abstracts only and were not re-checked here.
 
+## 2026-10-16 (P2: per-rule normalization ablation; AUDIT_3 minor fixes)
+
+### P2 protocol (decisions by the conductor)
+- Decision: LexFront + LR only, 3 datasets, full data. Main setting (TF-IDF `lowercase=True`): full, no_url,
+  no_mention, no_number, no_elongated, no_slang, all_off. Case-kept setting (TF-IDF `lowercase=False`): full_cs,
+  no_lowercase, all_off_cs. Each variant minus the full variant of its setting: paired bootstrap (same code, B = 2000,
+  seed 20261016 as P1) on accuracy and macro-F1, exact McNemar on accuracy, no multiplicity correction (said in the
+  generated observation). Protocol: `docs/versions/v4-ablation.md`.
+- Reason: the lowercase rule cannot act in the main setting (TF-IDF lowercases the text first), so it is only tested
+  with case kept.
+
+### P2 implementation
+- Decision: variants are tokenizer names `lexfront:no_<rule>` and `lexfront:all_off` (`LEXFRONT_VARIANTS` in
+  `experiments/tokenizers.py`, not in `TOKENIZERS`, so the main grid and intrinsic metrics do not pick them up). The
+  config fingerprint and the run JSON of every LexFront run hold its `NormalizeConfig` (`normalize`); baselines get no
+  extra key. In file names `:` becomes `-` (valid on Windows); main-grid file names do not change.
+- Decision: the full variants are recomputed inside `results/ablation/` (not copied); `results/ablation/stats/
+  bootstrap.json` records per setting and dataset whether their predictions are identical to the full-LexFront+LR run
+  of the main or sensitivity grid (`reference_vs_grid`).
+- Decision: the ablation table also shows the TF-IDF vocabulary size and how many test predictions changed, so a rule
+  that never fires on a dataset is visible as 0 changed predictions.
+
+### Safety check
+- The code fingerprint changed (tokenizers, pipeline, normalize), so all main, QUICK and sensitivity runs were
+  regenerated with `--force` and compared by script with `main` (every field except timestamp, timing, fingerprint,
+  environment, predictions_file and the new `normalize`; predictions compared too): see the P2 CHANGELOG entry.
+
+### AUDIT_3 minor findings
+- A3-1: CAVEAT adds that gaps without a paired CI are untested and that overlapping per-run CIs are not a test.
+- A3-2: notebook section 5 says QUICK has 500 test examples, so its CIs are wider and can change sign. The audit
+  suggested "2 to 3 times wider"; the committed JSONs give 1.9 to 5.8 times for accuracy differences (ag_news is the
+  widest), so the text says "about 2 to 6 times".
+- A3-3: `run_stats` now also runs on `results/sensitivity_case` (`sensitivity_case/stats/bootstrap.json`); new
+  generated table `sensitivity_ci` (case-kept CI next to the main-grid CI) and lines in `obs:sensitivity_case` and
+  `obs:ci` stating on how many datasets the tokenizer-only "excludes 0" verdict differs between the two grids.
+  A separate table rather than extra columns: `sensitivity_case` has one row per tokenizer, the CIs are per pair.
+- A3-4: CI reruns `run_stats` (main, QUICK, sensitivity) and `run_ablation --stats-only` (full and QUICK) and fails
+  on any diff under `results/`.
+- A3-5: `stats.n_classes_of` (no caller) deleted.
+
 ## 2026-10-16 (P0+P1: case sensitivity, stored predictions, bootstrap CIs)
 
 ### P0: TF-IDF lowercasing vs LexFront's lowercase rule (decision by the conductor)

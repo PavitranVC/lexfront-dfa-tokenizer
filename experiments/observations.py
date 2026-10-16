@@ -238,8 +238,8 @@ def _sensitivity_ci_lines(results_dir) -> list[str]:
     return out
 
 
-ABLATION_CAVEAT = ("_Ablation: each variant is LexFront + LR with the named rule switched off, everything else fixed; "
-                   "differences are variant minus full LexFront of the same setting, paired bootstrap over the test "
+ABLATION_CAVEAT = ("_Ablation: each variant is LexFront + LR with the named rule (all_off: every rule) switched off, "
+                   "everything else fixed; differences are variant minus full LexFront of the same setting, paired bootstrap over the test "
                    "examples (same code, B and seed as `ci_table`). One training run per variant, so training "
                    "randomness is not covered. The lowercase rule is tested only with case kept: in the main setting "
                    "TF-IDF lowercases the text before LexFront sees it, so switching the rule off cannot change "

@@ -1,0 +1,1261 @@
+{
+  "config": {
+    "results_dir": "results/quick/ablation",
+    "method": "percentile bootstrap over test examples",
+    "ci_level": 0.95,
+    "n_boot": 2000,
+    "seed": 20261016,
+    "classifier": "lr",
+    "rng": "numpy.random.default_rng(seed), one fresh generator per (setting, dataset); all variants share its resampled indices (paired)",
+    "difference": "variant minus the setting's reference (full LexFront), in fractions (x100 for points)",
+    "mcnemar": "exact two-sided binomial test on discordant pairs, accuracy, every variant vs reference",
+    "multiplicity": "none: every interval is a separate 95% interval",
+    "not_covered": "training randomness: one training run per cell (seed 0)",
+    "numpy": "2.4.6",
+    "settings": {
+      "main": {
+        "label": "TF-IDF lowercase (main grid)",
+        "vectorizer_overrides": {},
+        "reference": "full",
+        "variants": {
+          "full": "lexfront",
+          "no_url": "lexfront:no_url",
+          "no_mention": "lexfront:no_mention",
+          "no_number": "lexfront:no_number",
+          "no_elongated": "lexfront:no_elongated",
+          "no_slang": "lexfront:no_slang",
+          "all_off": "lexfront:all_off"
+        }
+      },
+      "case": {
+        "label": "case kept (TF-IDF lowercase=False)",
+        "vectorizer_overrides": {
+          "lowercase": false
+        },
+        "reference": "full_cs",
+        "variants": {
+          "full_cs": "lexfront",
+          "no_lowercase": "lexfront:no_lowercase",
+          "all_off_cs": "lexfront:all_off"
+        }
+      }
+    }
+  },
+  "datasets": {
+    "tweet_topic": {
+      "main": {
+        "label": "TF-IDF lowercase (main grid)",
+        "reference": "full",
+        "n_test": 500,
+        "n_labels": 6,
+        "reference_vs_grid": {
+          "run_json": "results/quick/module2/tweet_topic__lexfront__lr.json",
+          "identical_predictions": true
+        },
+        "variants": {
+          "full": {
+            "tokenizer": "lexfront",
+            "run_json": "results/quick/ablation/main/tweet_topic__lexfront__lr.json",
+            "n_features": 3534,
+            "accuracy": {
+              "value": 0.666,
+              "ci": [
+                0.624,
+                0.706
+              ]
+            },
+            "macro_f1": {
+              "value": 0.3130414927613549,
+              "ci": [
+                0.28677550614,
+                0.337801721459
+              ]
+            }
+          },
+          "no_url": {
+            "tokenizer": "lexfront:no_url",
+            "run_json": "results/quick/ablation/main/tweet_topic__lexfront-no_url__lr.json",
+            "n_features": 3534,
+            "accuracy": {
+              "value": 0.666,
+              "ci": [
+                0.624,
+                0.706
+              ]
+            },
+            "macro_f1": {
+              "value": 0.3130414927613549,
+              "ci": [
+                0.28677550614,
+                0.337801721459
+              ]
+            },
+            "minus_reference": {
+              "accuracy": {
+                "diff": 0.0,
+                "ci": [
+                  0.0,
+                  0.0
+                ],
+                "ci_excludes_zero": false
+              },
+              "macro_f1": {
+                "diff": 0.0,
+                "ci": [
+                  0.0,
+                  0.0
+                ],
+                "ci_excludes_zero": false
+              }
+            },
+            "mcnemar_accuracy": {
+              "a_right_b_wrong": 0,
+              "a_wrong_b_right": 0,
+              "p_value": 1.0
+            },
+            "n_predictions_changed": 0
+          },
+          "no_mention": {
+            "tokenizer": "lexfront:no_mention",
+            "run_json": "results/quick/ablation/main/tweet_topic__lexfront-no_mention__lr.json",
+            "n_features": 3783,
+            "accuracy": {
+              "value": 0.672,
+              "ci": [
+                0.632,
+                0.71
+              ]
+            },
+            "macro_f1": {
+              "value": 0.3130446441287474,
+              "ci": [
+                0.286980507108,
+                0.337188022797
+              ]
+            },
+            "minus_reference": {
+              "accuracy": {
+                "diff": 0.006,
+                "ci": [
+                  -0.004,
+                  0.016
+                ],
+                "ci_excludes_zero": false
+              },
+              "macro_f1": {
+                "diff": 3.151367e-06,
+                "ci": [
+                  -0.008384314796,
+                  0.00675333522
+                ],
+                "ci_excludes_zero": false
+              }
+            },
+            "mcnemar_accuracy": {
+              "a_right_b_wrong": 2,
+              "a_wrong_b_right": 5,
+              "p_value": 0.453125
+            },
+            "n_predictions_changed": 7
+          },
+          "no_number": {
+            "tokenizer": "lexfront:no_number",
+            "run_json": "results/quick/ablation/main/tweet_topic__lexfront-no_number__lr.json",
+            "n_features": 3610,
+            "accuracy": {
+              "value": 0.652,
+              "ci": [
+                0.61,
+                0.69
+              ]
+            },
+            "macro_f1": {
+              "value": 0.3091323585562518,
+              "ci": [
+                0.284020166851,
+                0.334481287667
+              ]
+            },
+            "minus_reference": {
+              "accuracy": {
+                "diff": -0.014,
+                "ci": [
+                  -0.032,
+                  0.002
+                ],
+                "ci_excludes_zero": false
+              },
+              "macro_f1": {
+                "diff": -0.003909134205,
+                "ci": [
+                  -0.016208857723,
+                  0.008854061868
+                ],
+                "ci_excludes_zero": false
+              }
+            },
+            "mcnemar_accuracy": {
+              "a_right_b_wrong": 13,
+              "a_wrong_b_right": 6,
+              "p_value": 0.1670684814453125
+            },
+            "n_predictions_changed": 33
+          },
+          "no_elongated": {
+            "tokenizer": "lexfront:no_elongated",
+            "run_json": "results/quick/ablation/main/tweet_topic__lexfront-no_elongated__lr.json",
+            "n_features": 3532,
+            "accuracy": {
+              "value": 0.67,
+              "ci": [
+                0.63,
+                0.71
+              ]
+            },
+            "macro_f1": {
+              "value": 0.31464701144375407,
+              "ci": [
+                0.288518618559,
+                0.33916450907
+              ]
+            },
+            "minus_reference": {
+              "accuracy": {
+                "diff": 0.004,
+                "ci": [
+                  0.0,
+                  0.01
+                ],
+                "ci_excludes_zero": false
+              },
+              "macro_f1": {
+                "diff": 0.001605518682,
+                "ci": [
+                  0.0,
+                  0.004090748096
+                ],
+                "ci_excludes_zero": false
+              }
+            },
+            "mcnemar_accuracy": {
+              "a_right_b_wrong": 0,
+              "a_wrong_b_right": 2,
+              "p_value": 0.5
+            },
+            "n_predictions_changed": 2
+          },
+          "no_slang": {
+            "tokenizer": "lexfront:no_slang",
+            "run_json": "results/quick/ablation/main/tweet_topic__lexfront-no_slang__lr.json",
+            "n_features": 3551,
+            "accuracy": {
+              "value": 0.672,
+              "ci": [
+                0.632,
+                0.71
+              ]
+            },
+            "macro_f1": {
+              "value": 0.3177926569935556,
+              "ci": [
+                0.29150681771,
+                0.342365543604
+              ]
+            },
+            "minus_reference": {
+              "accuracy": {
+                "diff": 0.006,
+                "ci": [
+                  0.0,
+                  0.014
+                ],
+                "ci_excludes_zero": false
+              },
+              "macro_f1": {
+                "diff": 0.004751164232,
+                "ci": [
+                  0.0,
+                  0.01226775911
+                ],
+                "ci_excludes_zero": false
+              }
+            },
+            "mcnemar_accuracy": {
+              "a_right_b_wrong": 0,
+              "a_wrong_b_right": 3,
+              "p_value": 0.25
+            },
+            "n_predictions_changed": 5
+          },
+          "all_off": {
+            "tokenizer": "lexfront:all_off",
+            "run_json": "results/quick/ablation/main/tweet_topic__lexfront-all_off__lr.json",
+            "n_features": 3874,
+            "accuracy": {
+              "value": 0.654,
+              "ci": [
+                0.612,
+                0.692
+              ]
+            },
+            "macro_f1": {
+              "value": 0.3052383746414662,
+              "ci": [
+                0.280092104193,
+                0.329199569935
+              ]
+            },
+            "minus_reference": {
+              "accuracy": {
+                "diff": -0.012,
+                "ci": [
+                  -0.03,
+                  0.006
+                ],
+                "ci_excludes_zero": false
+              },
+              "macro_f1": {
+                "diff": -0.00780311812,
+                "ci": [
+                  -0.01750951245,
+                  0.000847512544
+                ],
+                "ci_excludes_zero": false
+              }
+            },
+            "mcnemar_accuracy": {
+              "a_right_b_wrong": 13,
+              "a_wrong_b_right": 7,
+              "p_value": 0.26317596435546875
+            },
+            "n_predictions_changed": 27
+          }
+        }
+      },
+      "case": {
+        "label": "case kept (TF-IDF lowercase=False)",
+        "reference": "full_cs",
+        "n_test": 500,
+        "n_labels": 6,
+        "reference_vs_grid": null,
+        "variants": {
+          "full_cs": {
+            "tokenizer": "lexfront",
+            "run_json": "results/quick/ablation/case/tweet_topic__lexfront__lr.json",
+            "n_features": 3514,
+            "accuracy": {
+              "value": 0.668,
+              "ci": [
+                0.628,
+                0.708
+              ]
+            },
+            "macro_f1": {
+              "value": 0.3138509515394023,
+              "ci": [
+                0.287993733777,
+                0.338995600607
+              ]
+            }
+          },
+          "no_lowercase": {
+            "tokenizer": "lexfront:no_lowercase",
+            "run_json": "results/quick/ablation/case/tweet_topic__lexfront-no_lowercase__lr.json",
+            "n_features": 4009,
+            "accuracy": {
+              "value": 0.658,
+              "ci": [
+                0.61795,
+                0.698
+              ]
+            },
+            "macro_f1": {
+              "value": 0.3110523387371016,
+              "ci": [
+                0.286171724027,
+                0.333915568578
+              ]
+            },
+            "minus_reference": {
+              "accuracy": {
+                "diff": -0.01,
+                "ci": [
+                  -0.03,
+                  0.01
+                ],
+                "ci_excludes_zero": false
+              },
+              "macro_f1": {
+                "diff": -0.002798612802,
+                "ci": [
+                  -0.020626231865,
+                  0.015320928288
+                ],
+                "ci_excludes_zero": false
+              }
+            },
+            "mcnemar_accuracy": {
+              "a_right_b_wrong": 16,
+              "a_wrong_b_right": 11,
+              "p_value": 0.44206833839416504
+            },
+            "n_predictions_changed": 46
+          },
+          "all_off_cs": {
+            "tokenizer": "lexfront:all_off",
+            "run_json": "results/quick/ablation/case/tweet_topic__lexfront-all_off__lr.json",
+            "n_features": 4340,
+            "accuracy": {
+              "value": 0.66,
+              "ci": [
+                0.618,
+                0.698
+              ]
+            },
+            "macro_f1": {
+              "value": 0.31569401518747586,
+              "ci": [
+                0.290249355341,
+                0.338918762809
+              ]
+            },
+            "minus_reference": {
+              "accuracy": {
+                "diff": -0.008,
+                "ci": [
+                  -0.032,
+                  0.018
+                ],
+                "ci_excludes_zero": false
+              },
+              "macro_f1": {
+                "diff": 0.001843063648,
+                "ci": [
+                  -0.01660705928,
+                  0.020302677286
+                ],
+                "ci_excludes_zero": false
+              }
+            },
+            "mcnemar_accuracy": {
+              "a_right_b_wrong": 23,
+              "a_wrong_b_right": 19,
+              "p_value": 0.6439689563703723
+            },
+            "n_predictions_changed": 69
+          }
+        }
+      }
+    },
+    "go_emotions": {
+      "main": {
+        "label": "TF-IDF lowercase (main grid)",
+        "reference": "full",
+        "n_test": 500,
+        "n_labels": 28,
+        "reference_vs_grid": {
+          "run_json": "results/quick/module2/go_emotions__lexfront__lr.json",
+          "identical_predictions": true
+        },
+        "variants": {
+          "full": {
+            "tokenizer": "lexfront",
+            "run_json": "results/quick/ablation/main/go_emotions__lexfront__lr.json",
+            "n_features": 1779,
+            "accuracy": {
+              "value": 0.436,
+              "ci": [
+                0.392,
+                0.48
+              ]
+            },
+            "macro_f1": {
+              "value": 0.1405684735128397,
+              "ci": [
+                0.109726877324,
+                0.172783410212
+              ]
+            }
+          },
+          "no_url": {
+            "tokenizer": "lexfront:no_url",
+            "run_json": "results/quick/ablation/main/go_emotions__lexfront-no_url__lr.json",
+            "n_features": 1779,
+            "accuracy": {
+              "value": 0.436,
+              "ci": [
+                0.392,
+                0.48
+              ]
+            },
+            "macro_f1": {
+              "value": 0.1405684735128397,
+              "ci": [
+                0.109726877324,
+                0.172783410212
+              ]
+            },
+            "minus_reference": {
+              "accuracy": {
+                "diff": 0.0,
+                "ci": [
+                  0.0,
+                  0.0
+                ],
+                "ci_excludes_zero": false
+              },
+              "macro_f1": {
+                "diff": 0.0,
+                "ci": [
+                  0.0,
+                  0.0
+                ],
+                "ci_excludes_zero": false
+              }
+            },
+            "mcnemar_accuracy": {
+              "a_right_b_wrong": 0,
+              "a_wrong_b_right": 0,
+              "p_value": 1.0
+            },
+            "n_predictions_changed": 0
+          },
+          "no_mention": {
+            "tokenizer": "lexfront:no_mention",
+            "run_json": "results/quick/ablation/main/go_emotions__lexfront-no_mention__lr.json",
+            "n_features": 1779,
+            "accuracy": {
+              "value": 0.436,
+              "ci": [
+                0.392,
+                0.48
+              ]
+            },
+            "macro_f1": {
+              "value": 0.1405684735128397,
+              "ci": [
+                0.109726877324,
+                0.172783410212
+              ]
+            },
+            "minus_reference": {
+              "accuracy": {
+                "diff": 0.0,
+                "ci": [
+                  0.0,
+                  0.0
+                ],
+                "ci_excludes_zero": false
+              },
+              "macro_f1": {
+                "diff": 0.0,
+                "ci": [
+                  0.0,
+                  0.0
+                ],
+                "ci_excludes_zero": false
+              }
+            },
+            "mcnemar_accuracy": {
+              "a_right_b_wrong": 0,
+              "a_wrong_b_right": 0,
+              "p_value": 1.0
+            },
+            "n_predictions_changed": 0
+          },
+          "no_number": {
+            "tokenizer": "lexfront:no_number",
+            "run_json": "results/quick/ablation/main/go_emotions__lexfront-no_number__lr.json",
+            "n_features": 1813,
+            "accuracy": {
+              "value": 0.434,
+              "ci": [
+                0.39,
+                0.478
+              ]
+            },
+            "macro_f1": {
+              "value": 0.13898489473411077,
+              "ci": [
+                0.107866906363,
+                0.170637400597
+              ]
+            },
+            "minus_reference": {
+              "accuracy": {
+                "diff": -0.002,
+                "ci": [
+                  -0.006,
+                  0.0
+                ],
+                "ci_excludes_zero": false
+              },
+              "macro_f1": {
+                "diff": -0.001583578779,
+                "ci": [
+                  -0.005401595156,
+                  0.0
+                ],
+                "ci_excludes_zero": false
+              }
+            },
+            "mcnemar_accuracy": {
+              "a_right_b_wrong": 1,
+              "a_wrong_b_right": 0,
+              "p_value": 1.0
+            },
+            "n_predictions_changed": 1
+          },
+          "no_elongated": {
+            "tokenizer": "lexfront:no_elongated",
+            "run_json": "results/quick/ablation/main/go_emotions__lexfront-no_elongated__lr.json",
+            "n_features": 1777,
+            "accuracy": {
+              "value": 0.436,
+              "ci": [
+                0.392,
+                0.48
+              ]
+            },
+            "macro_f1": {
+              "value": 0.1405684735128397,
+              "ci": [
+                0.109726877324,
+                0.172783410212
+              ]
+            },
+            "minus_reference": {
+              "accuracy": {
+                "diff": 0.0,
+                "ci": [
+                  0.0,
+                  0.0
+                ],
+                "ci_excludes_zero": false
+              },
+              "macro_f1": {
+                "diff": 0.0,
+                "ci": [
+                  0.0,
+                  0.0
+                ],
+                "ci_excludes_zero": false
+              }
+            },
+            "mcnemar_accuracy": {
+              "a_right_b_wrong": 0,
+              "a_wrong_b_right": 0,
+              "p_value": 1.0
+            },
+            "n_predictions_changed": 0
+          },
+          "no_slang": {
+            "tokenizer": "lexfront:no_slang",
+            "run_json": "results/quick/ablation/main/go_emotions__lexfront-no_slang__lr.json",
+            "n_features": 1791,
+            "accuracy": {
+              "value": 0.434,
+              "ci": [
+                0.39,
+                0.478
+              ]
+            },
+            "macro_f1": {
+              "value": 0.13898489473411077,
+              "ci": [
+                0.107834349143,
+                0.170828927843
+              ]
+            },
+            "minus_reference": {
+              "accuracy": {
+                "diff": -0.002,
+                "ci": [
+                  -0.006,
+                  0.0
+                ],
+                "ci_excludes_zero": false
+              },
+              "macro_f1": {
+                "diff": -0.001583578779,
+                "ci": [
+                  -0.005551302741,
+                  0.000781328132
+                ],
+                "ci_excludes_zero": false
+              }
+            },
+            "mcnemar_accuracy": {
+              "a_right_b_wrong": 1,
+              "a_wrong_b_right": 0,
+              "p_value": 1.0
+            },
+            "n_predictions_changed": 3
+          },
+          "all_off": {
+            "tokenizer": "lexfront:all_off",
+            "run_json": "results/quick/ablation/main/go_emotions__lexfront-all_off__lr.json",
+            "n_features": 1823,
+            "accuracy": {
+              "value": 0.434,
+              "ci": [
+                0.39,
+                0.478
+              ]
+            },
+            "macro_f1": {
+              "value": 0.13898489473411077,
+              "ci": [
+                0.107834349143,
+                0.170828927843
+              ]
+            },
+            "minus_reference": {
+              "accuracy": {
+                "diff": -0.002,
+                "ci": [
+                  -0.006,
+                  0.0
+                ],
+                "ci_excludes_zero": false
+              },
+              "macro_f1": {
+                "diff": -0.001583578779,
+                "ci": [
+                  -0.005551302741,
+                  0.000781328132
+                ],
+                "ci_excludes_zero": false
+              }
+            },
+            "mcnemar_accuracy": {
+              "a_right_b_wrong": 1,
+              "a_wrong_b_right": 0,
+              "p_value": 1.0
+            },
+            "n_predictions_changed": 3
+          }
+        }
+      },
+      "case": {
+        "label": "case kept (TF-IDF lowercase=False)",
+        "reference": "full_cs",
+        "n_test": 500,
+        "n_labels": 28,
+        "reference_vs_grid": null,
+        "variants": {
+          "full_cs": {
+            "tokenizer": "lexfront",
+            "run_json": "results/quick/ablation/case/go_emotions__lexfront__lr.json",
+            "n_features": 1779,
+            "accuracy": {
+              "value": 0.436,
+              "ci": [
+                0.392,
+                0.48
+              ]
+            },
+            "macro_f1": {
+              "value": 0.1405684735128397,
+              "ci": [
+                0.109726877324,
+                0.172783410212
+              ]
+            }
+          },
+          "no_lowercase": {
+            "tokenizer": "lexfront:no_lowercase",
+            "run_json": "results/quick/ablation/case/go_emotions__lexfront-no_lowercase__lr.json",
+            "n_features": 1930,
+            "accuracy": {
+              "value": 0.41,
+              "ci": [
+                0.36795,
+                0.452
+              ]
+            },
+            "macro_f1": {
+              "value": 0.11057522329624153,
+              "ci": [
+                0.083191126028,
+                0.139651482764
+              ]
+            },
+            "minus_reference": {
+              "accuracy": {
+                "diff": -0.026,
+                "ci": [
+                  -0.042,
+                  -0.01
+                ],
+                "ci_excludes_zero": true
+              },
+              "macro_f1": {
+                "diff": -0.029993250217,
+                "ci": [
+                  -0.057889995439,
+                  -0.006163454453
+                ],
+                "ci_excludes_zero": true
+              }
+            },
+            "mcnemar_accuracy": {
+              "a_right_b_wrong": 15,
+              "a_wrong_b_right": 2,
+              "p_value": 0.002349853515625
+            },
+            "n_predictions_changed": 25
+          },
+          "all_off_cs": {
+            "tokenizer": "lexfront:all_off",
+            "run_json": "results/quick/ablation/case/go_emotions__lexfront-all_off__lr.json",
+            "n_features": 1971,
+            "accuracy": {
+              "value": 0.41,
+              "ci": [
+                0.36795,
+                0.452
+              ]
+            },
+            "macro_f1": {
+              "value": 0.11057522329624153,
+              "ci": [
+                0.083191126028,
+                0.139651482764
+              ]
+            },
+            "minus_reference": {
+              "accuracy": {
+                "diff": -0.026,
+                "ci": [
+                  -0.042,
+                  -0.01
+                ],
+                "ci_excludes_zero": true
+              },
+              "macro_f1": {
+                "diff": -0.029993250217,
+                "ci": [
+                  -0.057889995439,
+                  -0.006163454453
+                ],
+                "ci_excludes_zero": true
+              }
+            },
+            "mcnemar_accuracy": {
+              "a_right_b_wrong": 15,
+              "a_wrong_b_right": 2,
+              "p_value": 0.002349853515625
+            },
+            "n_predictions_changed": 25
+          }
+        }
+      }
+    },
+    "ag_news": {
+      "main": {
+        "label": "TF-IDF lowercase (main grid)",
+        "reference": "full",
+        "n_test": 500,
+        "n_labels": 4,
+        "reference_vs_grid": {
+          "run_json": "results/quick/module2/ag_news__lexfront__lr.json",
+          "identical_predictions": true
+        },
+        "variants": {
+          "full": {
+            "tokenizer": "lexfront",
+            "run_json": "results/quick/ablation/main/ag_news__lexfront__lr.json",
+            "n_features": 5450,
+            "accuracy": {
+              "value": 0.852,
+              "ci": [
+                0.81995,
+                0.882
+              ]
+            },
+            "macro_f1": {
+              "value": 0.8514023748368352,
+              "ci": [
+                0.817802201453,
+                0.881811245679
+              ]
+            }
+          },
+          "no_url": {
+            "tokenizer": "lexfront:no_url",
+            "run_json": "results/quick/ablation/main/ag_news__lexfront-no_url__lr.json",
+            "n_features": 5452,
+            "accuracy": {
+              "value": 0.852,
+              "ci": [
+                0.81995,
+                0.882
+              ]
+            },
+            "macro_f1": {
+              "value": 0.8514023748368352,
+              "ci": [
+                0.817802201453,
+                0.881811245679
+              ]
+            },
+            "minus_reference": {
+              "accuracy": {
+                "diff": 0.0,
+                "ci": [
+                  0.0,
+                  0.0
+                ],
+                "ci_excludes_zero": false
+              },
+              "macro_f1": {
+                "diff": 0.0,
+                "ci": [
+                  0.0,
+                  0.0
+                ],
+                "ci_excludes_zero": false
+              }
+            },
+            "mcnemar_accuracy": {
+              "a_right_b_wrong": 0,
+              "a_wrong_b_right": 0,
+              "p_value": 1.0
+            },
+            "n_predictions_changed": 0
+          },
+          "no_mention": {
+            "tokenizer": "lexfront:no_mention",
+            "run_json": "results/quick/ablation/main/ag_news__lexfront-no_mention__lr.json",
+            "n_features": 5450,
+            "accuracy": {
+              "value": 0.852,
+              "ci": [
+                0.81995,
+                0.882
+              ]
+            },
+            "macro_f1": {
+              "value": 0.8514023748368352,
+              "ci": [
+                0.817802201453,
+                0.881811245679
+              ]
+            },
+            "minus_reference": {
+              "accuracy": {
+                "diff": 0.0,
+                "ci": [
+                  0.0,
+                  0.0
+                ],
+                "ci_excludes_zero": false
+              },
+              "macro_f1": {
+                "diff": 0.0,
+                "ci": [
+                  0.0,
+                  0.0
+                ],
+                "ci_excludes_zero": false
+              }
+            },
+            "mcnemar_accuracy": {
+              "a_right_b_wrong": 0,
+              "a_wrong_b_right": 0,
+              "p_value": 1.0
+            },
+            "n_predictions_changed": 0
+          },
+          "no_number": {
+            "tokenizer": "lexfront:no_number",
+            "run_json": "results/quick/ablation/main/ag_news__lexfront-no_number__lr.json",
+            "n_features": 5597,
+            "accuracy": {
+              "value": 0.862,
+              "ci": [
+                0.83,
+                0.892
+              ]
+            },
+            "macro_f1": {
+              "value": 0.8616924145729441,
+              "ci": [
+                0.828280468854,
+                0.891085243676
+              ]
+            },
+            "minus_reference": {
+              "accuracy": {
+                "diff": 0.01,
+                "ci": [
+                  -0.002,
+                  0.022
+                ],
+                "ci_excludes_zero": false
+              },
+              "macro_f1": {
+                "diff": 0.010290039736,
+                "ci": [
+                  -0.001050120593,
+                  0.022613449108
+                ],
+                "ci_excludes_zero": false
+              }
+            },
+            "mcnemar_accuracy": {
+              "a_right_b_wrong": 2,
+              "a_wrong_b_right": 7,
+              "p_value": 0.1796875
+            },
+            "n_predictions_changed": 11
+          },
+          "no_elongated": {
+            "tokenizer": "lexfront:no_elongated",
+            "run_json": "results/quick/ablation/main/ag_news__lexfront-no_elongated__lr.json",
+            "n_features": 5449,
+            "accuracy": {
+              "value": 0.852,
+              "ci": [
+                0.81995,
+                0.882
+              ]
+            },
+            "macro_f1": {
+              "value": 0.8514023748368352,
+              "ci": [
+                0.817802201453,
+                0.881811245679
+              ]
+            },
+            "minus_reference": {
+              "accuracy": {
+                "diff": 0.0,
+                "ci": [
+                  0.0,
+                  0.0
+                ],
+                "ci_excludes_zero": false
+              },
+              "macro_f1": {
+                "diff": 0.0,
+                "ci": [
+                  0.0,
+                  0.0
+                ],
+                "ci_excludes_zero": false
+              }
+            },
+            "mcnemar_accuracy": {
+              "a_right_b_wrong": 0,
+              "a_wrong_b_right": 0,
+              "p_value": 1.0
+            },
+            "n_predictions_changed": 0
+          },
+          "no_slang": {
+            "tokenizer": "lexfront:no_slang",
+            "run_json": "results/quick/ablation/main/ag_news__lexfront-no_slang__lr.json",
+            "n_features": 5452,
+            "accuracy": {
+              "value": 0.854,
+              "ci": [
+                0.822,
+                0.884
+              ]
+            },
+            "macro_f1": {
+              "value": 0.8536573764056619,
+              "ci": [
+                0.820560039249,
+                0.883283771893
+              ]
+            },
+            "minus_reference": {
+              "accuracy": {
+                "diff": 0.002,
+                "ci": [
+                  0.0,
+                  0.006
+                ],
+                "ci_excludes_zero": false
+              },
+              "macro_f1": {
+                "diff": 0.002255001569,
+                "ci": [
+                  0.0,
+                  0.00709753619
+                ],
+                "ci_excludes_zero": false
+              }
+            },
+            "mcnemar_accuracy": {
+              "a_right_b_wrong": 0,
+              "a_wrong_b_right": 1,
+              "p_value": 1.0
+            },
+            "n_predictions_changed": 1
+          },
+          "all_off": {
+            "tokenizer": "lexfront:all_off",
+            "run_json": "results/quick/ablation/main/ag_news__lexfront-all_off__lr.json",
+            "n_features": 5600,
+            "accuracy": {
+              "value": 0.862,
+              "ci": [
+                0.83,
+                0.892
+              ]
+            },
+            "macro_f1": {
+              "value": 0.8616924145729441,
+              "ci": [
+                0.828280468854,
+                0.891085243676
+              ]
+            },
+            "minus_reference": {
+              "accuracy": {
+                "diff": 0.01,
+                "ci": [
+                  -0.002,
+                  0.022
+                ],
+                "ci_excludes_zero": false
+              },
+              "macro_f1": {
+                "diff": 0.010290039736,
+                "ci": [
+                  -0.001050120593,
+                  0.022613449108
+                ],
+                "ci_excludes_zero": false
+              }
+            },
+            "mcnemar_accuracy": {
+              "a_right_b_wrong": 2,
+              "a_wrong_b_right": 7,
+              "p_value": 0.1796875
+            },
+            "n_predictions_changed": 11
+          }
+        }
+      },
+      "case": {
+        "label": "case kept (TF-IDF lowercase=False)",
+        "reference": "full_cs",
+        "n_test": 500,
+        "n_labels": 4,
+        "reference_vs_grid": null,
+        "variants": {
+          "full_cs": {
+            "tokenizer": "lexfront",
+            "run_json": "results/quick/ablation/case/ag_news__lexfront__lr.json",
+            "n_features": 5452,
+            "accuracy": {
+              "value": 0.852,
+              "ci": [
+                0.81995,
+                0.882
+              ]
+            },
+            "macro_f1": {
+              "value": 0.8514023748368352,
+              "ci": [
+                0.817802201453,
+                0.881811245679
+              ]
+            }
+          },
+          "no_lowercase": {
+            "tokenizer": "lexfront:no_lowercase",
+            "run_json": "results/quick/ablation/case/ag_news__lexfront-no_lowercase__lr.json",
+            "n_features": 6202,
+            "accuracy": {
+              "value": 0.848,
+              "ci": [
+                0.81595,
+                0.88
+              ]
+            },
+            "macro_f1": {
+              "value": 0.8476121191372817,
+              "ci": [
+                0.814119734985,
+                0.877927763805
+              ]
+            },
+            "minus_reference": {
+              "accuracy": {
+                "diff": -0.004,
+                "ci": [
+                  -0.02,
+                  0.012
+                ],
+                "ci_excludes_zero": false
+              },
+              "macro_f1": {
+                "diff": -0.0037902557,
+                "ci": [
+                  -0.020316389275,
+                  0.012839103831
+                ],
+                "ci_excludes_zero": false
+              }
+            },
+            "mcnemar_accuracy": {
+              "a_right_b_wrong": 9,
+              "a_wrong_b_right": 7,
+              "p_value": 0.803619384765625
+            },
+            "n_predictions_changed": 22
+          },
+          "all_off_cs": {
+            "tokenizer": "lexfront:all_off",
+            "run_json": "results/quick/ablation/case/ag_news__lexfront-all_off__lr.json",
+            "n_features": 6350,
+            "accuracy": {
+              "value": 0.844,
+              "ci": [
+                0.81,
+                0.876
+              ]
+            },
+            "macro_f1": {
+              "value": 0.842897421392738,
+              "ci": [
+                0.808637248664,
+                0.873956233065
+              ]
+            },
+            "minus_reference": {
+              "accuracy": {
+                "diff": -0.008,
+                "ci": [
+                  -0.028,
+                  0.012
+                ],
+                "ci_excludes_zero": false
+              },
+              "macro_f1": {
+                "diff": -0.008504953444,
+                "ci": [
+                  -0.029119906889,
+                  0.012020236365
+                ],
+                "ci_excludes_zero": false
+              }
+            },
+            "mcnemar_accuracy": {
+              "a_right_b_wrong": 15,
+              "a_wrong_b_right": 11,
+              "p_value": 0.557197093963623
+            },
+            "n_predictions_changed": 30
+          }
+        }
+      }
+    }
+  }
+}

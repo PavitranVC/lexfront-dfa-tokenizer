@@ -261,5 +261,12 @@ Only partly. Every run stores its test predictions, and `python -m experiments.r
 We measured it instead of guessing: `python -m experiments.run_ablation` trains LexFront + LR with one rule switched off at a time and compares each variant with full LexFront on the same resampled test examples (paired bootstrap 95% CI, plus McNemar on accuracy). The honest answer is what the generated block below says, per dataset: which removals have a CI that excludes 0, and in which direction; every other removal is not distinguishable from full LexFront on these test sets. Three limits: there are 8 comparisons per dataset and no multiplicity correction, so an interval can exclude 0 by chance; one training run per variant, so training randomness is not covered; and the lowercase rule can only be tested with TF-IDF case folding off, because in the main grid TF-IDF has already lowercased the text. Why a rule matters (e.g. how often URLs or slang occur in a dataset) is a hypothesis we have not tested.
 
 <!-- BEGIN obs:ablation -->
--
+**DRAFT observations (generated from the JSON files):**
+
+- **tweet_topic** (8 variants vs full): accuracy CI excludes 0 for all_off +1.09 (higher than full), no_lowercase (case kept) -0.91 (lower than full); macro-F1 CI excludes 0 for none. Every other interval includes 0.
+- **go_emotions** (8 variants vs full): accuracy CI excludes 0 for no_lowercase (case kept) -1.07 (lower than full), all_off_cs (case kept) -1.20 (lower than full); macro-F1 CI excludes 0 for no_lowercase (case kept) -1.90 (lower than full), all_off_cs (case kept) -1.86 (lower than full). Every other interval includes 0.
+- **ag_news** (8 variants vs full): accuracy CI excludes 0 for none; macro-F1 CI excludes 0 for none. Every other interval includes 0.
+- In all, 6 of 48 difference CIs exclude 0. There is no multiplicity correction: with 48 separate 95% intervals, about 2.4 would exclude 0 by chance even if no rule had any effect, so a single interval that excludes 0 is weak evidence on its own.
+
+_Ablation: each variant is LexFront + LR with the named rule (all_off: every rule) switched off, everything else fixed; differences are variant minus full LexFront of the same setting, paired bootstrap over the test examples (same code, B and seed as `ci_table`). One training run per variant, so training randomness is not covered. The lowercase rule is tested only with case kept: in the main setting TF-IDF lowercases the text before LexFront sees it, so switching the rule off cannot change anything there. These numbers say which removals change the scores, not why; any reason given elsewhere is a hypothesis._
 <!-- END obs:ablation -->

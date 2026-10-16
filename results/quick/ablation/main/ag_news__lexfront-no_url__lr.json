@@ -1,0 +1,92 @@
+{
+  "timestamp_utc": "2026-10-16T21:27:25+00:00",
+  "dataset": {
+    "name": "ag_news",
+    "hf_id": "fancyzhx/ag_news",
+    "config": null,
+    "n_train": 2000,
+    "n_test": 500,
+    "n_labels": 4,
+    "label_names": [
+      "World",
+      "Sports",
+      "Business",
+      "Sci/Tech"
+    ],
+    "split_info": {
+      "train": "train",
+      "test": "test",
+      "reason": "official splits",
+      "subsample": {
+        "max_train": 2000,
+        "max_test": 500,
+        "seed": 0
+      }
+    }
+  },
+  "data_hash": "4a7a95beceae5959",
+  "tokenizer": "lexfront:no_url",
+  "normalize": {
+    "url": false,
+    "mention": true,
+    "number": true,
+    "elongated": true,
+    "lowercase": true,
+    "slang": true
+  },
+  "vectorizer": {
+    "type": "TfidfVectorizer",
+    "lowercase": true,
+    "min_df": 2,
+    "ngram_range": [
+      1,
+      1
+    ],
+    "token_pattern": null,
+    "n_features": 5452
+  },
+  "classifier": {
+    "name": "lr",
+    "params": {
+      "C": 1.0,
+      "class_weight": null,
+      "dual": false,
+      "fit_intercept": true,
+      "intercept_scaling": 1,
+      "l1_ratio": 0.0,
+      "max_iter": 1000,
+      "n_jobs": null,
+      "penalty": "deprecated",
+      "random_state": 0,
+      "solver": "lbfgs",
+      "tol": 0.0001,
+      "verbose": 0,
+      "warm_start": false
+    }
+  },
+  "seed": 0,
+  "fingerprint": {
+    "config": "a1e9a7ad13fe642a",
+    "code": "10cfad715b15ce20"
+  },
+  "metrics": {
+    "accuracy": 0.852,
+    "macro_f1": 0.8514023748368352
+  },
+  "timing_seconds": {
+    "tokenize_and_vectorize": 0.5429916440000397,
+    "classifier_fit": 0.08090775700020458
+  },
+  "environment": {
+    "python": "3.11.17",
+    "sklearn": "1.9.1",
+    "nltk": "3.10.3",
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "threadpoolctl": "3.7.0",
+    "machine": "x86_64",
+    "platform": "Linux-6.18.44-fc-v139-x86_64-with-glibc2.39",
+    "blas_threads": 1
+  },
+  "predictions_file": "predictions/ag_news__lexfront-no_url__lr.json.gz"
+}

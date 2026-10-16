@@ -2,6 +2,21 @@
 
 Newest first. Dates are the day the change was made (IST workday).
 
+## 2026-10-16 (P2)
+- P2: per-rule normalization ablation (`python -m experiments.run_ablation`, `results/ablation/`): LexFront + LR with
+  each of url, mention, number, elongated, slang switched off (TF-IDF lowercases, as the main grid), plus no_lowercase
+  with case kept (TF-IDF `lowercase=False`), plus all rules off in both settings; paired bootstrap CIs and McNemar of
+  each variant against full LexFront (`results/ablation/stats/bootstrap.json`). Generated table `ablation_table` and
+  observation `ablation` in REPORT_NOTES, docs/modules/module2.md, LEARN.md (new Q33) and the notebook (new section 6,
+  QUICK). Protocol in `docs/versions/v4-ablation.md`.
+- Ablation variants `lexfront:no_<rule>` / `lexfront:all_off`; the run fingerprint and run JSON of every LexFront run
+  record its `NormalizeConfig`.
+- AUDIT_3 fixes: CAVEAT on untested gaps (A3-1); QUICK CI width note in the notebook (A3-2); bootstrap CIs for the
+  case-sensitive grid, table `sensitivity_ci` and observation lines (A3-3); CI checks that every stats JSON matches the
+  committed predictions (A3-4); unused `n_classes_of` removed (A3-5).
+- All main, QUICK and sensitivity run JSONs regenerated (`--force`); every metric and every stored prediction identical
+  to before (script compare).
+
 ## 2026-10-16 (P0+P1)
 - P0: main grid unchanged (TF-IDF `lowercase=True`); new case-sensitivity grid with `lowercase=False` for all four
   tokenizers x {NB, LR} x 3 datasets (`python -m experiments.run_sensitivity`, `results/sensitivity_case/`), with a
