@@ -129,16 +129,16 @@ Generated from `results/module2/*.json`. Minimized DFA: `results/module2/dfa_min
 | dataset | existing NLTK+NB acc / F1 | proposed LexFront+LR acc / F1 | delta acc (pts) | delta F1 (pts) | LexFront+NB acc / F1 | NLTK+LR acc / F1 |
 |---|---|---|---|---|---|---|
 | tweet_topic | 70.99 / 28.56 | 70.73 / 36.18 | -0.26 | +7.62 | 70.43 / 27.84 | 72.32 / 36.95 |
-| go_emotions | 37.78 / 4.88 | 55.32 / 33.95 | +17.54 | +29.07 | 37.78 / 4.81 | 55.29 / 33.89 |
-| ag_news | 90.38 / 90.35 | 91.87 / 91.85 | +1.49 | +1.50 | 90.08 / 90.05 | 91.88 / 91.87 |
+| go_emotions | 37.78 / 4.88 | 55.36 / 33.97 | +17.58 | +29.09 | 37.78 / 4.81 | 55.27 / 33.86 |
+| ag_news | 90.38 / 90.35 | 91.88 / 91.86 | +1.50 | +1.51 | 90.08 / 90.05 | 91.88 / 91.87 |
 <!-- END table:existing_vs_proposed -->
 
 <!-- BEGIN obs:existing_vs_proposed -->
 **DRAFT observations (generated from the JSON files):**
 
 - **tweet_topic**: proposed (LexFront+LR) vs existing (NLTK+NB): accuracy -0.26 points, macro-F1 +7.62 points. Split of the accuracy change: switching classifier with NLTK held fixed (NB to LR) +1.32; switching tokenizer with LR held fixed (NLTK to LexFront) -1.59; switching tokenizer with NB held fixed -0.56.
-- **go_emotions**: proposed (LexFront+LR) vs existing (NLTK+NB): accuracy +17.54 points, macro-F1 +29.07 points. Split of the accuracy change: switching classifier with NLTK held fixed (NB to LR) +17.52; switching tokenizer with LR held fixed (NLTK to LexFront) +0.02; switching tokenizer with NB held fixed +0.00.
-- **ag_news**: proposed (LexFront+LR) vs existing (NLTK+NB): accuracy +1.49 points, macro-F1 +1.50 points. Split of the accuracy change: switching classifier with NLTK held fixed (NB to LR) +1.50; switching tokenizer with LR held fixed (NLTK to LexFront) -0.01; switching tokenizer with NB held fixed -0.30.
+- **go_emotions**: proposed (LexFront+LR) vs existing (NLTK+NB): accuracy +17.58 points, macro-F1 +29.09 points. Split of the accuracy change: switching classifier with NLTK held fixed (NB to LR) +17.49; switching tokenizer with LR held fixed (NLTK to LexFront) +0.09; switching tokenizer with NB held fixed +0.00.
+- **ag_news**: proposed (LexFront+LR) vs existing (NLTK+NB): accuracy +1.50 points, macro-F1 +1.51 points. Split of the accuracy change: switching classifier with NLTK held fixed (NB to LR) +1.50; switching tokenizer with LR held fixed (NLTK to LexFront) +0.00; switching tokenizer with NB held fixed -0.30.
 
 _Single run per cell (seed 0), no confidence intervals: gaps of about one point or less should not be read as real differences._
 <!-- END obs:existing_vs_proposed -->

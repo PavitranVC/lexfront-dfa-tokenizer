@@ -78,20 +78,20 @@ Blocks between `BEGIN`/`END` markers are regenerated; the text around them is ha
 | tweet_topic | whitespace | 40.01 / 9.53 | 70.26 / 28.83 | 70.49 / 35.76 |
 | tweet_topic | nltk | 40.01 / 9.53 | 70.99 / 28.56 | 72.32 / 36.95 |
 | tweet_topic | tweet | 40.01 / 9.53 | 70.79 / 28.31 | 72.02 / 36.70 |
-| go_emotions | whitespace | 34.99 / 1.85 | 37.73 / 4.93 | 53.44 / 31.23 |
-| go_emotions | nltk | 34.99 / 1.85 | 37.78 / 4.88 | 55.29 / 33.89 |
-| go_emotions | tweet | 34.99 / 1.85 | 37.80 / 4.86 | 55.40 / 33.99 |
+| go_emotions | whitespace | 34.99 / 1.85 | 37.73 / 4.93 | 53.51 / 31.40 |
+| go_emotions | nltk | 34.99 / 1.85 | 37.78 / 4.88 | 55.27 / 33.86 |
+| go_emotions | tweet | 34.99 / 1.85 | 37.80 / 4.86 | 55.47 / 34.02 |
 | ag_news | whitespace | 25.00 / 10.00 | 90.14 / 90.12 | 91.43 / 91.42 |
 | ag_news | nltk | 25.00 / 10.00 | 90.38 / 90.35 | 91.88 / 91.87 |
-| ag_news | tweet | 25.00 / 10.00 | 90.22 / 90.20 | 91.83 / 91.81 |
+| ag_news | tweet | 25.00 / 10.00 | 90.22 / 90.20 | 91.84 / 91.83 |
 <!-- END table:module1_results -->
 
 <!-- BEGIN obs:module1 -->
 **DRAFT observations (generated from the JSON files):**
 
 - **tweet_topic**: best accuracy 72.32% (nltk + LR). Across the three tokenizers LR is +0.93 points vs NB on average; the tokenizer spread is 1.82 points under LR and 0.74 points under NB.
-- **go_emotions**: best accuracy 55.40% (tweet + LR). Across the three tokenizers LR is +16.94 points vs NB on average; the tokenizer spread is 1.96 points under LR and 0.07 points under NB.
-- **ag_news**: best accuracy 91.88% (nltk + LR). Across the three tokenizers LR is +1.46 points vs NB on average; the tokenizer spread is 0.45 points under LR and 0.24 points under NB.
+- **go_emotions**: best accuracy 55.47% (tweet + LR). Across the three tokenizers LR is +16.98 points vs NB on average; the tokenizer spread is 1.96 points under LR and 0.07 points under NB.
+- **ag_news**: best accuracy 91.88% (nltk + LR). Across the three tokenizers LR is +1.47 points vs NB on average; the tokenizer spread is 0.45 points under LR and 0.24 points under NB.
 
 _Single run per cell (seed 0), no confidence intervals: gaps of about one point or less should not be read as real differences._
 <!-- END obs:module1 -->
@@ -101,16 +101,16 @@ _Single run per cell (seed 0), no confidence intervals: gaps of about one point 
 | dataset | existing NLTK+NB acc / F1 | proposed LexFront+LR acc / F1 | delta acc (pts) | delta F1 (pts) | LexFront+NB acc / F1 | NLTK+LR acc / F1 |
 |---|---|---|---|---|---|---|
 | tweet_topic | 70.99 / 28.56 | 70.73 / 36.18 | -0.26 | +7.62 | 70.43 / 27.84 | 72.32 / 36.95 |
-| go_emotions | 37.78 / 4.88 | 55.32 / 33.95 | +17.54 | +29.07 | 37.78 / 4.81 | 55.29 / 33.89 |
-| ag_news | 90.38 / 90.35 | 91.87 / 91.85 | +1.49 | +1.50 | 90.08 / 90.05 | 91.88 / 91.87 |
+| go_emotions | 37.78 / 4.88 | 55.36 / 33.97 | +17.58 | +29.09 | 37.78 / 4.81 | 55.27 / 33.86 |
+| ag_news | 90.38 / 90.35 | 91.88 / 91.86 | +1.50 | +1.51 | 90.08 / 90.05 | 91.88 / 91.87 |
 <!-- END table:existing_vs_proposed -->
 
 <!-- BEGIN obs:existing_vs_proposed -->
 **DRAFT observations (generated from the JSON files):**
 
 - **tweet_topic**: proposed (LexFront+LR) vs existing (NLTK+NB): accuracy -0.26 points, macro-F1 +7.62 points. Split of the accuracy change: switching classifier with NLTK held fixed (NB to LR) +1.32; switching tokenizer with LR held fixed (NLTK to LexFront) -1.59; switching tokenizer with NB held fixed -0.56.
-- **go_emotions**: proposed (LexFront+LR) vs existing (NLTK+NB): accuracy +17.54 points, macro-F1 +29.07 points. Split of the accuracy change: switching classifier with NLTK held fixed (NB to LR) +17.52; switching tokenizer with LR held fixed (NLTK to LexFront) +0.02; switching tokenizer with NB held fixed +0.00.
-- **ag_news**: proposed (LexFront+LR) vs existing (NLTK+NB): accuracy +1.49 points, macro-F1 +1.50 points. Split of the accuracy change: switching classifier with NLTK held fixed (NB to LR) +1.50; switching tokenizer with LR held fixed (NLTK to LexFront) -0.01; switching tokenizer with NB held fixed -0.30.
+- **go_emotions**: proposed (LexFront+LR) vs existing (NLTK+NB): accuracy +17.58 points, macro-F1 +29.09 points. Split of the accuracy change: switching classifier with NLTK held fixed (NB to LR) +17.49; switching tokenizer with LR held fixed (NLTK to LexFront) +0.09; switching tokenizer with NB held fixed +0.00.
+- **ag_news**: proposed (LexFront+LR) vs existing (NLTK+NB): accuracy +1.50 points, macro-F1 +1.51 points. Split of the accuracy change: switching classifier with NLTK held fixed (NB to LR) +1.50; switching tokenizer with LR held fixed (NLTK to LexFront) +0.00; switching tokenizer with NB held fixed -0.30.
 
 _Single run per cell (seed 0), no confidence intervals: gaps of about one point or less should not be read as real differences._
 <!-- END obs:existing_vs_proposed -->
@@ -167,6 +167,13 @@ expansion merge strings), so it is not by itself evidence of better classificati
 accuracy change comes from differs per dataset (generated below from the JSON; no confidence intervals were computed):
 
 <!-- BEGIN obs:attribution -->
+**DRAFT observations (generated from the JSON files):**
+
+- **tweet_topic**: proposed is 0.26 points **below** existing (classifier switch NB to LR +1.32, tokenizer switch NLTK to LexFront under LR -1.59).
+- **go_emotions**: proposed is 17.58 points above existing; almost all of it comes from the classifier (classifier switch NB to LR +17.49, tokenizer switch NLTK to LexFront under LR +0.09).
+- **ag_news**: proposed is 1.50 points above existing; almost all of it comes from the classifier (classifier switch NB to LR +1.50, tokenizer switch NLTK to LexFront under LR +0.00).
+
+_Single run per cell (seed 0), no confidence intervals: gaps of about one point or less should not be read as real differences._
 <!-- END obs:attribution -->
 
 Finding: the usual ELONGATED regex `(.)\1{2,}` needs a back-reference, which is outside regular expressions, so it is

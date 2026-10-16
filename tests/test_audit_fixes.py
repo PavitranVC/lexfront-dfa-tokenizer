@@ -84,7 +84,7 @@ def test_attribution_sentence_signs():
 def test_attribution_on_committed_results():
     text = observations.observation("attribution", "results")
     assert "**tweet_topic**: proposed is 0.26 points **below** existing" in text
-    assert "**go_emotions**: proposed is 17.54 points above existing; almost all" in text
+    assert "**go_emotions**: proposed is 17.58 points above existing; almost all" in text
 
 
 # ---- m1: intrinsic train size cannot silently change the test subset ---------------------

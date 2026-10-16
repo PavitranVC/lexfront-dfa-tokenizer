@@ -5,12 +5,36 @@ already recorded elsewhere are only pointed to. Citations below are from abstrac
 
 ## 2026-10-16 (FIXAUDIT, fixes for docs/AUDIT.md)
 
+### BLAS threads: every fit is single-threaded (decision by the conductor)
+- Decision: `experiments/pipeline.py` wraps vectorize/fit/predict in `threadpoolctl.threadpool_limits(1)`; each run JSON
+  records `environment.blas_threads = 1` and the config fingerprint includes it. All full-data and QUICK run JSONs were
+  regenerated with `--force` and accepted as the committed results.
+- Reason: the native thread count changes the float summation order in lbfgs. go_emotions nltk LR rerun with
+  OMP/OPENBLAS/MKL_NUM_THREADS = 1 / 2 / 4 gave accuracy 0.552723 / 0.552941 / 0.553159 and macro-F1
+  0.338600 / 0.338894 / 0.338969; the old committed value (0.552941 / 0.338894) is the 2-thread one. After the fix, all
+  8 go_emotions and ag_news LR cells rerun with 4 threads were identical to the committed JSONs.
+- Changed metrics, old (multi-threaded) -> new (single-threaded); all other run JSONs have identical metrics:
+
+| run JSON | metric | old | new |
+|---|---|---|---|
+| results/module1/ag_news__tweet__lr.json | accuracy | 0.918289 | 0.918421 |
+| results/module1/ag_news__tweet__lr.json | macro_f1 | 0.918149 | 0.918276 |
+| results/module1/go_emotions__nltk__lr.json | accuracy | 0.552941 | 0.552723 |
+| results/module1/go_emotions__nltk__lr.json | macro_f1 | 0.338894 | 0.338600 |
+| results/module1/go_emotions__tweet__lr.json | accuracy | 0.554031 | 0.554684 |
+| results/module1/go_emotions__tweet__lr.json | macro_f1 | 0.339879 | 0.340230 |
+| results/module1/go_emotions__whitespace__lr.json | accuracy | 0.534423 | 0.535076 |
+| results/module1/go_emotions__whitespace__lr.json | macro_f1 | 0.312263 | 0.314023 |
+| results/module2/ag_news__lexfront__lr.json | accuracy | 0.918684 | 0.918816 |
+| results/module2/ag_news__lexfront__lr.json | macro_f1 | 0.918504 | 0.918630 |
+| results/module2/go_emotions__lexfront__lr.json | accuracy | 0.553159 | 0.553595 |
+| results/module2/go_emotions__lexfront__lr.json | macro_f1 | 0.339532 | 0.339734 |
+
 ### M1: result cache keyed by a fingerprint
 - Decision: every run JSON stores `fingerprint = {config, code}` (hash of data subset, tokenizer, vectorizer and
   classifier params, seed, sklearn/nltk versions; hash of `lexer/` and the experiment modules that affect a run).
   `run_cell` reuses a JSON only if both match. The notebook sets `FORCE = QUICK_MODE`, so the CI notebook job and the
-  committed notebook recompute every QUICK run. The 33 QUICK run JSONs were regenerated (metrics identical); the full-data
-  rerun changed 5 LR metrics, so full JSONs are left as on main (BLOCKED, see `docs/FIXAUDIT_BLOCKED.md`).
+  committed notebook recompute every QUICK run. All run JSONs were regenerated single-threaded (see "BLAS threads" below).
 - Reason: the file name alone hid stale results (AUDIT M1). No test asserts that committed JSONs match the current
   code hash: that would force every later code change to rerun the full grid; a stale JSON is recomputed on next run.
 
