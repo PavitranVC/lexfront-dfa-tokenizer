@@ -6,14 +6,39 @@ Skip P5/B5 unless P0-P4 are done by about Oct 28. Run P6 only after P2, P3 and P
 ## Header (paste at the top of every prompt)
 > LexFront advisor rules: propose code in 2-3 lines and wait for my OK. Design changes get a `docs/versions/v4-*.md`
 > (or the next number) plus a CHANGELOG entry. No invented numbers or references. Read only what you need
-> (`docs/DECISIONS.md`, `CHANGELOG.md`, latest `docs/versions/` file, `git log --oneline -10`). Commit and push to the
-> current branch. Reply in under 10 lines.
+> (`docs/HANDOFF.md` first, then `docs/DECISIONS.md` only if needed, `git log --oneline -5`). Do not re-read the
+> source tree. Before finishing, overwrite `docs/HANDOFF.md` using the template in `docs/PIPELINE.md`. Commit and push to
+> the current branch. Reply using the reply template, under 10 lines.
 
 ## Buffer header (paste at the top of every B prompt)
 > Buffer pass, no new features. Run `pytest -q`, the touched experiment runner on QUICK_MODE, and the notebook in
 > QUICK_MODE. Report failures with the exact error. Fix only what is broken, propose each fix in 2-3 lines first.
 > Re-read the diff of the previous prompt adversarially (what would make CI reject it? any number not from JSON?).
 > Commit and push. Reply in under 10 lines.
+
+## Handoff file (the only memory between sessions)
+`docs/HANDOFF.md` is overwritten (not appended) at the end of every session; max 15 lines; facts only, no prose.
+```
+# HANDOFF (written by <P/B id>, <date>)
+DONE: <1 line, what now exists, with file paths>
+NUMBERS: <only figures that later prompts need, each with its JSON path; "none" if none>
+OPEN: <failing tests / known bugs, exact error text; "none" if none>
+DECISIONS: <new choices made, 1 line each, also added to docs/DECISIONS.md>
+NEXT: <next prompt id and the first thing it must do>
+FILES TOUCHED: <paths>
+CHECK: <the one command that proves it works, e.g. `pytest -q` and expected result>
+```
+
+## Reply template (what each session says back to you, under 10 lines)
+```
+STATUS: done | blocked | needs OK
+DID: <1-2 lines>
+NUMBERS: <key figures only, from JSON>
+RISKS: <what could be wrong, or "none">
+NEEDS FROM YOU: <decision or paste, or "nothing">
+COMMIT: <short hash>
+```
+When you paste a reply into a new chat with me (the advisor), paste this block only.
 
 ## Sequence
 
