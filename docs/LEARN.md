@@ -205,7 +205,7 @@ The task here is single-label classification; multi-label examples would need a 
 Recorded in each result JSON and in `results/datasets.json` (`split_info`): the COLING 2022 pair if the dataset card confirms it, otherwise a recorded fallback.
 
 **20. Why only one seed? Are differences significant?**
-Time. One training run per cell; the NB and LR fits are deterministic and the full grid uses no subsampling, so rerunning gives the same numbers. What does vary is the test set: we report bootstrap CIs over the test examples (Q30). They do not cover training randomness.
+Time. One training run per cell; the NB and LR fits are deterministic and the full grid uses no subsampling, so rerunning gives the same numbers. What does vary is the test set: we report bootstrap CIs over the test examples (Q32). They do not cover training randomness.
 
 **21. What is OOV rate and why does a tokenizer affect it?**
 Share of test tokens never seen in training. Placeholders (`<URL>`, `<NUM>`) and elongation collapsing merge many rare strings into frequent ones, which tends to lower OOV; see the intrinsic table for the actual values.
@@ -240,7 +240,7 @@ BPE and the LexFront + BPE hybrid, WordPiece, Unigram, ablations and transformer
 **31. Why are the classifier fits single-threaded, and does that change the numbers?**
 The native thread count changes the floating-point summation order inside the LR solver (lbfgs), so the same seed can give slightly different metrics on a different thread count. `experiments/pipeline.py` wraps vectorize, fit and predict in `threadpoolctl.threadpool_limits(1)`, and each run JSON records `blas_threads = 1`. The committed results were regenerated this way, so some LR numbers moved slightly; the old and new values are listed in `docs/DECISIONS.md`. `tests/test_audit_fixes.py` checks that the pinning is active.
 
-**30. How do you know the difference is not noise?**
+**32. How do you know the difference is not noise?**
 Only partly. Every run stores its test predictions, and `python -m experiments.run_stats` resamples the test examples B times (percentile bootstrap with a fixed seed; B, the seed and every interval are in `results/stats/bootstrap.json`). For a comparison both systems are scored on the same resamples (paired), and for NLTK+LR vs LexFront+LR we also run an exact McNemar test. If the 95% CI of a difference includes 0, we do not claim a difference. What this does not show: training randomness (one run per cell), other datasets, or other test-set distributions; and with three comparisons per dataset, one CI excluding 0 by chance is possible. The generated table:
 
 <!-- BEGIN table:ci_table -->
