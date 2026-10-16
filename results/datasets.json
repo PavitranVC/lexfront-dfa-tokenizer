@@ -1,0 +1,196 @@
+{
+  "datasets": [
+    {
+      "name": "tweet_topic",
+      "hf_id": "cardiffnlp/tweet_topic_single",
+      "config": null,
+      "n_train": 3598,
+      "n_test": 3399,
+      "n_labels": 6,
+      "label_names": [
+        "arts_&_culture",
+        "business_&_entrepreneurs",
+        "pop_culture",
+        "daily_life",
+        "sports_&_gaming",
+        "science_&_technology"
+      ],
+      "split_info": {
+        "train": "train_coling2022",
+        "test": "test_coling2022",
+        "card_confirms_coling2022": true,
+        "reason": "COLING 2022 temporal split confirmed by the dataset card and present in the repo",
+        "revision": "refs/convert/parquet",
+        "card_quote": "**IMPORTANT NOTE:** To get a result that is comparable with the results of the COLING 2022 Tweet Topic paper, please use `train_coling2022` and `test_coling2022` for temporal-shift, and `train_coling2022_random` and `test_coling2022_random` fir random split (the coling2022 split does not have validation set).",
+        "loading_note": "repo uses a loading script; read from the auto-converted parquet revision",
+        "subsample": {
+          "max_train": null,
+          "max_test": null,
+          "seed": 0
+        }
+      },
+      "train_class_counts": {
+        "0": 57,
+        "1": 151,
+        "2": 1378,
+        "3": 605,
+        "4": 1217,
+        "5": 190
+      },
+      "test_class_counts": {
+        "0": 95,
+        "1": 166,
+        "2": 1360,
+        "3": 356,
+        "4": 1266,
+        "5": 156
+      }
+    },
+    {
+      "name": "go_emotions",
+      "hf_id": "google-research-datasets/go_emotions",
+      "config": "simplified",
+      "n_train": 36308,
+      "n_test": 4590,
+      "n_labels": 28,
+      "label_names": [
+        "admiration",
+        "amusement",
+        "anger",
+        "annoyance",
+        "approval",
+        "caring",
+        "confusion",
+        "curiosity",
+        "desire",
+        "disappointment",
+        "disapproval",
+        "disgust",
+        "embarrassment",
+        "excitement",
+        "fear",
+        "gratitude",
+        "grief",
+        "joy",
+        "love",
+        "nervousness",
+        "optimism",
+        "pride",
+        "realization",
+        "relief",
+        "remorse",
+        "sadness",
+        "surprise",
+        "neutral"
+      ],
+      "split_info": {
+        "train": "train",
+        "test": "test",
+        "reason": "official splits; examples with more than one label removed",
+        "n_train_before_filter": 43410,
+        "n_test_before_filter": 5427,
+        "subsample": {
+          "max_train": null,
+          "max_test": null,
+          "seed": 0
+        }
+      },
+      "train_class_counts": {
+        "0": 2710,
+        "1": 1652,
+        "2": 1025,
+        "3": 1451,
+        "4": 1873,
+        "5": 649,
+        "6": 858,
+        "7": 1389,
+        "8": 389,
+        "9": 709,
+        "10": 1402,
+        "11": 498,
+        "12": 203,
+        "13": 510,
+        "14": 430,
+        "15": 1857,
+        "16": 39,
+        "17": 853,
+        "18": 1427,
+        "19": 85,
+        "20": 861,
+        "21": 51,
+        "22": 586,
+        "23": 88,
+        "24": 353,
+        "25": 817,
+        "26": 720,
+        "27": 12823
+      },
+      "test_class_counts": {
+        "0": 348,
+        "1": 186,
+        "2": 131,
+        "3": 194,
+        "4": 236,
+        "5": 86,
+        "6": 97,
+        "7": 176,
+        "8": 56,
+        "9": 88,
+        "10": 195,
+        "11": 76,
+        "12": 23,
+        "13": 57,
+        "14": 65,
+        "15": 260,
+        "16": 2,
+        "17": 93,
+        "18": 160,
+        "19": 12,
+        "20": 107,
+        "21": 7,
+        "22": 89,
+        "23": 7,
+        "24": 44,
+        "25": 102,
+        "26": 87,
+        "27": 1606
+      }
+    },
+    {
+      "name": "ag_news",
+      "hf_id": "fancyzhx/ag_news",
+      "config": null,
+      "n_train": 120000,
+      "n_test": 7600,
+      "n_labels": 4,
+      "label_names": [
+        "World",
+        "Sports",
+        "Business",
+        "Sci/Tech"
+      ],
+      "split_info": {
+        "train": "train",
+        "test": "test",
+        "reason": "official splits",
+        "subsample": {
+          "max_train": null,
+          "max_test": null,
+          "seed": 0
+        }
+      },
+      "train_class_counts": {
+        "0": 30000,
+        "1": 30000,
+        "2": 30000,
+        "3": 30000
+      },
+      "test_class_counts": {
+        "0": 1900,
+        "1": 1900,
+        "2": 1900,
+        "3": 1900
+      }
+    }
+  ]
+}

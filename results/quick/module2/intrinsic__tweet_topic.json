@@ -1,0 +1,87 @@
+{
+  "timestamp_utc": "2026-10-16T08:28:26+00:00",
+  "dataset": {
+    "name": "tweet_topic",
+    "hf_id": "cardiffnlp/tweet_topic_single",
+    "config": null,
+    "n_train": 2000,
+    "n_test": 500,
+    "n_labels": 6,
+    "label_names": [
+      "arts_&_culture",
+      "business_&_entrepreneurs",
+      "pop_culture",
+      "daily_life",
+      "sports_&_gaming",
+      "science_&_technology"
+    ],
+    "split_info": {
+      "train": "train_coling2022",
+      "test": "test_coling2022",
+      "card_confirms_coling2022": true,
+      "reason": "COLING 2022 temporal split confirmed by the dataset card and present in the repo",
+      "revision": "refs/convert/parquet",
+      "card_quote": "**IMPORTANT NOTE:** To get a result that is comparable with the results of the COLING 2022 Tweet Topic paper, please use `train_coling2022` and `test_coling2022` for temporal-shift, and `train_coling2022_random` and `test_coling2022_random` fir random split (the coling2022 split does not have validation set).",
+      "loading_note": "repo uses a loading script; read from the auto-converted parquet revision",
+      "subsample": {
+        "max_train": 2000,
+        "max_test": 500,
+        "seed": 0
+      }
+    }
+  },
+  "preprocessing": "lowercase",
+  "environment": {
+    "python": "3.11.17",
+    "sklearn": "1.9.1",
+    "numpy": "2.4.6",
+    "machine": "x86_64",
+    "platform": "Linux-6.18.44-fc-v139-x86_64-with-glibc2.39"
+  },
+  "tokenizers": {
+    "whitespace": {
+      "oov_rate_tokens": 0.21129662522202486,
+      "oov_rate_types": 0.5343526224114573,
+      "fertility": 1.0,
+      "vocab_size": 14325,
+      "n_test_tokens": 14075,
+      "n_test_whitespace_words": 14075,
+      "throughput_tokens_per_s": 11639205.30615458,
+      "throughput_docs_per_s": 413470.88121330657,
+      "throughput_docs": 500
+    },
+    "nltk": {
+      "oov_rate_tokens": 0.10352905991426578,
+      "oov_rate_types": 0.4345475910693302,
+      "fertility": 1.4253641207815275,
+      "vocab_size": 10816,
+      "n_test_tokens": 20062,
+      "n_test_whitespace_words": 14075,
+      "throughput_tokens_per_s": 172626.13020393107,
+      "throughput_docs_per_s": 4302.3160752649555,
+      "throughput_docs": 500
+    },
+    "tweet": {
+      "oov_rate_tokens": 0.11369855940517375,
+      "oov_rate_types": 0.45274424960145754,
+      "fertility": 1.3759857904085258,
+      "vocab_size": 11289,
+      "n_test_tokens": 19367,
+      "n_test_whitespace_words": 14075,
+      "throughput_tokens_per_s": 177755.51170785193,
+      "throughput_docs_per_s": 4589.133879998243,
+      "throughput_docs": 500
+    },
+    "lexfront": {
+      "oov_rate_tokens": 0.09895221058011755,
+      "oov_rate_types": 0.4298223667750813,
+      "fertility": 1.3900532859680284,
+      "vocab_size": 9977,
+      "n_test_tokens": 19565,
+      "n_test_whitespace_words": 14075,
+      "throughput_tokens_per_s": 193308.767921284,
+      "throughput_docs_per_s": 4940.167848742243,
+      "throughput_docs": 500
+    }
+  }
+}

@@ -1,16 +1,40 @@
 # LexFront
 
-A compiler-style lexer (regex -> NFA -> DFA -> minimized DFA) used as a pre-tokenizer for
-noisy English text classification. Compiler Design team project.
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/PavitranVC/lexfront-dfa-tokenizer/blob/main/notebooks/LexFront_Review1.ipynb)
 
-- Project context and rules: `CLAUDE.md`
-- First Claude Code prompt: `FIRST_PROMPT.md`
-- DFA prototype: `python lexer/prototype/mini_lexgen.py dfa.dot && dot -Tpng dfa.dot -o dfa.png`
+A compiler-style lexer (token classes as regexes → Thompson NFA → subset-construction DFA → minimized DFA, plus a
+symbol table and error recovery) used as a **pre-tokenizer for noisy English text classification**, compared with
+existing tokenizers with the classifier held fixed. Compiler Design course project, Review 1 (Modules 1 and 2).
 
-## Quick start
+* Notebook (Colab, CPU): `notebooks/LexFront_Review1.ipynb`
+* Study guide for the viva: `docs/LEARN.md`
+* Module write-ups: `docs/modules/module1.md`, `docs/modules/module2.md`
+* Design versions: `docs/versions/`  · Changelog: `CHANGELOG.md`
+* Results (JSON), tables, figures and notes: `results/` (`results/REPORT_NOTES.md`)
 
-    docker compose up --build                                              # CPU
-    docker compose -f docker-compose.yml -f docker-compose.gpu.yml up --build   # NVIDIA GPU
+## Run locally (Python 3.11, CPU only, no Docker)
 
-Open http://localhost:8888, or get a shell with `docker compose exec lab bash`.
-Give Docker Desktop at least 8 GB of memory (Settings -> Resources).
+```
+pip install -r requirements.txt
+python -c "import nltk; [nltk.download(p) for p in ('punkt','punkt_tab','stopwords')]"
+pytest -q
+python -m experiments.run_datasets
+python -m experiments.run_module1
+python -m experiments.run_module2
+python -m experiments.render_docs
+```
+
+The notebook runs top to bottom on a fresh Colab runtime; `QUICK_MODE = True` (default) uses a fixed-seed subsample.
+
+## Layout
+
+```
+lexer/        token spec, PLY lexer, normalizer, symbol table, LexFront, dfa/ (own regex->DFA engine)
+experiments/  data, tokenizers, classifiers, metrics, evaluation loop, reports, figures
+tests/        fast pytest suite
+results/      JSON results, tables/, figures/, module2/dfa_min.{dot,png}, REPORT_NOTES.md
+notebooks/    LexFront_Review1.ipynb (+ make_notebook.py)
+docs/         versions/, modules/, LEARN.md
+```
+
+Out of scope for review 1: BPE and the LexFront + BPE hybrid, WordPiece, Unigram, ablation, transformers.

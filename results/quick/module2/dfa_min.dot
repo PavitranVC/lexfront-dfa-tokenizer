@@ -1,0 +1,31 @@
+digraph DFA {
+rankdir=LR; bgcolor="white"; dpi=160;
+node [fontname="Helvetica", fontsize=13, shape=circle];
+edge [fontname="Helvetica", fontsize=11];
+start [shape=point, width=0.08];
+q0;
+q1;
+q2;
+q3;
+q4;
+q5 [shape=doublecircle, xlabel="WORD"];
+q6 [shape=doublecircle, xlabel="HASHTAG"];
+q7;
+q8 [shape=doublecircle, xlabel="EMOTICON"];
+q9 [shape=doublecircle, xlabel="MENTION"];
+start -> q0;
+q0 -> q1 [label="#"];
+q0 -> q2 [label=": ;, ="];
+q0 -> q3 [label="<"];
+q0 -> q4 [label="@"];
+q0 -> q5 [label="letter"];
+q1 -> q6 [label="letter, digit, _"];
+q2 -> q7 [label="', -"];
+q2 -> q8 [label="( ), /, D, P, [, ], d, p, |"];
+q3 -> q8 [label="3"];
+q4 -> q9 [label="digit, A-Z, _, a-z"];
+q5 -> q5 [label="letter, digit"];
+q6 -> q6 [label="letter, digit, _"];
+q7 -> q8 [label="( ), /, D, P, [, ], d, p, |"];
+q9 -> q9 [label="digit, A-Z, _, a-z"];
+}

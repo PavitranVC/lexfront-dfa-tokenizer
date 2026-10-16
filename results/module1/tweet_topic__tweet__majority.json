@@ -1,0 +1,69 @@
+{
+  "timestamp_utc": "2026-10-16T08:05:06+00:00",
+  "dataset": {
+    "name": "tweet_topic",
+    "hf_id": "cardiffnlp/tweet_topic_single",
+    "config": null,
+    "n_train": 3598,
+    "n_test": 3399,
+    "n_labels": 6,
+    "label_names": [
+      "arts_&_culture",
+      "business_&_entrepreneurs",
+      "pop_culture",
+      "daily_life",
+      "sports_&_gaming",
+      "science_&_technology"
+    ],
+    "split_info": {
+      "train": "train_coling2022",
+      "test": "test_coling2022",
+      "card_confirms_coling2022": true,
+      "reason": "COLING 2022 temporal split confirmed by the dataset card and present in the repo",
+      "revision": "refs/convert/parquet",
+      "card_quote": "**IMPORTANT NOTE:** To get a result that is comparable with the results of the COLING 2022 Tweet Topic paper, please use `train_coling2022` and `test_coling2022` for temporal-shift, and `train_coling2022_random` and `test_coling2022_random` fir random split (the coling2022 split does not have validation set).",
+      "loading_note": "repo uses a loading script; read from the auto-converted parquet revision",
+      "subsample": {
+        "max_train": null,
+        "max_test": null,
+        "seed": 0
+      }
+    }
+  },
+  "tokenizer": "tweet",
+  "vectorizer": {
+    "type": "TfidfVectorizer",
+    "lowercase": true,
+    "min_df": 2,
+    "ngram_range": [
+      1,
+      1
+    ],
+    "token_pattern": null,
+    "n_features": 5802
+  },
+  "classifier": {
+    "name": "majority",
+    "params": {
+      "constant": null,
+      "random_state": null,
+      "strategy": "most_frequent"
+    }
+  },
+  "seed": 0,
+  "metrics": {
+    "accuracy": 0.40011768167107975,
+    "macro_f1": 0.09525810744554179
+  },
+  "timing_seconds": {
+    "tokenize_and_vectorize": 1.9964090470002702,
+    "classifier_fit": 0.04558614100005798
+  },
+  "environment": {
+    "python": "3.11.17",
+    "sklearn": "1.9.1",
+    "numpy": "2.4.6",
+    "machine": "x86_64",
+    "platform": "Linux-6.18.44-fc-v139-x86_64-with-glibc2.39"
+  }
+}
