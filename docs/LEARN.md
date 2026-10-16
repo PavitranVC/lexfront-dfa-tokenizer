@@ -190,7 +190,7 @@ The headline pair changes two things at once (tokenizer and classifier). The ext
 So every tokenizer plugs into the identical vectorizer. `token_pattern=None` silences the warning that the default pattern is ignored when a tokenizer is given.
 
 **15. Why lowercase before tokenizing?**
-TF-IDF's `lowercase=True` runs first for all tokenizers in the main grid (the sklearn default, as in the base paper's CountVectorizer). It keeps the comparison fair; it also means LexFront's own lowercase rule is inactive there. A separate sensitivity grid (`results/sensitivity_case/`) switches TF-IDF case folding off for all four tokenizers: LexFront's rule is then active and its WORD tokens are lowercased while the baselines keep case, so it is a robustness check, not a like-for-like comparison (table `sensitivity_case` in `results/REPORT_NOTES.md`).
+TF-IDF's `lowercase=True` runs first for all tokenizers in the main grid (the sklearn default, as in the base paper's CountVectorizer). It keeps the comparison fair; it also means LexFront's own lowercase rule is inactive there. A separate sensitivity grid (`results/sensitivity_case/`) switches TF-IDF case folding off for all four tokenizers: LexFront's rule is then active and its WORD tokens are lowercased while the baselines keep case, so it is a robustness check, not a like-for-like comparison (table `sensitivity_case` in `results/REPORT_NOTES.md`; its paired CIs are in table `sensitivity_ci`, and the generated observation there says whether the tokenizer-only result changes when case is kept).
 
 **16. Why accuracy and macro-F1?**
 Accuracy is the headline in the base paper; macro-F1 shows whether small classes are handled, which matters on imbalanced data such as GoEmotions.
@@ -235,7 +235,7 @@ They have their own class; a single emoji with an optional skin-tone/variation s
 Every number comes from a JSON file in `results/`, written by a script (`python -m experiments.run_module1` etc.); the tables are generated from those files by `experiments/report.py`. Each run JSON stores a fingerprint of its configuration and of the code; a saved run is reused only while that fingerprint matches, and `--force` (or `FORCE = True` in the notebook) recomputes it.
 
 **30. What is out of scope for this review?**
-BPE and the LexFront + BPE hybrid, WordPiece, Unigram, ablations and transformers.
+BPE and the LexFront + BPE hybrid, WordPiece, Unigram and transformers. The per-rule normalization ablation is now in scope (Q33).
 
 **31. Why are the classifier fits single-threaded, and does that change the numbers?**
 The native thread count changes the floating-point summation order inside the LR solver (lbfgs), so the same seed can give slightly different metrics on a different thread count. `experiments/pipeline.py` wraps vectorize, fit and predict in `threadpoolctl.threadpool_limits(1)`, and each run JSON records `blas_threads = 1`. The committed results were regenerated this way, so some LR numbers moved slightly; the old and new values are listed in `docs/DECISIONS.md`. `tests/test_audit_fixes.py` checks that the pinning is active.
@@ -256,3 +256,17 @@ Only partly. Every run stores its test predictions, and `python -m experiments.r
 | ag_news | LexFront+LR minus TweetTokenizer+LR (tokenizer only) | +0.04 [-0.24, +0.32] | +0.04 [-0.24, +0.31] | no / no | - |
 | ag_news | LexFront+LR minus NLTK+NB (proposed minus existing) | +1.50 [+1.00, +1.99] | +1.51 [+1.01, +2.01] | yes / yes | - |
 <!-- END table:ci_table -->
+
+**33. Which normalization rule matters?**
+We measured it instead of guessing: `python -m experiments.run_ablation` trains LexFront + LR with one rule switched off at a time and compares each variant with full LexFront on the same resampled test examples (paired bootstrap 95% CI, plus McNemar on accuracy). The honest answer is what the generated block below says, per dataset: which removals have a CI that excludes 0, and in which direction; every other removal is not distinguishable from full LexFront on these test sets. Three limits: there are 8 comparisons per dataset and no multiplicity correction, so an interval can exclude 0 by chance; one training run per variant, so training randomness is not covered; and the lowercase rule can only be tested with TF-IDF case folding off, because in the main grid TF-IDF has already lowercased the text. Why a rule matters (e.g. how often URLs or slang occur in a dataset) is a hypothesis we have not tested.
+
+<!-- BEGIN obs:ablation -->
+**DRAFT observations (generated from the JSON files):**
+
+- **tweet_topic** (8 variants vs full): accuracy CI excludes 0 for all_off +1.09 (higher than full), no_lowercase (case kept) -0.91 (lower than full); macro-F1 CI excludes 0 for none. Every other interval includes 0.
+- **go_emotions** (8 variants vs full): accuracy CI excludes 0 for no_lowercase (case kept) -1.07 (lower than full), all_off_cs (case kept) -1.20 (lower than full); macro-F1 CI excludes 0 for no_lowercase (case kept) -1.90 (lower than full), all_off_cs (case kept) -1.86 (lower than full). Every other interval includes 0.
+- **ag_news** (8 variants vs full): accuracy CI excludes 0 for none; macro-F1 CI excludes 0 for none. Every other interval includes 0.
+- In all, 6 of 48 difference CIs exclude 0. There is no multiplicity correction: with 48 separate 95% intervals, about 2.4 would exclude 0 by chance even if no rule had any effect, so a single interval that excludes 0 is weak evidence on its own.
+
+_Ablation: each variant is LexFront + LR with the named rule (all_off: every rule) switched off, everything else fixed; differences are variant minus full LexFront of the same setting, paired bootstrap over the test examples (same code, B and seed as `ci_table`). One training run per variant, so training randomness is not covered. The lowercase rule is tested only with case kept: in the main setting TF-IDF lowercases the text before LexFront sees it, so switching the rule off cannot change anything there. These numbers say which removals change the scores, not why; any reason given elsewhere is a hypothesis._
+<!-- END obs:ablation -->

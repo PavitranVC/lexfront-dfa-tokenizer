@@ -6,18 +6,21 @@ labelled hypotheses in the docs. Every cell is one training run (seed 0); the CI
 """
 import pandas as pd
 
-from .report import (DATASET_ORDER, TOKENIZER_ORDER, load_bootstrap, load_datasets, load_dfa, load_intrinsic, load_runs,
-                     load_sensitivity_runs, p_value_text)
+from .report import (DATASET_ORDER, TOKENIZER_ORDER, load_ablation, load_bootstrap, load_datasets, load_dfa,
+                     load_intrinsic, load_runs, load_sensitivity_bootstrap, load_sensitivity_runs, p_value_text)
 
 CAVEAT = ("_One training run per cell (seed 0). The 95% confidence intervals (table `ci_table`, file "
           "`stats/bootstrap.json`) are percentile bootstraps over the test examples: they show how much a score "
           "moves with the draw of the test set, not with training randomness, which one run per cell cannot show "
           "(the NB and LR fits are deterministic; the full grid uses no subsampling, QUICK mode one fixed-seed "
-          "subsample). A gap whose CI includes 0 should not be read as a real difference._")
+          "subsample). A gap whose CI includes 0 should not be read as a real difference. Gaps not in `ci_table` (e.g. "
+          "spreads between baselines, LR vs NB) have no paired CI and are untested; overlapping per-run CIs "
+          "(`ci_runs`) are not a test of a difference._")
 
 SENSITIVITY_CAVEAT = ("_Robustness check, not a like-for-like comparison: with TF-IDF case folding off, LexFront "
-                      "lowercases its own WORD tokens while the baselines keep case. One training run per cell, no "
-                      "confidence intervals for this grid._")
+                      "lowercases its own WORD tokens while the baselines keep case. One training run per cell; the CIs "
+                      "(table `sensitivity_ci`, file `sensitivity_case/stats/bootstrap.json`) are test-set bootstraps "
+                      "with the same code, B and seed as the main grid._")
 
 
 def _p(x) -> str:
@@ -178,6 +181,8 @@ def obs_ci(results_dir) -> str:
     n_all = 2 * sum("tokenizer_only_lr" in d["pairs"] for d in boot["datasets"].values())
     out.append(f"- Tokenizer-only comparison (LexFront+LR vs NLTK+LR): {n_excl} of {n_all} difference CIs "
                f"(accuracy and macro-F1, all datasets) exclude 0.")
+    out += [line.replace("- Whether", "- Case-sensitivity grid: whether", 1)
+            for line in _sensitivity_ci_lines(results_dir) if line.startswith("- Whether")]
     out.append(f"- Settings: {cfg['method']}, B = {cfg['n_boot']}, seed {cfg['seed']}, "
                f"{100 * cfg['ci_level']:.0f}% percentile intervals.")
     return "\n".join(out + ["", CAVEAT])
@@ -202,12 +207,75 @@ def obs_sensitivity_case(results_dir) -> str:
         if changes:
             parts.append("LR accuracy change from switching TF-IDF case folding off: " + ", ".join(changes))
         out.append(f"- **{ds}**: " + "; ".join(parts) + ".")
-    return "\n".join(out + ["", SENSITIVITY_CAVEAT])
+    return "\n".join(out + _sensitivity_ci_lines(results_dir) + ["", SENSITIVITY_CAVEAT])
+
+
+def _sensitivity_ci_lines(results_dir) -> list[str]:
+    """Tokenizer-only CI per dataset in both grids, and on how many datasets the 'excludes 0' verdict differs."""
+    try:
+        sens, main = load_sensitivity_bootstrap(results_dir), load_bootstrap(results_dir)
+    except FileNotFoundError:
+        return ["- _No CIs for this grid here (run `python -m experiments.run_stats --results <dir>/sensitivity_case`)._"]
+    out, flipped = [], []
+    for ds, d in sens["datasets"].items():
+        s_pair = d["pairs"].get("tokenizer_only_lr")
+        m_pair = main["datasets"].get(ds, {}).get("pairs", {}).get("tokenizer_only_lr")
+        if s_pair is None or m_pair is None:
+            continue
+        line = (f"- **{ds}**, LexFront+LR minus NLTK+LR accuracy with case kept: {_ci_phrase(s_pair['accuracy'])}; "
+                f"main grid: {_ci_phrase(m_pair['accuracy'])}.")
+        mc = s_pair.get("mcnemar_accuracy")
+        if mc:
+            line += f" Exact McNemar p with case kept {p_value_text(mc['p_value'])}."
+        out.append(line)
+        if s_pair["accuracy"]["ci_excludes_zero"] != m_pair["accuracy"]["ci_excludes_zero"]:
+            flipped.append(ds)
+    if out:
+        verdict = (f"differs between the two grids on {len(flipped)} of {len(out)} datasets ({', '.join(flipped)}): "
+                   f"the tokenizer-only result depends on how case is handled" if flipped else
+                   f"is the same in both grids on all {len(out)} datasets")
+        out.append(f"- Whether the tokenizer-only accuracy CI excludes 0 {verdict}.")
+    return out
+
+
+ABLATION_CAVEAT = ("_Ablation: each variant is LexFront + LR with the named rule (all_off: every rule) switched off, "
+                   "everything else fixed; differences are variant minus full LexFront of the same setting, paired bootstrap over the test "
+                   "examples (same code, B and seed as `ci_table`). One training run per variant, so training "
+                   "randomness is not covered. The lowercase rule is tested only with case kept: in the main setting "
+                   "TF-IDF lowercases the text before LexFront sees it, so switching the rule off cannot change "
+                   "anything there. These numbers say which removals change the scores, not why; any reason given "
+                   "elsewhere is a hypothesis._")
+
+
+def _removal_list(diffs: list[tuple[str, dict]], metric: str) -> str:
+    """'no_slang -0.30 (lower), no_url +0.12 (higher)' for the variants whose CI on `metric` excludes 0."""
+    hits = [f"{v} {100 * d[metric]['diff']:+.2f} ({'lower' if d[metric]['diff'] < 0 else 'higher'} than full)"
+            for v, d in diffs if d[metric]["ci_excludes_zero"]]
+    return ", ".join(hits) if hits else "none"
+
+
+def obs_ablation(results_dir) -> str:
+    """Per dataset: which rule removals have a paired CI excluding 0, in which direction; and the chance caveat."""
+    abl = load_ablation(results_dir)
+    out, n_ci, n_excl = [], 0, 0
+    for ds, settings in abl["datasets"].items():
+        diffs = [(f"{v}" + (" (case kept)" if name == "case" else ""), r["minus_reference"])
+                 for name, setting in settings.items() for v, r in setting["variants"].items() if "minus_reference" in r]
+        n_ci += 2 * len(diffs)
+        n_excl += sum(d[m]["ci_excludes_zero"] for _, d in diffs for m in ("accuracy", "macro_f1"))
+        out.append(f"- **{ds}** ({len(diffs)} variants vs full): accuracy CI excludes 0 for "
+                   f"{_removal_list(diffs, 'accuracy')}; macro-F1 CI excludes 0 for "
+                   f"{_removal_list(diffs, 'macro_f1')}. Every other interval includes 0.")
+    out.append(f"- In all, {n_excl} of {n_ci} difference CIs exclude 0. There is no multiplicity correction: with "
+               f"{n_ci} separate 95% intervals, about {0.05 * n_ci:.1f} would exclude 0 by chance even if no rule "
+               f"had any effect, so a single interval that excludes 0 is weak evidence on its own.")
+    return "\n".join(out + ["", ABLATION_CAVEAT])
 
 
 OBSERVATIONS = {"datasets": obs_datasets, "module1": obs_module1, "existing_vs_proposed": obs_existing_vs_proposed,
                 "intrinsic": obs_intrinsic, "dfa": obs_dfa, "attribution": obs_attribution,
-                "ci": obs_ci, "sensitivity_case": obs_sensitivity_case}
+                "ci": obs_ci, "sensitivity_case": obs_sensitivity_case,
+                "ablation": obs_ablation}
 
 
 def observation(name: str, results_dir) -> str:

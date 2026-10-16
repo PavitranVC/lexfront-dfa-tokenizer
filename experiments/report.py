@@ -6,6 +6,9 @@ Layout read here:  <results>/module1/<dataset>__<tokenizer>__<clf>.json
                    <results>/module2/dfa_states.json
                    <results>/stats/bootstrap.json                      (python -m experiments.run_stats)
                    <results>/sensitivity_case/module{1,2}/*.json        (python -m experiments.run_sensitivity)
+                   <results>/sensitivity_case/stats/bootstrap.json      (python -m experiments.run_stats
+                                                                         --results results/sensitivity_case)
+                   <results>/ablation/stats/bootstrap.json              (python -m experiments.run_ablation)
 """
 import json
 from pathlib import Path
@@ -230,6 +233,28 @@ def table_ci_runs(results_dir) -> str:
     return to_markdown(pd.DataFrame(rows))
 
 
+def load_sensitivity_bootstrap(results_dir) -> dict:
+    """Bootstrap CIs of the case-sensitive grid (same code, seed and B as the main grid)."""
+    return load_bootstrap(Path(results_dir) / SENSITIVITY_SUBDIR)
+
+
+def table_sensitivity_ci(results_dir) -> str:
+    """Paired differences (points, 95% CI) in the case-sensitive grid next to the same pair in the main grid."""
+    sens, main = load_sensitivity_bootstrap(results_dir), load_bootstrap(results_dir)
+    rows = []
+    for ds, d in sens["datasets"].items():
+        for name, p in d["pairs"].items():
+            m = main["datasets"].get(ds, {}).get("pairs", {}).get(name)
+            mc = p.get("mcnemar_accuracy")
+            rows.append({"dataset": ds, "difference": p["label"],
+                         "acc pts [95% CI], case kept": _ci_text(p["accuracy"]["diff"], p["accuracy"]["ci"]),
+                         "acc pts [95% CI], main": _ci_text(m["accuracy"]["diff"], m["accuracy"]["ci"]) if m else "-",
+                         "F1 pts [95% CI], case kept": _ci_text(p["macro_f1"]["diff"], p["macro_f1"]["ci"]),
+                         "F1 pts [95% CI], main": _ci_text(m["macro_f1"]["diff"], m["macro_f1"]["ci"]) if m else "-",
+                         "McNemar p (acc), case kept": p_value_text(mc["p_value"]).lstrip("= ") if mc else "-"})
+    return to_markdown(pd.DataFrame(rows))
+
+
 def table_ci(results_dir) -> str:
     """Paired bootstrap 95% CIs of the differences (points) and the exact McNemar p-value where computed."""
     boot = load_bootstrap(results_dir)
@@ -246,10 +271,43 @@ def table_ci(results_dir) -> str:
     return to_markdown(pd.DataFrame(rows))
 
 
+ABLATION_SUBDIR = "ablation"
+
+
+def load_ablation(results_dir) -> dict:
+    """Ablation statistics (python -m experiments.run_ablation): per dataset, per setting, per variant."""
+    return load_bootstrap(Path(results_dir) / ABLATION_SUBDIR)
+
+
+def _ablation_row(ds: str, setting: dict, variant: str, v: dict) -> dict:
+    """One table row: the variant's scores and, unless it is the reference, its paired difference to the reference."""
+    diff, mc = v.get("minus_reference"), v.get("mcnemar_accuracy")
+    excl = (f"{'yes' if diff['accuracy']['ci_excludes_zero'] else 'no'} / "
+            f"{'yes' if diff['macro_f1']['ci_excludes_zero'] else 'no'}") if diff else "-"
+    return {"dataset": ds, "setting": setting["label"], "variant": variant + (" (reference)" if not diff else ""),
+            "TF-IDF features": v["n_features"],
+            "acc / F1 %": f"{_pct(v['accuracy']['value'])} / {_pct(v['macro_f1']['value'])}",
+            "acc minus full, pts [95% CI]": _ci_text(diff["accuracy"]["diff"], diff["accuracy"]["ci"]) if diff else "-",
+            "F1 minus full, pts [95% CI]": _ci_text(diff["macro_f1"]["diff"], diff["macro_f1"]["ci"]) if diff else "-",
+            "CI excludes 0 (acc / F1)": excl,
+            "predictions changed": v["n_predictions_changed"] if diff else "-",
+            "McNemar p (acc)": p_value_text(mc["p_value"]).lstrip("= ") if mc else "-"}
+
+
+def table_ablation(results_dir) -> str:
+    """Per-rule ablation: every LexFront+LR variant against the full LexFront of the same setting."""
+    abl = load_ablation(results_dir)
+    rows = [_ablation_row(ds, setting, variant, v)
+            for ds, settings in abl["datasets"].items() for setting in settings.values()
+            for variant, v in setting["variants"].items()]
+    return to_markdown(pd.DataFrame(rows))
+
+
 TABLES = {"datasets": table_datasets, "module1_results": table_module1,
           "existing_vs_proposed": table_existing_vs_proposed, "intrinsic_metrics": table_intrinsic,
           "dfa_states": table_dfa, "ci_table": table_ci, "ci_runs": table_ci_runs,
-          "sensitivity_case": table_sensitivity_case}
+          "sensitivity_case": table_sensitivity_case, "sensitivity_ci": table_sensitivity_ci,
+          "ablation_table": table_ablation}
 
 
 def render_all_tables(results_dir) -> dict[str, str]:

@@ -1,5 +1,5 @@
 {
-  "timestamp_utc": "2026-10-16T20:40:03+00:00",
+  "timestamp_utc": "2026-10-16T21:11:17+00:00",
   "dataset": {
     "name": "go_emotions",
     "hf_id": "google-research-datasets/go_emotions",
@@ -52,6 +52,14 @@
   },
   "data_hash": "bf89649f9d0d3620",
   "tokenizer": "lexfront",
+  "normalize": {
+    "url": true,
+    "mention": true,
+    "number": true,
+    "elongated": true,
+    "lowercase": true,
+    "slang": true
+  },
   "vectorizer": {
     "type": "TfidfVectorizer",
     "lowercase": true,
@@ -74,16 +82,16 @@
   },
   "seed": 0,
   "fingerprint": {
-    "config": "5753dfc670535b40",
-    "code": "1360b4310580a43a"
+    "config": "fc00e2fd62f71831",
+    "code": "10cfad715b15ce20"
   },
   "metrics": {
     "accuracy": 0.37777777777777777,
     "macro_f1": 0.048149161881943674
   },
   "timing_seconds": {
-    "tokenize_and_vectorize": 3.0583955149999724,
-    "classifier_fit": 0.048686298999996325
+    "tokenize_and_vectorize": 2.772572867000008,
+    "classifier_fit": 0.026405779000015173
   },
   "environment": {
     "python": "3.11.17",

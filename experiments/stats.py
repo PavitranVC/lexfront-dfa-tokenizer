@@ -54,10 +54,6 @@ def macro_f1_from_confusion(cm: np.ndarray) -> np.ndarray:
 METRICS = {"accuracy": accuracy_from_confusion, "macro_f1": macro_f1_from_confusion}
 
 
-def n_classes_of(*label_arrays) -> int:
-    return int(max(int(np.max(a)) for a in label_arrays)) + 1
-
-
 def metric_samples(y_true, y_pred, idx: np.ndarray, n_classes: int) -> dict[str, np.ndarray]:
     """{metric: (B,) bootstrap values} for one system on the resamples `idx`."""
     cms = confusion_matrices(y_true, y_pred, idx, n_classes)

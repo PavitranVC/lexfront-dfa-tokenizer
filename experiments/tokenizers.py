@@ -8,6 +8,7 @@ from collections.abc import Callable
 from nltk.tokenize import TweetTokenizer, word_tokenize
 
 from lexer.lexfront import LexFront
+from lexer.normalize import RULES, NormalizeConfig
 
 Tokenizer = Callable[[str], list[str]]
 _TWEET = TweetTokenizer()
@@ -47,6 +48,26 @@ TOKENIZERS: dict[str, Tokenizer] = {
 }
 MODULE1_TOKENIZERS = ("whitespace", "nltk", "tweet")
 
+# Ablation variants (P2): the same lexer with one normalization rule off, or all of them off.
+# They are not in TOKENIZERS, so the main grid and the intrinsic metrics never pick them up.
+LEXFRONT_VARIANTS: dict[str, NormalizeConfig] = {
+    **{f"lexfront:no_{rule}": NormalizeConfig().switched(**{rule: False}) for rule in RULES},
+    "lexfront:all_off": NormalizeConfig.all_off(),
+}
+_VARIANT_LEXERS: dict[str, LexFront] = {}
+
+
+def normalize_config(name: str) -> NormalizeConfig | None:
+    """The NormalizeConfig behind a LexFront tokenizer name; None for the baselines."""
+    if name == "lexfront":
+        return NormalizeConfig()
+    return LEXFRONT_VARIANTS.get(name)
+
 
 def get_tokenizer(name: str) -> Tokenizer:
-    return TOKENIZERS[name]
+    """A tokenizer by name: one of TOKENIZERS or a LexFront ablation variant ('lexfront:no_url', ...)."""
+    if name in TOKENIZERS:
+        return TOKENIZERS[name]
+    if name not in _VARIANT_LEXERS:
+        _VARIANT_LEXERS[name] = LexFront(LEXFRONT_VARIANTS[name])
+    return _VARIANT_LEXERS[name].tokenize

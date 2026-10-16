@@ -65,7 +65,7 @@ Generated from `results/module1/*.json` and `results/datasets.json`.
 - **go_emotions**: best accuracy 55.47% (tweet + LR). Across the three tokenizers LR is +16.98 points vs NB on average; the tokenizer spread is 1.96 points under LR and 0.07 points under NB.
 - **ag_news**: best accuracy 91.88% (nltk + LR). Across the three tokenizers LR is +1.47 points vs NB on average; the tokenizer spread is 0.45 points under LR and 0.24 points under NB.
 
-_One training run per cell (seed 0). The 95% confidence intervals (table `ci_table`, file `stats/bootstrap.json`) are percentile bootstraps over the test examples: they show how much a score moves with the draw of the test set, not with training randomness, which one run per cell cannot show (the NB and LR fits are deterministic; the full grid uses no subsampling, QUICK mode one fixed-seed subsample). A gap whose CI includes 0 should not be read as a real difference._
+_One training run per cell (seed 0). The 95% confidence intervals (table `ci_table`, file `stats/bootstrap.json`) are percentile bootstraps over the test examples: they show how much a score moves with the draw of the test set, not with training randomness, which one run per cell cannot show (the NB and LR fits are deterministic; the full grid uses no subsampling, QUICK mode one fixed-seed subsample). A gap whose CI includes 0 should not be read as a real difference. Gaps not in `ci_table` (e.g. spreads between baselines, LR vs NB) have no paired CI and are untested; overlapping per-run CIs (`ci_runs`) are not a test of a difference._
 <!-- END obs:module1 -->
 
 Each run also stores its test predictions (`results/module1/predictions/<run>.json.gz`), so confidence intervals need

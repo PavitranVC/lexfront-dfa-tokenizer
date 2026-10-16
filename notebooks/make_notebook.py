@@ -70,9 +70,9 @@ FORCE = QUICK_MODE     # recompute every run even if a cached JSON matches (chea
 # Files each mode rewrites:
 #   True : everything under results/quick/ (the committed results/ is untouched).
 #   False: in the committed results/: datasets.json, module2/dfa_states.json + dfa_min.dot/.png, module2/intrinsic__*.json
-#          (always, new timestamps and throughput), stats/bootstrap.json, tables/ and figures/ (rebuilt from the JSON);
-#          module1/ and module2/ run JSONs and their predictions/ sidecars only where the fingerprint no longer matches
-#          (FORCE is False). `git checkout results/` undoes it.
+#          (always, new timestamps and throughput), stats/bootstrap.json, ablation/stats/bootstrap.json, tables/ and
+#          figures/ (rebuilt from the JSON); module1/, module2/ and ablation/ run JSONs and their predictions/
+#          sidecars only where the fingerprint no longer matches (FORCE is False). `git checkout results/` undoes it.
 
 import pandas as pd
 from IPython.display import Image, Markdown, display
@@ -172,7 +172,10 @@ resamples the test examples with replacement (percentile bootstrap, fixed seed; 
 `stats/bootstrap.json`) and recomputes accuracy and macro-F1 from a confusion matrix for each resample. For a
 difference, both systems are scored on the *same* resamples (paired); NLTK+LR vs LexFront+LR also gets an exact
 McNemar test. Same code as the full grid (`python -m experiments.run_stats`), here on the QUICK grid.
-These intervals cover the draw of the test set only, not training randomness (one training run per cell)."""),
+QUICK uses 500 test examples per dataset (the full test sets have 3399 to 7600), so these intervals are wider (for
+accuracy differences about 2 to 6 times the full-grid width in the committed runs) and a difference can even change
+sign; the headline CIs are the full-grid ones in
+`results/stats/bootstrap.json` (table `ci_table` in the appendix). These intervals cover the draw of the test set only, not training randomness (one training run per cell)."""),
     code('''review1.run_stats_section(QUICK_MODE)
 out = review1.build_outputs(QUICK_MODE)
 display(Markdown(out["tables"]["ci_table"]))
@@ -180,15 +183,33 @@ display(Markdown(out["tables"]["ci_runs"]))'''),
     md("### Observations — confidence intervals"),
     code('''display(Markdown(observation("ci", RES)))'''),
 
+    md("""## 6. Which normalization rule matters? (ablation)
+
+LexFront's normalizer has six switchable rules (URL, MENTION, NUMBER, ELONGATED, lowercase, slang). Each variant
+below is LexFront + Logistic Regression with one rule switched off, everything else fixed, compared with full
+LexFront on the same resampled test examples (paired bootstrap, as in section 5; McNemar on accuracy).
+*Main setting* (TF-IDF lowercases, as the main grid): no_url, no_mention, no_number, no_elongated, no_slang and
+all_off (lexer segmentation only). The lowercase rule cannot show an effect there, because TF-IDF lowercases the text
+before LexFront sees it, so it is tested in the *case-kept* setting (TF-IDF `lowercase=False`): no_lowercase and
+all_off_cs against full_cs. On the QUICK subsample (500 test examples) these intervals are wide; the full-data
+ablation is in `results/ablation/` (appendix). With 8 comparisons per dataset and no multiplicity correction, an
+interval can exclude 0 by chance."""),
+    code('''review1.run_ablation_section(QUICK_MODE, force=FORCE)
+out = review1.build_outputs(QUICK_MODE)
+display(Markdown(out["tables"]["ablation_table"]))'''),
+    md("### Observations — ablation"),
+    code('''display(Markdown(observation("ablation", RES)))'''),
+
     md("""## Appendix — committed full-data results
 The tables below are built from the JSON files in `results/` (full datasets, produced by
 `python -m experiments.run_module1`, `python -m experiments.run_module2`, `python -m experiments.run_stats` and
-`python -m experiments.run_sensitivity`). `sensitivity_case` is the grid with TF-IDF `lowercase=False`: LexFront's
+`python -m experiments.run_sensitivity`, `python -m experiments.run_ablation`). `sensitivity_case` is the grid with TF-IDF `lowercase=False`: LexFront's
 lowercase rule is active there while the baselines keep case, so it is a robustness check, not a like-for-like."""),
     code('''import os
 if os.path.exists("results/datasets.json") and os.path.isdir("results/module1"):
     full = report.render_all_tables("results")      # read only: does not rewrite results/tables
-    for name in ["module1_results", "existing_vs_proposed", "intrinsic_metrics", "ci_table", "sensitivity_case"]:
+    for name in ["module1_results", "existing_vs_proposed", "intrinsic_metrics", "ci_table", "sensitivity_case",
+                 "sensitivity_ci", "ablation_table"]:
         print(name); display(Markdown(full[name]))
 else:
     print("full-data results are not in this checkout")'''),

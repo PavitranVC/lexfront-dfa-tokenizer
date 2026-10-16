@@ -135,3 +135,19 @@ def test_sensitivity_table_and_observation(tmp_path):
     table = report.render_all_tables(res)["sensitivity_case"]
     assert table.count("\n") == 5 and "LR acc change vs main" in table
     assert "with case kept" in observation("sensitivity_case", res)
+
+
+def test_sensitivity_ci_table_and_observation(tmp_path):
+    res = make_results(tmp_path)
+    ds = toy_dataset()
+    ds.name = "ag_news"
+    params = vectorizer_params(CASE_SENSITIVE_OVERRIDES)
+    for tok, sub in [("nltk", "module1"), ("lexfront", "module2")]:
+        pipeline.run_cell(ds, tok, ["lr"], res / "sensitivity_case" / sub, vec_params=params, **QUIET)
+    assert "No CIs for this grid" in observation("sensitivity_case", res)
+    run_stats.write(res, n_boot=50, seed=1)
+    run_stats.write(res / "sensitivity_case", n_boot=50, seed=1)
+    table = report.render_all_tables(res)["sensitivity_ci"]
+    assert table.count("\n") == 2 and "case kept" in table
+    text = observation("sensitivity_case", res)
+    assert "main grid:" in text and "Whether the tokenizer-only accuracy CI excludes 0" in text
