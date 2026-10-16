@@ -9,7 +9,12 @@ Newest first. Dates are the day the change was made (IST workday).
 - Module 1 / experiment code: dataset loaders, tokenizers, classifiers, metrics, evaluation loop, runners.
 - Reports: tables, figures and observations built from JSON only; doc renderer; Colab notebook generator.
 - Docs: `docs/LEARN.md`, `docs/modules/`, README with Colab badge, `results/REPORT_NOTES.md` skeleton.
-- Blocker: `huggingface.co` denied by the sandbox network policy, so dataset experiments have not run yet.
+- `huggingface.co` was blocked for about an hour; resolved. TweetTopic is read from the auto-converted parquet revision
+  (its repo uses a loading script); COLING 2022 split pair confirmed by the dataset card.
+- Ran Module 1 (27 runs) and Module 2 (6 classification runs, intrinsic metrics for 3 datasets, DFA report) on full data.
+- Built tables, figures and DRAFT observations from the JSON; rendered `results/REPORT_NOTES.md` and module docs.
+- Executed `notebooks/LexFront_Review1.ipynb` end to end (QUICK_MODE) and committed it with outputs; re-ran it from a fresh
+  clone in an empty directory (Colab simulation): no errors, identical quick-run metrics.
 - Phase 0: removed Docker files (`Dockerfile`, both compose files, `.dockerignore`).
 - Phase 0: rewrote `requirements.txt` (CPU only, no torch, no transformers).
 - Phase 0: added `docs/versions/` v1 (base paper), v2 (LexFront proposal),
