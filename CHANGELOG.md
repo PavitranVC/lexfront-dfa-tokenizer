@@ -2,6 +2,10 @@
 
 Newest first. Dates are the day the change was made (IST workday).
 
+## 2026-10-16 (later)
+- PR #1 merged into `main` by the author; Colab badge now resolves.
+- Added GitHub Actions CI: pytest on every push/PR, plus the notebook executed in QUICK_MODE.
+
 ## 2026-10-16
 - Module 2 core: token spec (11 classes), PLY longest-match lexer with UNKNOWN recovery, normalizer (6 switchable
   rules, 30-entry slang table), symbol table, `LexFront.tokenize()`, own DFA engine (regex parser, Thompson NFA,
