@@ -1,0 +1,27 @@
+# Data + classic ML
+pandas
+numpy
+scikit-learn
+scipy
+tqdm
+
+# NLP / tokenizers
+nltk
+tokenizers          # BPE, WordPiece, Unigram (Hugging Face)
+sentencepiece
+emoji
+
+# Compiler-design tooling
+ply                 # Python Lex-Yacc
+graphviz            # draw NFA/DFA diagrams
+
+# Modern models + datasets
+transformers
+sentence-transformers
+datasets
+
+# Plots, notebooks, tests
+matplotlib
+seaborn
+jupyterlab
+pytest

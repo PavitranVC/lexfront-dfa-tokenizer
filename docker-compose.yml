@@ -1,0 +1,11 @@
+# Default: runs on any machine (CPU). For the GPU, add the override file:
+#   docker compose -f docker-compose.yml -f docker-compose.gpu.yml up --build
+services:
+  lab:
+    build: .
+    image: lexfront-lab
+    container_name: lexfront-lab
+    ports:
+      - "127.0.0.1:8888:8888"   # localhost only: Jupyter runs without a password
+    volumes:
+      - ./:/workspace
