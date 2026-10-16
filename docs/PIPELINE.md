@@ -7,7 +7,7 @@ Skip P5/B5 unless P0-P4 are done by about Oct 28. Run P6 only after P2, P3 and P
 > LexFront advisor rules: propose code in 2-3 lines and wait for my OK. Design changes get a `docs/versions/v4-*.md`
 > (or the next number) plus a CHANGELOG entry. No invented numbers or references. Read only what you need
 > (`docs/HANDOFF.md` first, then `docs/DECISIONS.md` only if needed, `git log --oneline -5`). Do not re-read the
-> source tree. Before finishing, overwrite `docs/HANDOFF.md` using the template in `docs/PIPELINE.md`. Commit and push to
+> source tree. Before finishing, overwrite `docs/HANDOFF.md` using the template in `docs/PIPELINE.md` and append one line to `docs/HANDOFF_LOG.md` (write only, never read it). Commit and push to
 > the current branch. Reply using the reply template, under 10 lines.
 
 ## Buffer header (paste at the top of every B prompt)
@@ -28,6 +28,8 @@ NEXT: <next prompt id and the first thing it must do>
 FILES TOUCHED: <paths>
 CHECK: <the one command that proves it works, e.g. `pytest -q` and expected result>
 ```
+
+`docs/HANDOFF_LOG.md` is append-only, one line per session: `date | id | status | summary | commit`. It is for humans; sessions never read it.
 
 ## Reply template (what each session says back to you, under 10 lines)
 ```
