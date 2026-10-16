@@ -11,9 +11,10 @@ md, code = nbf.v4.new_markdown_cell, nbf.v4.new_code_cell
 SETUP = '''# 1. Get the code, install dependencies, download NLTK data.
 import os, subprocess, sys
 REPO_URL = "https://github.com/PavitranVC/lexfront-dfa-tokenizer.git"
-DEV_BRANCH = "claude/lexfront-lexical-analyzer-tl3l0y"   # used only if main does not have the code yet
+REPO_DIR = "lexfront-dfa-tokenizer"
 
 def find_repo_root():
+    """The repo root at or above the working directory, or None."""
     here = os.getcwd()
     while here != os.path.dirname(here):
         if os.path.exists(os.path.join(here, "requirements.txt")) and os.path.exists(os.path.join(here, "lexer", "token_spec.py")):
@@ -21,13 +22,14 @@ def find_repo_root():
         here = os.path.dirname(here)
 
 root = find_repo_root()
-if root is None:                                   # fresh Colab runtime: clone the repo
-    subprocess.run(["git", "clone", "-q", REPO_URL], check=True)
-    os.chdir("lexfront-dfa-tokenizer")
-    if not os.path.exists("lexer/token_spec.py"):
-        subprocess.run(["git", "checkout", "-q", DEV_BRANCH], check=True)
-else:
+if root is not None:                               # running inside a checkout (local, CI)
     os.chdir(root)
+elif os.path.isdir(REPO_DIR):                      # Colab after a restart: already cloned, cwd reset to /content
+    os.chdir(REPO_DIR)
+    subprocess.run(["git", "pull", "-q", "--ff-only"], check=False)   # best effort; keeps local changes
+else:                                              # fresh Colab runtime: clone the repo
+    subprocess.run(["git", "clone", "-q", REPO_URL], check=True)
+    os.chdir(REPO_DIR)
 print("working directory:", os.getcwd())
 
 %pip install -q -r requirements.txt
@@ -52,6 +54,7 @@ subsample of each dataset. Set it to `False` to rerun on the full data (much slo
 The committed full-data results are shown in the appendix at the end."""),
     code(SETUP),
     code('''QUICK_MODE = True      # True: fixed-seed subsample (fast).  False: full datasets (slow).
+FORCE = QUICK_MODE     # recompute every run even if a cached JSON matches (cheap in QUICK_MODE)
 
 import pandas as pd
 from IPython.display import Image, Markdown, display
@@ -60,7 +63,7 @@ from experiments.observations import observation
 pd.set_option("display.max_colwidth", 140)
 pd.set_option("display.width", 220)
 RES = review1.results_dir(QUICK_MODE)
-print("QUICK_MODE =", QUICK_MODE, "| results written to", RES)'''),
+print("QUICK_MODE =", QUICK_MODE, "| FORCE =", FORCE, "| results written to", RES)'''),
 
     md("""## 1. Datasets
 
@@ -81,8 +84,10 @@ display(Markdown(report.table_datasets(RES)))'''),
 Three tokenizers behind one interface `tokenize(text) -> list[str]`: whitespace split, NLTK `word_tokenize`,
 NLTK `TweetTokenizer`. Their tokens feed the *same* TF-IDF vectorizer (`tokenizer=fn`, `token_pattern=None`), then a
 majority-class baseline, Multinomial Naive Bayes (the method of the base paper) and Logistic Regression.
-Metrics: accuracy and macro-F1. Each run is saved to `results/.../module1/*.json` with its full configuration."""),
-    code('''review1.run_module1_section(QUICK_MODE)
+Metrics: accuracy and macro-F1. Each run is saved to `results/.../module1/*.json` with its full configuration and a
+fingerprint of that configuration and of the code; a saved run is reused only while the fingerprint still matches
+(`FORCE = True` recomputes everything)."""),
+    code('''review1.run_module1_section(QUICK_MODE, force=FORCE)
 out = review1.build_outputs(QUICK_MODE)
 display(Markdown(out["tables"]["module1_results"]))
 display(Image(f"{RES}/figures/module1_accuracy.png"))'''),
@@ -110,7 +115,7 @@ Every normalized token gets an id the first time it is seen; later sightings onl
 `lexer/dfa/` is a small lexer generator: a regex parser, Thompson NFA, subset-construction DFA, Moore minimization
 and a table-driven scanner. It is applied to **EMOTICON, HASHTAG, MENTION and WORD** only. **ELONGATED is left out:**
 its usual regex `(.)\\1{2,}` needs a back-reference, which is not part of regular expressions."""),
-    code('''review1.run_module2_experiments(QUICK_MODE)
+    code('''review1.run_module2_experiments(QUICK_MODE, force=FORCE)
 out = review1.build_outputs(QUICK_MODE)
 display(Markdown(out["tables"]["dfa_states"]))
 display(Image(f"{RES}/module2/dfa_min.png"))'''),
@@ -147,7 +152,7 @@ The tables below are built from the JSON files in `results/` (full datasets, pro
 `python -m experiments.run_module1` and `python -m experiments.run_module2`)."""),
     code('''import os
 if os.path.exists("results/datasets.json") and os.path.isdir("results/module1"):
-    full = report.build_all_tables("results")
+    full = report.render_all_tables("results")      # read only: does not rewrite results/tables
     for name in ["module1_results", "existing_vs_proposed", "intrinsic_metrics"]:
         print(name); display(Markdown(full[name]))
 else:

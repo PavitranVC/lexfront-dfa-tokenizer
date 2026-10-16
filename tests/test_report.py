@@ -23,7 +23,8 @@ def test_tables_from_json(tmp_path):
     tables = report.build_all_tables(res)
     assert "ag_news" in tables["datasets"] and "none" in tables["datasets"]
     assert tables["module1_results"].count("\n") >= 4          # header + sep + 3 tokenizers
-    assert "LexFront+LR" in tables["existing_vs_proposed"] or "proposed" in tables["existing_vs_proposed"]
+    row = tables["existing_vs_proposed"].splitlines()[2]
+    assert row.startswith("| ag_news | ") and row.count("/") == 4    # existing, proposed and the two mixed cells
     assert (res / "tables" / "module1_results.md").exists()
     assert "not available" in tables["intrinsic_metrics"]       # no intrinsic JSON in this fixture
 

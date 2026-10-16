@@ -74,6 +74,39 @@ def obs_existing_vs_proposed(results_dir) -> str:
     return "\n".join(out + ["", CAVEAT])
 
 
+def _change_split(runs, ds):
+    """(total, classifier part, tokenizer part) of proposed - existing accuracy, in points; None if a cell is missing.
+
+    total = (NLTK+LR - NLTK+NB) + (LexFront+LR - NLTK+LR), so the two parts add up exactly.
+    """
+    cells = [_get(runs, ds, t, c) for t, c in [("nltk", "nb"), ("nltk", "lr"), ("lexfront", "lr")]]
+    if any(c is None for c in cells):
+        return None
+    ex, nl, pr = (100 * c.accuracy for c in cells)
+    return pr - ex, nl - ex, pr - nl
+
+
+def _attribution_sentence(ds, total, clf_part, tok_part) -> str:
+    """One arithmetic sentence per dataset: where the proposed-vs-existing change comes from."""
+    split = f"classifier switch NB to LR {clf_part:+.2f}, tokenizer switch NLTK to LexFront under LR {tok_part:+.2f}"
+    if total < 0:
+        return f"- **{ds}**: proposed is {-total:.2f} points **below** existing ({split})."
+    if abs(tok_part) <= 0.1 * abs(total):
+        return f"- **{ds}**: proposed is {total:.2f} points above existing; almost all of it comes from the classifier ({split})."
+    return f"- **{ds}**: proposed is {total:.2f} points above existing ({split})."
+
+
+def obs_attribution(results_dir) -> str:
+    """Per dataset: is proposed above or below existing, and how much is classifier vs tokenizer (accuracy)."""
+    runs = load_runs(results_dir)
+    out = []
+    for ds in _datasets(runs):
+        parts = _change_split(runs, ds)
+        if parts is not None:
+            out.append(_attribution_sentence(ds, *parts))
+    return "\n".join(out + ["", CAVEAT])
+
+
 def obs_intrinsic(results_dir) -> str:
     df = load_intrinsic(results_dir)
     out = []
@@ -110,12 +143,12 @@ def obs_dfa(results_dir) -> str:
 
 
 OBSERVATIONS = {"datasets": obs_datasets, "module1": obs_module1, "existing_vs_proposed": obs_existing_vs_proposed,
-                "intrinsic": obs_intrinsic, "dfa": obs_dfa}
+                "intrinsic": obs_intrinsic, "dfa": obs_dfa, "attribution": obs_attribution}
 
 
 def observation(name: str, results_dir) -> str:
-    """Observation markdown for one section, or a note if its JSON is not there."""
+    """Observation markdown for one section, or a note if its JSON is not there (other errors are raised)."""
     try:
         return OBSERVATIONS[name](results_dir)
-    except (FileNotFoundError, KeyError, IndexError, ValueError, AttributeError) as err:
+    except FileNotFoundError as err:
         return f"_not available: {err!r}_"

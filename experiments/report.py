@@ -38,7 +38,9 @@ def load_intrinsic(results_dir) -> pd.DataFrame:
         for tok, m in r["tokenizers"].items():
             rows.append({"dataset": r["dataset"]["name"], "tokenizer": tok, **m,
                          "n_train": r["dataset"]["n_train"], "n_test": r["dataset"]["n_test"]})
-    return pd.DataFrame(rows, columns=["dataset", "tokenizer"]) if not rows else pd.DataFrame(rows)
+    if not rows:
+        raise FileNotFoundError(f"no intrinsic__*.json under {Path(results_dir) / 'module2'}")
+    return pd.DataFrame(rows)
 
 
 def load_dfa(results_dir) -> dict:
@@ -163,16 +165,26 @@ TABLES = {"datasets": table_datasets, "module1_results": table_module1,
           "dfa_states": table_dfa}
 
 
-def build_all_tables(results_dir, out_dir=None) -> dict[str, str]:
-    """Build every table; write `<out_dir>/<name>.md` and return {name: markdown}."""
-    out_dir = Path(out_dir or Path(results_dir) / "tables")
-    out_dir.mkdir(parents=True, exist_ok=True)
+def render_all_tables(results_dir) -> dict[str, str]:
+    """Build every table in memory (nothing is written); {name: markdown}.
+
+    Only a missing input file is turned into a note; any other error is a bug and is raised.
+    """
     tables = {}
     for name, fn in TABLES.items():
         try:
             tables[name] = fn(results_dir)
-        except (FileNotFoundError, KeyError, ValueError, IndexError, AttributeError) as err:   # input JSON not produced yet
+        except FileNotFoundError as err:   # input JSON not produced yet
             tables[name] = f"_not available: {err!r}_"
-            continue
-        (out_dir / f"{name}.md").write_text(tables[name] + "\n")
+    return tables
+
+
+def build_all_tables(results_dir, out_dir=None) -> dict[str, str]:
+    """Build every table; write `<out_dir>/<name>.md` for those whose inputs exist; return {name: markdown}."""
+    out_dir = Path(out_dir or Path(results_dir) / "tables")
+    out_dir.mkdir(parents=True, exist_ok=True)
+    tables = render_all_tables(results_dir)
+    for name, text in tables.items():
+        if not text.startswith("_not available"):
+            (out_dir / f"{name}.md").write_text(text + "\n")
     return tables

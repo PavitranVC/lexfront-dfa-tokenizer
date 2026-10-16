@@ -81,8 +81,9 @@ def figure_existing_vs_proposed(results_dir, out_path) -> bool:
             return 100 * hit[metric].iloc[0] if len(hit) else None
         width = 0.35
         for j, s in enumerate(pairs):
-            xs = [i - width / 2 + j * width for i in range(len(datasets))]
-            ys = [val(d, s) or 0 for d in datasets]
+            present = [(i, val(d, s)) for i, d in enumerate(datasets) if val(d, s) is not None]   # skip missing cells
+            xs = [i - width / 2 + j * width for i, _ in present]
+            ys = [v for _, v in present]
             bars = ax.bar(xs, ys, width * 0.92, color=colors[s], label=s)
             for b, v in zip(bars, ys):
                 ax.text(b.get_x() + b.get_width() / 2, v, f"{v:.1f}", ha="center", va="bottom", fontsize=8)

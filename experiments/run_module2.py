@@ -49,6 +49,10 @@ def main(argv=None):
     p.add_argument("--seed", type=int, default=0)
     p.add_argument("--force", action="store_true")
     a = p.parse_args(argv)
+    if a.intrinsic_max_train is not None and a.max_test is not None:
+        # data.subsample draws train then test from one RNG, so a different train size changes the test subset.
+        p.error("--intrinsic-max-train cannot be combined with --max-test (the test subset would differ "
+                "from the classification runs)")
     if "dfa" in a.only:
         build_report(a.out)
     if "intrinsic" in a.only:
