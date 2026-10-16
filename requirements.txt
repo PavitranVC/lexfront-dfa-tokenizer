@@ -1,27 +1,21 @@
-# Data + classic ML
-pandas
+# Data + classic ML (CPU only, no torch)
 numpy
-scikit-learn
+pandas
 scipy
+scikit-learn
 tqdm
+matplotlib
 
-# NLP / tokenizers
+# NLP / datasets
 nltk
-tokenizers          # BPE, WordPiece, Unigram (Hugging Face)
-sentencepiece
-emoji
-
-# Compiler-design tooling
-ply                 # Python Lex-Yacc
-graphviz            # draw NFA/DFA diagrams
-
-# Modern models + datasets
-transformers
-sentence-transformers
 datasets
 
-# Plots, notebooks, tests
-matplotlib
-seaborn
-jupyterlab
+# Compiler-design tooling
+ply
+graphviz
+
+# Tests + notebook execution
 pytest
+nbconvert
+nbformat
+ipykernel
