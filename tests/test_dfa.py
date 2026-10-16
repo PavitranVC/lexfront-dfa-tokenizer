@@ -110,3 +110,17 @@ def test_elongated_is_not_in_the_dfa_engine():
     assert "\\1" in get_spec("ELONGATED").pattern       # needs a back-reference
     with pytest.raises(RegexSyntaxError):
         parse(get_spec("ELONGATED").pattern)
+
+
+def test_expanded_elongated_matches_backreference_regex():
+    """For a finite alphabet the back-reference language is regular: 26 spelled-out branches."""
+    import re
+    from experiments.dfa_report import EXPANDED_ELONGATED
+    scanner = compile_rules([("E", EXPANDED_ELONGATED)]).scanner()
+    py = re.compile(r"[a-z]*([a-z])\1{2,}[a-z]*")
+    rng = random.Random(5)
+    for _ in range(500):
+        text = "".join(rng.choice("abc") for _ in range(rng.randint(1, 10)))
+        m = py.match(text)
+        got = scanner.longest_match(text, 0)
+        assert (m.end() if m else None) == (got[0] if got else None), text

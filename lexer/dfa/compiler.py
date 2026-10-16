@@ -58,7 +58,9 @@ def _char_label(code: int) -> str:
 
 
 def _interval_label(lo: int, hi: int) -> str:
-    return _char_label(lo) if lo == hi else f"{_char_label(lo)}-{_char_label(hi)}"
+    if hi - lo <= 2:                       # short run: list the characters
+        return " ".join(_char_label(c) for c in range(lo, hi + 1))
+    return f"{_char_label(lo)}-{_char_label(hi)}"
 
 
 def _merged_intervals(atoms, ids) -> list:
@@ -72,16 +74,27 @@ def _merged_intervals(atoms, ids) -> list:
     return spans
 
 
-def _symbol_groups(c: Compiled) -> dict:
-    """Group atoms whose column of the transition table is identical in every state."""
-    groups = {}
-    for a in range(len(c.atoms)):
-        column = tuple(state.get(a) for state in c.min_dfa.trans)
-        groups.setdefault(column, []).append(a)
-    return groups
+def _named_sets(atoms) -> dict:
+    """Atom-id sets for readable names (only those fully present in the alphabet)."""
+    from ..token_spec import LATIN
+    letter = [(ord(LATIN[i]), ord(LATIN[i + 2])) for i in range(0, len(LATIN), 3)]
+    named = {"letter": letter, "digit": [(48, 57)]}
+    return {n: set(alphabet.atoms_of(r, atoms)) for n, r in named.items()}
 
 
-def to_dot(c: Compiled, max_label: int = 34) -> str:
+def edge_label(atoms, ids, named, max_label: int = 44) -> str:
+    """Readable label for a set of atom ids: names such as 'letter', then leftover intervals."""
+    ids, parts = set(ids), []
+    for name, members in named.items():
+        if members and members <= ids:
+            parts.append(name)
+            ids -= members
+    parts += [_interval_label(lo, hi) for lo, hi in _merged_intervals(atoms, ids)]
+    text = ", ".join(parts)
+    return text if len(text) <= max_label else text[:max_label] + "..."
+
+
+def to_dot(c: Compiled) -> str:
     """Graphviz DOT text for the minimized DFA (accepting states show their rule)."""
     d = c.min_dfa
     lines = ["digraph DFA {", 'rankdir=LR; bgcolor="white"; dpi=160;',
@@ -94,14 +107,12 @@ def to_dot(c: Compiled, max_label: int = 34) -> str:
             lines.append(f'q{s} [shape=doublecircle, xlabel="{c.names[d.accept[s]]}"];')
     lines.append(f"start -> q{d.start};")
     edges = {}
-    for column, ids in _symbol_groups(c).items():
-        text = " ".join(_interval_label(lo, hi) for lo, hi in _merged_intervals(c.atoms, ids))
-        text = text if len(text) <= max_label else text[:max_label] + "..."
-        for s, t in enumerate(column):
-            if t is not None:
-                edges.setdefault((s, t), []).append(text)
-    for (s, t), labels in sorted(edges.items()):
-        lines.append(f'q{s} -> q{t} [label="{" | ".join(labels)}"];')
+    for s, row in enumerate(d.trans):
+        for atom, t in row.items():
+            edges.setdefault((s, t), set()).add(atom)
+    named = _named_sets(c.atoms)
+    for (s, t), ids in sorted(edges.items()):
+        lines.append(f'q{s} -> q{t} [label="{edge_label(c.atoms, ids, named)}"];')
     lines.append("}")
     return "\n".join(lines)
 
