@@ -1,5 +1,5 @@
 {
-  "timestamp_utc": "2026-10-16T19:51:11+00:00",
+  "timestamp_utc": "2026-10-16T20:23:18+00:00",
   "dataset": {
     "name": "go_emotions",
     "hf_id": "google-research-datasets/go_emotions",
@@ -50,6 +50,7 @@
       }
     }
   },
+  "data_hash": "4bc10ba33c6113d8",
   "tokenizer": "lexfront",
   "vectorizer": {
     "type": "TfidfVectorizer",
@@ -73,21 +74,24 @@
   },
   "seed": 0,
   "fingerprint": {
-    "config": "52e40072de9d583d",
-    "code": "0d32cc8c8210a24d"
+    "config": "f67f8e07a12e3fda",
+    "code": "290c17daf9b8284c"
   },
   "metrics": {
     "accuracy": 0.352,
     "macro_f1": 0.024118165784832453
   },
   "timing_seconds": {
-    "tokenize_and_vectorize": 0.2699353179999662,
-    "classifier_fit": 0.003339241000048787
+    "tokenize_and_vectorize": 0.1645474680000234,
+    "classifier_fit": 0.003388117999975293
   },
   "environment": {
     "python": "3.11.17",
     "sklearn": "1.9.1",
+    "nltk": "3.10.3",
     "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "threadpoolctl": "3.7.0",
     "machine": "x86_64",
     "platform": "Linux-6.18.44-fc-v139-x86_64-with-glibc2.39",
     "blas_threads": 1
