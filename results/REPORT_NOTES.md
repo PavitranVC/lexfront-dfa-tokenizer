@@ -163,10 +163,11 @@ _Single run per cell (seed 0), no confidence intervals: gaps of about one point 
 
 Reading the tables together (hand-written, still DRAFT): LexFront has the lowest OOV rate and the smallest vocabulary on
 all three datasets, but part of that is by construction (placeholders such as `<URL>`/`<NUM>`, elongation collapsing and slang
-expansion merge strings), so it is not by itself evidence of better classification. In the classification tables the
-classifier switch (NB to LR) accounts for almost all of the gain of "proposed over existing"; with the classifier held fixed,
-the tokenizer differences are small (see the "Split of the accuracy change" lines) and no confidence intervals were computed.
-With LR held fixed, the largest tokenizer-only difference is NLTK to LexFront on TweetTopic (-1.59 accuracy points, +/- one seed's noise unknown); on GoEmotions and AG News it is within 0.02 points.
+expansion merge strings), so it is not by itself evidence of better classification. Where the proposed-vs-existing
+accuracy change comes from differs per dataset (generated below from the JSON; no confidence intervals were computed):
+
+<!-- BEGIN obs:attribution -->
+<!-- END obs:attribution -->
 
 Finding: the usual ELONGATED regex `(.)\1{2,}` needs a back-reference, which is outside regular expressions, so it is
 not in the DFA engine. For a finite alphabet and run length 3 the language is still regular when spelled out letter by
@@ -237,9 +238,10 @@ letter; the last row of the DFA table is that spelled-out version (lowercase onl
         for tokenizer in [whitespace, nltk, tweet] (module 1) or [lexfront] (module 2):
             X_train <- TfidfVectorizer(tokenizer, token_pattern=None, lowercase=True, min_df=2).fit_transform(train)
             X_test  <- vectorizer.transform(test)
-            for clf in [majority, naive_bayes, logistic_regression]:
+            for clf in [majority, naive_bayes, logistic_regression] (module 1) or [naive_bayes, logistic_regression] (module 2):
                 clf.fit(X_train, y_train)
                 record <- {config, accuracy(y_test, clf.predict(X_test)), macro_f1(...), timings, versions}
-                write record to results/<module>/<dataset>__<tokenizer>__<clf>.json
+                write record (with a config + code fingerprint) to results/<module>/<dataset>__<tokenizer>__<clf>.json
+                # a cached record is reused only while its fingerprint still matches
     tables, figures, observations are built only from those JSON files
 ```
