@@ -13,7 +13,7 @@ import nbformat as nbf
 NB_PATH = Path(__file__).with_name("LexFront_Review1.ipynb")
 md, code = nbf.v4.new_markdown_cell, nbf.v4.new_code_cell
 
-SETUP = '''# 1. Get the code, install dependencies, download NLTK data.
+SETUP = '''# 1. Get the code, install dependencies (requirements.txt: version ranges), download NLTK data.
 import os, subprocess, sys
 REPO_URL = "https://github.com/PavitranVC/lexfront-dfa-tokenizer.git"
 REPO_DIR = "lexfront-dfa-tokenizer"
@@ -31,17 +31,24 @@ if root is not None:                               # running inside a checkout (
     os.chdir(root)
 elif os.path.isdir(REPO_DIR):                      # Colab after a restart: already cloned, cwd reset to /content
     os.chdir(REPO_DIR)
-    subprocess.run(["git", "pull", "-q", "--ff-only"], check=False)   # best effort; keeps local changes
+    pull = subprocess.run(["git", "pull", "-q", "--ff-only"], capture_output=True, text=True)   # keeps local changes
+    if pull.returncode != 0:
+        print("WARNING: git pull failed, running the code already in", os.getcwd(), "\\n", pull.stderr.strip())
 else:                                              # fresh Colab runtime: clone the repo
     subprocess.run(["git", "clone", "-q", REPO_URL], check=True)
     os.chdir(REPO_DIR)
+if not os.path.exists(os.path.join("lexer", "token_spec.py")):
+    raise RuntimeError(f"{os.getcwd()} is not a complete checkout: delete it and run this cell again")
 print("working directory:", os.getcwd())
+sys.path.insert(0, os.getcwd())
 
+from experiments import setup_check               # standard library only
+before_install = setup_check.snapshot()
 %pip install -q -r requirements.txt
+setup_check.report_after_install(before_install)  # prints versions in use; warns if a restart is needed
 import nltk
 for package in ["punkt", "punkt_tab", "stopwords"]:
-    nltk.download(package, quiet=True)
-sys.path.insert(0, os.getcwd())'''
+    nltk.download(package, quiet=True)'''
 
 CELLS = [
     md("""# LexFront — Review 1 (Modules 1 and 2)
@@ -60,6 +67,11 @@ The committed full-data results are shown in the appendix at the end."""),
     code(SETUP),
     code('''QUICK_MODE = True      # True: fixed-seed subsample (fast).  False: full datasets (slow).
 FORCE = QUICK_MODE     # recompute every run even if a cached JSON matches (cheap in QUICK_MODE)
+# Files each mode rewrites:
+#   True : everything under results/quick/ (the committed results/ is untouched).
+#   False: in the committed results/: datasets.json, module2/dfa_states.json + dfa_min.dot/.png, module2/intrinsic__*.json
+#          (always, new timestamps and throughput), tables/ and figures/ (rebuilt from the JSON); module1/ and module2/
+#          run JSONs only where their fingerprint no longer matches (FORCE is False). `git checkout results/` undoes it.
 
 import pandas as pd
 from IPython.display import Image, Markdown, display

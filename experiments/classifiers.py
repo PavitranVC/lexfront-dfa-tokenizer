@@ -8,9 +8,17 @@ VECTORIZER_PARAMS = {"lowercase": True, "min_df": 2, "ngram_range": [1, 1], "tok
 CLASSIFIER_NAMES = ("majority", "nb", "lr")
 
 
+def vectorizer_kwargs() -> dict:
+    """VECTORIZER_PARAMS as TfidfVectorizer arguments (JSON stores ngram_range as a list, sklearn wants a tuple)."""
+    return {k: tuple(v) if k == "ngram_range" else v for k, v in VECTORIZER_PARAMS.items()}
+
+
 def make_vectorizer(tokenizer) -> TfidfVectorizer:
-    """TF-IDF over the tokens produced by `tokenizer` (identical settings for every tokenizer)."""
-    return TfidfVectorizer(tokenizer=tokenizer, token_pattern=None, lowercase=True, min_df=2)
+    """TF-IDF over the tokens produced by `tokenizer` (identical settings for every tokenizer).
+
+    VECTORIZER_PARAMS is the single source of the settings, so the fingerprint and the JSON record what really ran.
+    """
+    return TfidfVectorizer(tokenizer=tokenizer, **vectorizer_kwargs())
 
 
 def make_classifier(name: str, seed: int = 0):

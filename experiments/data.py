@@ -4,6 +4,7 @@ Every loader returns train/test texts, integer labels and label names. Which spl
 pair was used (and why) is stored in `Dataset.split_info` and ends up in each result
 JSON.
 """
+import hashlib
 import json
 import random
 from collections import Counter
@@ -32,6 +33,13 @@ class Dataset:
                 "n_train": len(self.train_texts), "n_test": len(self.test_texts),
                 "n_labels": len(self.label_names), "label_names": self.label_names,
                 "split_info": self.split_info}
+
+    def content_hash(self) -> str:
+        """SHA-256 of the train/test texts and labels, so the result cache notices changed data, not only sizes.
+
+        Recomputed on every call (not cached): a Dataset's lists can be edited in place."""
+        payload = [self.train_texts, self.train_labels, self.test_texts, self.test_labels]
+        return hashlib.sha256(json.dumps(payload, ensure_ascii=False).encode()).hexdigest()[:16]
 
 
 # ---- pure helpers (unit-tested without network) ---------------------------------------

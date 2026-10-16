@@ -19,7 +19,9 @@ from pathlib import Path
 
 import nltk
 import numpy as np
+import scipy
 import sklearn
+import threadpoolctl
 from threadpoolctl import threadpool_limits
 
 from . import classifiers as clf_mod
@@ -40,8 +42,8 @@ def single_threaded():
 
 
 def environment() -> dict:
-    return {"python": platform.python_version(), "sklearn": sklearn.__version__,
-            "numpy": np.__version__, "machine": platform.machine(), "platform": platform.platform()}
+    return {"python": platform.python_version(), **library_versions(),
+            "machine": platform.machine(), "platform": platform.platform()}
 
 
 def _sha256(payload: bytes) -> str:
@@ -58,11 +60,18 @@ def code_fingerprint() -> str:
     return h.hexdigest()[:16]
 
 
+def library_versions() -> dict:
+    """Versions of the libraries whose numerics or tokens can change a result (lbfgs lives in scipy, BLAS in numpy)."""
+    return {"sklearn": sklearn.__version__, "nltk": nltk.__version__, "numpy": np.__version__,
+            "scipy": scipy.__version__, "threadpoolctl": threadpoolctl.__version__}
+
+
 def config_fingerprint(ds, tokenizer_name: str, classifier_name: str, seed: int) -> str:
-    """Hash of everything a run is configured by: data subset, tokenizer, vectorizer, classifier, seed, versions."""
-    config = {"dataset": ds.summary(), "tokenizer": tokenizer_name, "vectorizer": clf_mod.VECTORIZER_PARAMS,
-              "classifier": classifier_name, "params": clf_mod.classifier_params(classifier_name, seed),
-              "seed": seed, "sklearn": sklearn.__version__, "nltk": nltk.__version__,
+    """Hash of everything a run is configured by: data subset and its content, tokenizer, vectorizer, classifier,
+    seed, library versions and thread count."""
+    config = {"dataset": ds.summary(), "data_hash": ds.content_hash(), "tokenizer": tokenizer_name,
+              "vectorizer": clf_mod.VECTORIZER_PARAMS, "classifier": classifier_name,
+              "params": clf_mod.classifier_params(classifier_name, seed), "seed": seed, **library_versions(),
               "blas_threads": BLAS_THREADS}
     return _sha256(json.dumps(config, sort_keys=True, default=str).encode())
 
@@ -105,6 +114,7 @@ def run_one(ds, tokenizer_name: str, classifier_name: str, features, seed: int =
     return {
         "timestamp_utc": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "dataset": ds.summary(),
+        "data_hash": ds.content_hash(),
         "tokenizer": tokenizer_name,
         "vectorizer": {"type": "TfidfVectorizer", **clf_mod.VECTORIZER_PARAMS, "n_features": n_features},
         "classifier": {"name": classifier_name, "params": clf_mod.classifier_params(classifier_name, seed)},
