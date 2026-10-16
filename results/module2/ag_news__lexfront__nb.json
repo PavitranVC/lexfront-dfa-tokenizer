@@ -1,5 +1,5 @@
 {
-  "timestamp_utc": "2026-10-16T20:26:24+00:00",
+  "timestamp_utc": "2026-10-16T20:40:48+00:00",
   "dataset": {
     "name": "ag_news",
     "hf_id": "fancyzhx/ag_news",
@@ -49,15 +49,15 @@
   "seed": 0,
   "fingerprint": {
     "config": "4134f2b6229fc908",
-    "code": "290c17daf9b8284c"
+    "code": "1360b4310580a43a"
   },
   "metrics": {
     "accuracy": 0.9007894736842105,
     "macro_f1": 0.9005276530289462
   },
   "timing_seconds": {
-    "tokenize_and_vectorize": 25.92395043600004,
-    "classifier_fit": 0.0443345070000305
+    "tokenize_and_vectorize": 28.494440432999966,
+    "classifier_fit": 0.06321382999999514
   },
   "environment": {
     "python": "3.11.17",
@@ -69,5 +69,6 @@
     "machine": "x86_64",
     "platform": "Linux-6.18.44-fc-v139-x86_64-with-glibc2.39",
     "blas_threads": 1
-  }
+  },
+  "predictions_file": "predictions/ag_news__lexfront__nb.json.gz"
 }

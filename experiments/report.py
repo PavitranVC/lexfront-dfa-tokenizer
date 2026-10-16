@@ -4,6 +4,8 @@ Layout read here:  <results>/module1/<dataset>__<tokenizer>__<clf>.json
                    <results>/module2/<dataset>__lexfront__<clf>.json
                    <results>/module2/intrinsic__<dataset>.json
                    <results>/module2/dfa_states.json
+                   <results>/stats/bootstrap.json                      (python -m experiments.run_stats)
+                   <results>/sensitivity_case/module{1,2}/*.json        (python -m experiments.run_sensitivity)
 """
 import json
 from pathlib import Path
@@ -160,9 +162,94 @@ def table_dfa(results_dir) -> str:
     return to_markdown(pd.DataFrame(rows))
 
 
+SENSITIVITY_SUBDIR = "sensitivity_case"
+
+
+def load_sensitivity_runs(results_dir) -> pd.DataFrame:
+    """Runs of the case-sensitive TF-IDF grid; FileNotFoundError if that grid was not run here."""
+    runs = load_runs(Path(results_dir) / SENSITIVITY_SUBDIR)
+    if runs.empty:
+        raise FileNotFoundError(f"no run JSONs under {Path(results_dir) / SENSITIVITY_SUBDIR}")
+    return runs
+
+
+def table_sensitivity_case(results_dir) -> str:
+    """NB / LR with TF-IDF `lowercase=False` for all four tokenizers, and the LR change against the main grid."""
+    sens, main = load_sensitivity_runs(results_dir), load_runs(results_dir)
+    rows = []
+    for (ds, tok), g in _sorted(sens).groupby(["dataset", "tokenizer"], sort=False):
+        row = {"dataset": ds, "tokenizer": tok}
+        for clf in ("nb", "lr"):
+            hit = g[g["classifier"] == clf]
+            row[f"{CLASSIFIER_LABEL[clf]} acc / F1 (case kept)"] = (
+                f"{_pct(hit.accuracy.iloc[0])} / {_pct(hit.macro_f1.iloc[0])}" if len(hit) else "-")
+        lr, base = _cell(sens, ds, tok, "lr"), _cell(main, ds, tok, "lr")
+        both = lr is not None and base is not None
+        row["LR acc change vs main (pts)"] = f"{100 * (lr.accuracy - base.accuracy):+.2f}" if both else "-"
+        row["LR F1 change vs main (pts)"] = f"{100 * (lr.macro_f1 - base.macro_f1):+.2f}" if both else "-"
+        rows.append(row)
+    return to_markdown(pd.DataFrame(rows))
+
+
+def load_bootstrap(results_dir) -> dict:
+    return json.loads((Path(results_dir) / "stats" / "bootstrap.json").read_text())
+
+
+def _ci_text(value, ci) -> str:
+    """'+1.23 [-0.45, +2.34]' in points (signed) for a difference."""
+    return f"{100 * value:+.2f} [{100 * ci[0]:+.2f}, {100 * ci[1]:+.2f}]"
+
+
+def _run_order(run: str) -> tuple:
+    """Sort key for '<tokenizer>__<classifier>': tokenizer order, then majority, NB, LR."""
+    tok, clf = run.split("__")
+    rank = TOKENIZER_ORDER.index(tok) if tok in TOKENIZER_ORDER else len(TOKENIZER_ORDER)
+    return rank, list(CLASSIFIER_LABEL).index(clf) if clf in CLASSIFIER_LABEL else len(CLASSIFIER_LABEL)
+
+
+def p_value_text(p: float) -> str:
+    """'= 0.773' style text; '< 0.001' below three decimals (a printed 0.000 would read as exactly zero)."""
+    return "< 0.001" if p < 0.001 else f"= {p:.3f}"
+
+
+def table_ci_runs(results_dir) -> str:
+    """Accuracy and macro-F1 (%) with 95% bootstrap CIs for every NB and LR run of the main grid."""
+    boot = load_bootstrap(results_dir)
+    rows = []
+    for ds, d in boot["datasets"].items():
+        for run in sorted(d["runs"], key=_run_order):
+            tok, clf = run.split("__")
+            if clf == "majority":
+                continue
+            r = d["runs"][run]
+            rows.append({"dataset": ds, "tokenizer": tok, "classifier": CLASSIFIER_LABEL[clf],
+                         "accuracy % [95% CI]": f"{_pct(r['accuracy']['value'])} [{_pct(r['accuracy']['ci'][0])}, "
+                                                f"{_pct(r['accuracy']['ci'][1])}]",
+                         "macro-F1 % [95% CI]": f"{_pct(r['macro_f1']['value'])} [{_pct(r['macro_f1']['ci'][0])}, "
+                                                f"{_pct(r['macro_f1']['ci'][1])}]"})
+    return to_markdown(pd.DataFrame(rows))
+
+
+def table_ci(results_dir) -> str:
+    """Paired bootstrap 95% CIs of the differences (points) and the exact McNemar p-value where computed."""
+    boot = load_bootstrap(results_dir)
+    rows = []
+    for ds, d in boot["datasets"].items():
+        for p in d["pairs"].values():
+            mc = p.get("mcnemar_accuracy")
+            rows.append({"dataset": ds, "difference": p["label"],
+                         "accuracy pts [95% CI]": _ci_text(p["accuracy"]["diff"], p["accuracy"]["ci"]),
+                         "macro-F1 pts [95% CI]": _ci_text(p["macro_f1"]["diff"], p["macro_f1"]["ci"]),
+                         "CI excludes 0 (acc / F1)": (f"{'yes' if p['accuracy']['ci_excludes_zero'] else 'no'} / "
+                                                      f"{'yes' if p['macro_f1']['ci_excludes_zero'] else 'no'}"),
+                         "McNemar p (acc)": p_value_text(mc["p_value"]).lstrip("= ") if mc else "-"})
+    return to_markdown(pd.DataFrame(rows))
+
+
 TABLES = {"datasets": table_datasets, "module1_results": table_module1,
           "existing_vs_proposed": table_existing_vs_proposed, "intrinsic_metrics": table_intrinsic,
-          "dfa_states": table_dfa}
+          "dfa_states": table_dfa, "ci_table": table_ci, "ci_runs": table_ci_runs,
+          "sensitivity_case": table_sensitivity_case}
 
 
 def render_all_tables(results_dir) -> dict[str, str]:

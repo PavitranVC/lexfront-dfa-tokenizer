@@ -74,7 +74,12 @@ def percentile_ci(samples: np.ndarray, level: float = CI_LEVEL) -> list[float]:
     """[lower, upper] percentile interval of the bootstrap samples."""
     tail = 100 * (1 - level) / 2
     lo, hi = np.percentile(samples, [tail, 100 - tail])
-    return [float(lo), float(hi)]
+    return [_clean(lo), _clean(hi)]
+
+
+def _clean(x) -> float:
+    """Round away float noise (e.g. -2e-17 for a zero difference) so 'excludes 0' is decided on real values."""
+    return round(float(x), 12) + 0.0
 
 
 def excludes_zero(ci) -> bool:
@@ -95,7 +100,7 @@ def paired_difference(y_true, pred_a, pred_b, idx: np.ndarray, n_classes: int) -
     out = {}
     for name in METRICS:
         ci = percentile_ci(sb[name] - sa[name])
-        out[name] = {"diff": pb[name] - pa[name], "ci": ci, "ci_excludes_zero": excludes_zero(ci)}
+        out[name] = {"diff": _clean(pb[name] - pa[name]), "ci": ci, "ci_excludes_zero": excludes_zero(ci)}
     return out
 
 

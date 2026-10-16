@@ -14,7 +14,8 @@ from pathlib import Path
 from .observations import observation
 from .report import render_all_tables
 
-DEFAULT_FILES = ["results/REPORT_NOTES.md", "docs/modules/module1.md", "docs/modules/module2.md", "README.md"]
+DEFAULT_FILES = ["results/REPORT_NOTES.md", "docs/modules/module1.md", "docs/modules/module2.md", "README.md",
+                 "docs/LEARN.md"]
 BLOCK = re.compile(r"(<!-- BEGIN (table|obs):(\w+) -->)\n.*?\n(<!-- END \2:\3 -->)", re.DOTALL)
 
 
