@@ -1,0 +1,6 @@
+flowchart LR
+    A[Blog posts] --> B[NLTK tokenizer]
+    B --> C[PorterStemmer]
+    C --> D[CountVectorizer<br/>bag of words]
+    D --> E[Multinomial Naive Bayes]
+    E --> F[Label<br/>40 classes, or 3 after merging]

@@ -2,6 +2,17 @@
 
 Newest first. Dates are the day the change was made (IST workday).
 
+## 2026-10-16 (report)
+- Review 1 report (Modules 1 and 2): `report/Review1_Report.md` and `report/Review1_Report.docx` (all figures embedded).
+  Built by `report/build_report.py` from `report/Review1_Report.template.md`: tables are copied verbatim from
+  `results/tables/` (re-generated from the JSON first and found identical), citations are numbered by `report/refs.py`.
+- Diagrams: v1, v2, v3 and a module-grouped "current architecture" rendered from Mermaid with `@mermaid-js/mermaid-cli`
+  (sources in `report/diagrams/`, PNGs in `report/figures/`).
+- 35 references, each checked by opening its ACL Anthology / arXiv / DOI-or-author / official-docs page this session.
+  Thompson (1968) and Reps (1998) were confirmed through secondary records because the ACM pages returned HTTP 403.
+- Open markers in the report: base-paper citation `[TEAM]`, course-textbook citation `[TEAM]` (twice),
+  reason for dropping Docker `[MISSING]`.
+
 ## 2026-10-16 (later)
 - PR #1 merged into `main` by the author; Colab badge now resolves.
 - Added GitHub Actions CI: pytest on every push/PR, plus the notebook executed in QUICK_MODE.
