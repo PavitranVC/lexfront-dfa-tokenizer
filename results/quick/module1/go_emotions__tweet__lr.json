@@ -1,5 +1,5 @@
 {
-  "timestamp_utc": "2026-10-16T20:28:40+00:00",
+  "timestamp_utc": "2026-10-16T20:37:36+00:00",
   "dataset": {
     "name": "go_emotions",
     "hf_id": "google-research-datasets/go_emotions",
@@ -85,15 +85,15 @@
   "seed": 0,
   "fingerprint": {
     "config": "6e6c276b03554cdb",
-    "code": "290c17daf9b8284c"
+    "code": "1360b4310580a43a"
   },
   "metrics": {
     "accuracy": 0.43,
     "macro_f1": 0.13942886923671416
   },
   "timing_seconds": {
-    "tokenize_and_vectorize": 0.17521502299996428,
-    "classifier_fit": 0.2313279560000865
+    "tokenize_and_vectorize": 0.19578471899998817,
+    "classifier_fit": 0.2740980009999987
   },
   "environment": {
     "python": "3.11.17",
@@ -105,5 +105,6 @@
     "machine": "x86_64",
     "platform": "Linux-6.18.44-fc-v139-x86_64-with-glibc2.39",
     "blas_threads": 1
-  }
+  },
+  "predictions_file": "predictions/go_emotions__tweet__lr.json.gz"
 }
