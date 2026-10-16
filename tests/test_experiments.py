@@ -52,7 +52,7 @@ def test_tokenizer_interface(name):
 
 def test_classification_metrics():
     m = classification_metrics([0, 0, 1, 1], [0, 1, 1, 1])
-    assert m["accuracy"] == 0.75 and 0 < m["macro_f1"] < 1
+    assert m["accuracy"] == 0.75 and m["macro_f1"] == pytest.approx((2 / 3 + 0.8) / 2)   # F1: class 0 2/3, class 1 0.8
 
 
 def test_intrinsic_metrics_basic():

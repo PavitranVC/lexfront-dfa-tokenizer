@@ -3,6 +3,21 @@
 Time figures are estimates, not measurements. State lives in the repo, so each session starts cold.
 Skip P5/B5 unless P0-P4 are done by about Oct 28. Run P6 only after P2, P3 and P4 are final.
 
+## Overnight mode (overrides the header, buffer header and reply template below)
+When the pipeline runs unattended overnight (a conductor session dispatches one session per task), these rules replace
+anything below that assumes a human in the loop:
+* **Decide, log, proceed.** Instead of "propose code in 2-3 lines and wait for my OK" / "propose each fix first", make
+  the call, add one short entry to `docs/DECISIONS.md`, and continue. "STATUS: needs OK" is not used; a session that
+  cannot proceed reports `blocked` with the reason.
+* **One PR per task.** Each task works on its own branch and opens one pull request to `main`; it does not push to
+  `main` and does not merge. The conductor merges after CI is green.
+* **Auditor step.** An auditor session reviews `main` adversarially and writes `docs/AUDIT.md` (findings with
+  evidence and suggested fixes); a fix task (FIXAUDIT) resolves them before the next numbers are produced.
+* **No date gate.** "Skip P5/B5 unless P0-P4 are done by about Oct 28" does not apply; the conductor decides scope.
+* **Stop switch.** If `docs/STOP` exists on `origin/main`, a session does nothing and reports `stopped`.
+* Unchanged: no invented numbers or references; design changes get a `docs/versions/v<N>-*.md` and a CHANGELOG entry;
+  `docs/HANDOFF.md` is overwritten and one line is appended to `docs/HANDOFF_LOG.md` at the end of each session.
+
 ## Header (paste at the top of every prompt)
 > LexFront advisor rules: propose code in 2-3 lines and wait for my OK. Design changes get a `docs/versions/v4-*.md`
 > (or the next number) plus a CHANGELOG entry. No invented numbers or references. Read only what you need

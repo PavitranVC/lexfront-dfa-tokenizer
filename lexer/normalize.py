@@ -6,7 +6,9 @@ block does). Every rule can be switched on or off independently via `NormalizeCo
     URL       -> <URL>        MENTION -> <USER>       NUMBER -> <NUM>
     ELONGATED -> runs of 3+ identical letters shortened to 2 ("sooooo" -> "soo")
     lowercase -> word-like tokens (WORD, CONTRACTION, ELONGATED) are lowercased
-    slang     -> lookup in slang_table.csv ("u" -> "you"); may expand to several tokens
+    slang     -> lookup in slang_table.csv ("u" -> "you"); may expand to several tokens.
+                 The lookup is exact: the table is lowercase, so with lowercase off "OMG" is left as is
+                 and only "omg" expands (the two switches stay independent for the ablation).
 """
 import csv
 import re
@@ -60,6 +62,6 @@ def normalize_token(cls: str, lexeme: str, config: NormalizeConfig | None = None
         lexeme = collapse_elongation(lexeme)
     if config.lowercase:
         lexeme = lexeme.lower()
-    if config.slang and lexeme.lower() in load_slang():
-        return load_slang()[lexeme.lower()].split()
+    if config.slang and lexeme in load_slang():
+        return load_slang()[lexeme].split()
     return [lexeme]

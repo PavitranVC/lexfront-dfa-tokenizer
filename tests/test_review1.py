@@ -25,7 +25,7 @@ def test_symbol_table_demo():
 
 def test_observations_come_from_json(tmp_path):
     res = make_results(tmp_path)
-    text = observation_text = observations.observation("existing_vs_proposed", res)
+    text = observations.observation("existing_vs_proposed", res)
     assert "ag_news" in text and "points" in text
     assert "best accuracy" in observations.observation("module1", res)
     assert "not available" in observations.observation("dfa", res)

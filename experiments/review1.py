@@ -53,16 +53,17 @@ def run_datasets_section(quick: bool, log=print):
 
 
 # ---- section 2 / 4: experiments -------------------------------------------------------------
-def run_module1_section(quick: bool, log=print):
+def run_module1_section(quick: bool, force: bool = False, log=print):
+    """Module 1 grid; cached JSONs are reused only if their fingerprint matches, `force` recomputes all."""
     run_grid(data.DATASET_NAMES, MODULE1_TOKENIZERS, CLASSIFIER_NAMES, f"{results_dir(quick)}/module1",
-             seed=0, log=log, **sizes(quick))
+             seed=0, force=force, log=log, **sizes(quick))
 
 
-def run_module2_experiments(quick: bool, log=print):
+def run_module2_experiments(quick: bool, force: bool = False, log=print):
     out = f"{results_dir(quick)}/module2"
     build_report(out)
     run_intrinsic(data.DATASET_NAMES, out, sizes(quick)["max_train"], sizes(quick)["max_test"], log=log)
-    run_grid(data.DATASET_NAMES, ["lexfront"], ["nb", "lr"], out, seed=0, log=log, **sizes(quick))
+    run_grid(data.DATASET_NAMES, ["lexfront"], ["nb", "lr"], out, seed=0, force=force, log=log, **sizes(quick))
 
 
 def build_outputs(quick: bool) -> dict:

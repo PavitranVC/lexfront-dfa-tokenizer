@@ -63,7 +63,8 @@ on bad input.
 
 **Normalization.** A semantic action attached to a token: URL→`<URL>`, MENTION→`<USER>`, NUMBER→`<NUM>`,
 elongated letters collapsed to 2, lowercase, slang lookup (`lexer/slang_table.csv`). Each rule has an on/off
-switch (`NormalizeConfig`). `lexer/normalize.py`.
+switch (`NormalizeConfig`). The slang lookup is exact and the table is lowercase, so with lowercase off `OMG` stays
+`OMG` (only `omg` expands): the two switches do not interact. `lexer/normalize.py`.
 
 **TF-IDF, Naive Bayes, Logistic Regression, macro-F1.** TF-IDF weights a token by how often it appears in a
 document and how rare it is across documents. Multinomial NB is the existing method (base paper); LR is a
@@ -101,7 +102,8 @@ Input: `OMG u r sooooo cool!!! @bob https://t.co/x1 :-) §`
 **Inside the DFA** (four-class automaton, 10 minimized states): scanning `#hi` goes q0 → q1 (`#`) → q6 (`h`) →
 q6 (`i`); q6 accepts HASHTAG, and at end of input the last accepting position is 3, so the lexeme is `#hi`.
 Scanning `:-)` goes q0 → q2 → q7 → q8 and q8 accepts EMOTICON. `@bob` ends in q9, accepting MENTION. State
-numbers come from the committed `results/module2/dfa_min.png`.
+numbers come from the committed `results/module2/dfa_min.png`; `tests/test_audit_fixes.py` checks the state ids, the
+atom count and the state counts written in this file against the compiled automaton.
 
 ## 4. File-by-file map
 
@@ -221,16 +223,16 @@ Simplicity; automata here have at most a few hundred states. Hopcroft is O(n log
 By partitioning the code-point line into atoms at every range boundary; the transition table has one column per atom.
 
 **26. What are the known weaknesses of LexFront?**
-Longest-match with fixed regexes: `5pm` becomes NUMBER `5` + WORD `pm`; `:Dog` begins with the emoticon `:D`; slang is a 30-entry table; no handling of Hinglish or code-mixed text (dropped from scope in v3); `y`→`why` is a questionable slang entry.
+Longest-match with fixed regexes: `5pm` becomes NUMBER `5` + WORD `pm`; `:Dog` begins with the emoticon `:D`; `www.` is ELONGATED `www` and normalizes to `ww`; `heyyy'll` is one CONTRACTION (longer than ELONGATED `heyyy`), so its elongation is not collapsed; no Unicode normalization, so a decomposed `é` (NFD) becomes WORD `e` + UNKNOWN accent, and the ligature `ﬁ` is UNKNOWN; slang is a 30-entry table; no handling of Hinglish or code-mixed text (dropped from scope in v3); `y`→`why` is a questionable slang entry.
 
 **27. Why was Hinglish dropped?**
 `docs/versions/v3-english-three-datasets.md`: it needs annotated data and its own slang handling, which does not fit the time. The design change is recorded rather than editing v2.
 
 **28. What happens to emoji?**
-They have their own class; each emoji (with optional skin-tone/variation selector) is one token.
+They have their own class; a single emoji with an optional skin-tone/variation selector is one token. Sequences are not: a flag such as 🇮🇳 (two regional-indicator symbols) becomes two EMOJI tokens, and a ZWJ family such as 👨‍👩 becomes EMOJI, UNKNOWN (the zero-width joiner), EMOJI. Checked in `tests/test_audit_fixes.py`.
 
 **29. How do I reproduce a number in the report?**
-Every number comes from a JSON file in `results/`, written by a script (`python -m experiments.run_module1` etc.); the tables are generated from those files by `experiments/report.py`.
+Every number comes from a JSON file in `results/`, written by a script (`python -m experiments.run_module1` etc.); the tables are generated from those files by `experiments/report.py`. Each run JSON stores a fingerprint of its configuration and of the code; a saved run is reused only while that fingerprint matches, and `--force` (or `FORCE = True` in the notebook) recomputes it.
 
 **30. What is out of scope for this review?**
 BPE and the LexFront + BPE hybrid, WordPiece, Unigram, ablations and transformers.

@@ -12,7 +12,7 @@ import re
 from pathlib import Path
 
 from .observations import observation
-from .report import build_all_tables
+from .report import render_all_tables
 
 DEFAULT_FILES = ["results/REPORT_NOTES.md", "docs/modules/module1.md", "docs/modules/module2.md", "README.md"]
 BLOCK = re.compile(r"(<!-- BEGIN (table|obs):(\w+) -->)\n.*?\n(<!-- END \2:\3 -->)", re.DOTALL)
@@ -33,7 +33,7 @@ def main(argv=None):
     p.add_argument("--results", default="results")
     p.add_argument("files", nargs="*", default=DEFAULT_FILES)
     a = p.parse_args(argv)
-    tables = build_all_tables(a.results)
+    tables = render_all_tables(a.results)
     for f in a.files:
         path = Path(f)
         if path.exists():
