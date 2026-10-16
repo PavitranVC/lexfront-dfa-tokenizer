@@ -22,7 +22,7 @@ Two dependency files:
   use it to reproduce `results/` exactly.
 
 Tested: both files install on Python 3.11 and 3.12, and `pytest -q` passes with the lock file, with the lowest
-versions `requirements.txt` allows, and with the newest it resolved to (2026-10-16). Python 3.10 is not supported.
+versions `requirements.txt` allows (both on 3.11 and 3.12), and, on 3.12 only, with the newest versions it resolved to (2026-10-16). Python 3.10 is not supported.
 Library versions are part of each run's fingerprint, so a run with other versions recomputes instead of reusing a
 committed JSON.
 
