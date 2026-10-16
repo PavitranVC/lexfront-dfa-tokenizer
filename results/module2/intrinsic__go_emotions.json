@@ -1,0 +1,107 @@
+{
+  "timestamp_utc": "2026-10-16T08:05:10+00:00",
+  "dataset": {
+    "name": "go_emotions",
+    "hf_id": "google-research-datasets/go_emotions",
+    "config": "simplified",
+    "n_train": 36308,
+    "n_test": 4590,
+    "n_labels": 28,
+    "label_names": [
+      "admiration",
+      "amusement",
+      "anger",
+      "annoyance",
+      "approval",
+      "caring",
+      "confusion",
+      "curiosity",
+      "desire",
+      "disappointment",
+      "disapproval",
+      "disgust",
+      "embarrassment",
+      "excitement",
+      "fear",
+      "gratitude",
+      "grief",
+      "joy",
+      "love",
+      "nervousness",
+      "optimism",
+      "pride",
+      "realization",
+      "relief",
+      "remorse",
+      "sadness",
+      "surprise",
+      "neutral"
+    ],
+    "split_info": {
+      "train": "train",
+      "test": "test",
+      "reason": "official splits; examples with more than one label removed",
+      "n_train_before_filter": 43410,
+      "n_test_before_filter": 5427,
+      "subsample": {
+        "max_train": null,
+        "max_test": null,
+        "seed": 0
+      }
+    }
+  },
+  "preprocessing": "lowercase",
+  "environment": {
+    "python": "3.11.17",
+    "sklearn": "1.9.1",
+    "numpy": "2.4.6",
+    "machine": "x86_64",
+    "platform": "Linux-6.18.44-fc-v139-x86_64-with-glibc2.39"
+  },
+  "tokenizers": {
+    "whitespace": {
+      "oov_rate_tokens": 0.06038432725308803,
+      "oov_rate_types": 0.30110694518835923,
+      "fertility": 1.0,
+      "vocab_size": 44476,
+      "n_test_tokens": 57399,
+      "n_test_whitespace_words": 57399,
+      "throughput_tokens_per_s": 19737435.003484845,
+      "throughput_docs_per_s": 1609248.6753758537,
+      "throughput_docs": 1000
+    },
+    "nltk": {
+      "oov_rate_tokens": 0.025737341998143256,
+      "oov_rate_types": 0.21545929798356983,
+      "fertility": 1.2197947699437273,
+      "vocab_size": 26410,
+      "n_test_tokens": 70015,
+      "n_test_whitespace_words": 57399,
+      "throughput_tokens_per_s": 137377.03544621682,
+      "throughput_docs_per_s": 9120.164339521796,
+      "throughput_docs": 1000
+    },
+    "tweet": {
+      "oov_rate_tokens": 0.025555425972359904,
+      "oov_rate_types": 0.20840044604138272,
+      "fertility": 1.1950730848969495,
+      "vocab_size": 25907,
+      "n_test_tokens": 68596,
+      "n_test_whitespace_words": 57399,
+      "throughput_tokens_per_s": 122889.14521690858,
+      "throughput_docs_per_s": 8332.032355882337,
+      "throughput_docs": 1000
+    },
+    "lexfront": {
+      "oov_rate_tokens": 0.02445069765407439,
+      "oov_rate_types": 0.19893563101875317,
+      "fertility": 1.1949162877402046,
+      "vocab_size": 24459,
+      "n_test_tokens": 68587,
+      "n_test_whitespace_words": 57399,
+      "throughput_tokens_per_s": 163799.7070661968,
+      "throughput_docs_per_s": 11153.45955782356,
+      "throughput_docs": 1000
+    }
+  }
+}

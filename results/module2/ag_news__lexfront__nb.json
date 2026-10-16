@@ -1,0 +1,64 @@
+{
+  "timestamp_utc": "2026-10-16T08:09:05+00:00",
+  "dataset": {
+    "name": "ag_news",
+    "hf_id": "fancyzhx/ag_news",
+    "config": null,
+    "n_train": 120000,
+    "n_test": 7600,
+    "n_labels": 4,
+    "label_names": [
+      "World",
+      "Sports",
+      "Business",
+      "Sci/Tech"
+    ],
+    "split_info": {
+      "train": "train",
+      "test": "test",
+      "reason": "official splits",
+      "subsample": {
+        "max_train": null,
+        "max_test": null,
+        "seed": 0
+      }
+    }
+  },
+  "tokenizer": "lexfront",
+  "vectorizer": {
+    "type": "TfidfVectorizer",
+    "lowercase": true,
+    "min_df": 2,
+    "ngram_range": [
+      1,
+      1
+    ],
+    "token_pattern": null,
+    "n_features": 41853
+  },
+  "classifier": {
+    "name": "nb",
+    "params": {
+      "alpha": 1.0,
+      "class_prior": null,
+      "fit_prior": true,
+      "force_alpha": true
+    }
+  },
+  "seed": 0,
+  "metrics": {
+    "accuracy": 0.9007894736842105,
+    "macro_f1": 0.9005276530289462
+  },
+  "timing_seconds": {
+    "tokenize_and_vectorize": 47.41055877799954,
+    "classifier_fit": 1.8534081050001987
+  },
+  "environment": {
+    "python": "3.11.17",
+    "sklearn": "1.9.1",
+    "numpy": "2.4.6",
+    "machine": "x86_64",
+    "platform": "Linux-6.18.44-fc-v139-x86_64-with-glibc2.39"
+  }
+}

@@ -101,23 +101,44 @@ Generated from `results/module2/*.json`. Minimized DFA: `results/module2/dfa_min
 <!-- END obs:dfa -->
 
 <!-- BEGIN table:intrinsic_metrics -->
-_not available: AttributeError("'DataFrame' object has no attribute 'oov_rate_tokens'")_
+| dataset | tokenizer | OOV rate % (tokens) | OOV rate % (types) | fertility | vocab size | throughput (tokens/s) |
+|---|---|---|---|---|---|---|
+| tweet_topic | whitespace | 18.45 | 65.83 | 1.000 | 21653 | 11,774,749 |
+| tweet_topic | nltk | 8.74 | 58.23 | 1.431 | 15712 | 106,738 |
+| tweet_topic | tweet | 9.86 | 59.72 | 1.376 | 16524 | 217,245 |
+| tweet_topic | lexfront | 8.25 | 57.13 | 1.391 | 14483 | 162,224 |
+| go_emotions | whitespace | 6.04 | 30.11 | 1.000 | 44476 | 19,737,435 |
+| go_emotions | nltk | 2.57 | 21.55 | 1.220 | 26410 | 137,377 |
+| go_emotions | tweet | 2.56 | 20.84 | 1.195 | 25907 | 122,889 |
+| go_emotions | lexfront | 2.45 | 19.89 | 1.195 | 24459 | 163,800 |
+| ag_news | whitespace | 1.90 | 14.97 | 1.000 | 158733 | 12,746,416 |
+| ag_news | nltk | 0.96 | 11.52 | 1.158 | 98994 | 222,434 |
+| ag_news | tweet | 0.75 | 9.13 | 1.154 | 86096 | 170,507 |
+| ag_news | lexfront | 0.48 | 6.78 | 1.207 | 65337 | 175,741 |
 <!-- END table:intrinsic_metrics -->
 
 <!-- BEGIN obs:intrinsic -->
 **DRAFT observations (generated from the JSON files):**
 
-
+- **tweet_topic**: lowest OOV rate 8.25% (lexfront); smallest vocabulary 14483 (lexfront); LexFront: OOV 8.25%, fertility 1.391, vocabulary 14483; LexFront throughput is 1.52x NLTK's (tokens/s, this machine).
+- **go_emotions**: lowest OOV rate 2.45% (lexfront); smallest vocabulary 24459 (lexfront); LexFront: OOV 2.45%, fertility 1.195, vocabulary 24459; LexFront throughput is 1.19x NLTK's (tokens/s, this machine).
+- **ag_news**: lowest OOV rate 0.48% (lexfront); smallest vocabulary 65337 (lexfront); LexFront: OOV 0.48%, fertility 1.207, vocabulary 65337; LexFront throughput is 0.79x NLTK's (tokens/s, this machine).
 <!-- END obs:intrinsic -->
 
 <!-- BEGIN table:existing_vs_proposed -->
-|  |
-||
+| dataset | existing NLTK+NB acc / F1 | proposed LexFront+LR acc / F1 | delta acc (pts) | delta F1 (pts) | LexFront+NB acc / F1 | NLTK+LR acc / F1 |
+|---|---|---|---|---|---|---|
+| tweet_topic | 70.99 / 28.56 | 70.73 / 36.18 | -0.26 | +7.62 | 70.43 / 27.84 | 72.32 / 36.95 |
+| go_emotions | 37.78 / 4.88 | 55.32 / 33.95 | +17.54 | +29.07 | 37.78 / 4.81 | 55.29 / 33.89 |
+| ag_news | 90.38 / 90.35 | 91.87 / 91.85 | +1.49 | +1.50 | 90.08 / 90.05 | 91.88 / 91.87 |
 <!-- END table:existing_vs_proposed -->
 
 <!-- BEGIN obs:existing_vs_proposed -->
 **DRAFT observations (generated from the JSON files):**
 
+- **tweet_topic**: proposed (LexFront+LR) vs existing (NLTK+NB): accuracy -0.26 points, macro-F1 +7.62 points. Split of the accuracy change: switching classifier with NLTK held fixed (NB to LR) +1.32; switching tokenizer with LR held fixed (NLTK to LexFront) -1.59; switching tokenizer with NB held fixed -0.56.
+- **go_emotions**: proposed (LexFront+LR) vs existing (NLTK+NB): accuracy +17.54 points, macro-F1 +29.07 points. Split of the accuracy change: switching classifier with NLTK held fixed (NB to LR) +17.52; switching tokenizer with LR held fixed (NLTK to LexFront) +0.02; switching tokenizer with NB held fixed +0.00.
+- **ag_news**: proposed (LexFront+LR) vs existing (NLTK+NB): accuracy +1.49 points, macro-F1 +1.50 points. Split of the accuracy change: switching classifier with NLTK held fixed (NB to LR) +1.50; switching tokenizer with LR held fixed (NLTK to LexFront) -0.01; switching tokenizer with NB held fixed -0.30.
 
 _Single run per cell (seed 0), no confidence intervals: gaps of about one point or less should not be read as real differences._
 <!-- END obs:existing_vs_proposed -->

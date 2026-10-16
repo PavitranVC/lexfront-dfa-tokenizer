@@ -37,17 +37,33 @@ Run: `python -m experiments.run_module1` (add `--max-train N --max-test N` to su
 Generated from `results/module1/*.json` and `results/datasets.json`.
 
 <!-- BEGIN table:datasets -->
-_not available: FileNotFoundError(2, 'No such file or directory')_
+| dataset | source | train split | test split | train docs | test docs | labels | largest test class % | subsample |
+|---|---|---|---|---|---|---|---|---|
+| tweet_topic | cardiffnlp/tweet_topic_single | train_coling2022 | test_coling2022 | 3598 | 3399 | 6 | 40.01 | none (full data) |
+| go_emotions | google-research-datasets/go_emotions (simplified) | train | test | 36308 | 4590 | 28 | 34.99 | none (full data) |
+| ag_news | fancyzhx/ag_news | train | test | 120000 | 7600 | 4 | 25.00 | none (full data) |
 <!-- END table:datasets -->
 
 <!-- BEGIN table:module1_results -->
-|  |
-||
+| dataset | tokenizer | Majority acc / F1 | Naive Bayes acc / F1 | Logistic Reg. acc / F1 |
+|---|---|---|---|---|
+| tweet_topic | whitespace | 40.01 / 9.53 | 70.26 / 28.83 | 70.49 / 35.76 |
+| tweet_topic | nltk | 40.01 / 9.53 | 70.99 / 28.56 | 72.32 / 36.95 |
+| tweet_topic | tweet | 40.01 / 9.53 | 70.79 / 28.31 | 72.02 / 36.70 |
+| go_emotions | whitespace | 34.99 / 1.85 | 37.73 / 4.93 | 53.44 / 31.23 |
+| go_emotions | nltk | 34.99 / 1.85 | 37.78 / 4.88 | 55.29 / 33.89 |
+| go_emotions | tweet | 34.99 / 1.85 | 37.80 / 4.86 | 55.40 / 33.99 |
+| ag_news | whitespace | 25.00 / 10.00 | 90.14 / 90.12 | 91.43 / 91.42 |
+| ag_news | nltk | 25.00 / 10.00 | 90.38 / 90.35 | 91.88 / 91.87 |
+| ag_news | tweet | 25.00 / 10.00 | 90.22 / 90.20 | 91.83 / 91.81 |
 <!-- END table:module1_results -->
 
 <!-- BEGIN obs:module1 -->
 **DRAFT observations (generated from the JSON files):**
 
+- **tweet_topic**: best accuracy 72.32% (nltk + LR). Across the three tokenizers LR is +0.93 points vs NB on average; the tokenizer spread is 1.82 points under LR and 0.74 points under NB.
+- **go_emotions**: best accuracy 55.40% (tweet + LR). Across the three tokenizers LR is +16.94 points vs NB on average; the tokenizer spread is 1.96 points under LR and 0.07 points under NB.
+- **ag_news**: best accuracy 91.88% (nltk + LR). Across the three tokenizers LR is +1.46 points vs NB on average; the tokenizer spread is 0.45 points under LR and 0.24 points under NB.
 
 _Single run per cell (seed 0), no confidence intervals: gaps of about one point or less should not be read as real differences._
 <!-- END obs:module1 -->

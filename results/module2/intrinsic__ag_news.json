@@ -1,0 +1,81 @@
+{
+  "timestamp_utc": "2026-10-16T08:05:30+00:00",
+  "dataset": {
+    "name": "ag_news",
+    "hf_id": "fancyzhx/ag_news",
+    "config": null,
+    "n_train": 120000,
+    "n_test": 7600,
+    "n_labels": 4,
+    "label_names": [
+      "World",
+      "Sports",
+      "Business",
+      "Sci/Tech"
+    ],
+    "split_info": {
+      "train": "train",
+      "test": "test",
+      "reason": "official splits",
+      "subsample": {
+        "max_train": null,
+        "max_test": null,
+        "seed": 0
+      }
+    }
+  },
+  "preprocessing": "lowercase",
+  "environment": {
+    "python": "3.11.17",
+    "sklearn": "1.9.1",
+    "numpy": "2.4.6",
+    "machine": "x86_64",
+    "platform": "Linux-6.18.44-fc-v139-x86_64-with-glibc2.39"
+  },
+  "tokenizers": {
+    "whitespace": {
+      "oov_rate_tokens": 0.01901008057483693,
+      "oov_rate_types": 0.1497472136045042,
+      "fertility": 1.0,
+      "vocab_size": 158733,
+      "n_test_tokens": 286690,
+      "n_test_whitespace_words": 286690,
+      "throughput_tokens_per_s": 12746415.593670614,
+      "throughput_docs_per_s": 328422.75627194904,
+      "throughput_docs": 1000
+    },
+    "nltk": {
+      "oov_rate_tokens": 0.009591740796991394,
+      "oov_rate_types": 0.11517467248908297,
+      "fertility": 1.1575150859813736,
+      "vocab_size": 98994,
+      "n_test_tokens": 331848,
+      "n_test_whitespace_words": 286690,
+      "throughput_tokens_per_s": 222433.7139384306,
+      "throughput_docs_per_s": 4953.869934710376,
+      "throughput_docs": 1000
+    },
+    "tweet": {
+      "oov_rate_tokens": 0.007529118639557808,
+      "oov_rate_types": 0.09127878885488806,
+      "fertility": 1.1535665701628937,
+      "vocab_size": 86096,
+      "n_test_tokens": 330716,
+      "n_test_whitespace_words": 286690,
+      "throughput_tokens_per_s": 170507.36364890065,
+      "throughput_docs_per_s": 3792.6766387637217,
+      "throughput_docs": 1000
+    },
+    "lexfront": {
+      "oov_rate_tokens": 0.004817209024103384,
+      "oov_rate_types": 0.06784877578207543,
+      "fertility": 1.2070564023858523,
+      "vocab_size": 65337,
+      "n_test_tokens": 346051,
+      "n_test_whitespace_words": 286690,
+      "throughput_tokens_per_s": 175741.121134911,
+      "throughput_docs_per_s": 3732.4226640100032,
+      "throughput_docs": 1000
+    }
+  }
+}

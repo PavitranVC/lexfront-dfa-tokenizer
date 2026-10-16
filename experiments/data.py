@@ -76,6 +76,13 @@ def subsample(ds: Dataset, max_train: int | None, max_test: int | None, seed: in
 
 
 # ---- loaders (need the Hugging Face hub) ------------------------------------------------
+def _card_quote(card_text: str) -> str:
+    """The sentence of the dataset card that names the COLING 2022 split pair."""
+    import re
+    m = re.search(r"\*\*IMPORTANT NOTE:\*\*[^\n]*", card_text)
+    return m.group(0) if m else ""
+
+
 def _card_text(hf_id: str) -> str:
     from huggingface_hub import hf_hub_download
     path = hf_hub_download(hf_id, "README.md", repo_type="dataset")
@@ -83,12 +90,40 @@ def _card_text(hf_id: str) -> str:
         return f.read()
 
 
+PARQUET_REVISION = "refs/convert/parquet"
+
+
+def _parquet_split_files(hf_id: str, config: str) -> dict[str, list[str]]:
+    """{split name: [parquet paths]} of the auto-converted parquet revision of a dataset repo."""
+    from huggingface_hub import list_repo_files
+    files = {}
+    for path in sorted(list_repo_files(hf_id, repo_type="dataset", revision=PARQUET_REVISION)):
+        parts = path.split("/")
+        if len(parts) == 3 and parts[0] == config and parts[2].endswith(".parquet"):
+            files.setdefault(parts[1], []).append(path)
+    return files
+
+
+def _load_parquet_split(hf_id: str, paths: list[str]):
+    from datasets import Dataset, concatenate_datasets
+    from huggingface_hub import hf_hub_download
+    parts = [Dataset.from_parquet(hf_hub_download(hf_id, p, repo_type="dataset", revision=PARQUET_REVISION))
+             for p in paths]
+    return parts[0] if len(parts) == 1 else concatenate_datasets(parts)
+
+
 def load_tweet_topic() -> Dataset:
-    """TweetTopic (single-label): 6 topics; COLING 2022 split pair when confirmed."""
-    from datasets import get_dataset_split_names, load_dataset
-    splits = choose_tweet_topic_splits(get_dataset_split_names(TWEET_TOPIC), _card_text(TWEET_TOPIC))
-    train = load_dataset(TWEET_TOPIC, split=splits["train"])
-    test = load_dataset(TWEET_TOPIC, split=splits["test"])
+    """TweetTopic (single-label): 6 topics; COLING 2022 split pair when the card confirms it.
+
+    The repo ships a loading script, which `datasets` >= 4 refuses to run, so the same files
+    are read from Hugging Face's auto-converted parquet revision (`refs/convert/parquet`).
+    """
+    files = _parquet_split_files(TWEET_TOPIC, "tweet_topic_single")
+    splits = choose_tweet_topic_splits(list(files), _card_text(TWEET_TOPIC))
+    train = _load_parquet_split(TWEET_TOPIC, files[splits["train"]])
+    test = _load_parquet_split(TWEET_TOPIC, files[splits["test"]])
+    splits = dict(splits, revision=PARQUET_REVISION, card_quote=_card_quote(_card_text(TWEET_TOPIC)),
+                  loading_note="repo uses a loading script; read from the auto-converted parquet revision")
     return Dataset("tweet_topic", TWEET_TOPIC, None, train["text"], train["label"], test["text"],
                    test["label"], train.features["label"].names, splits)
 

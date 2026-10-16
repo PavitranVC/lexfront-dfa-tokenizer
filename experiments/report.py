@@ -71,6 +71,12 @@ def load_datasets(results_dir) -> list[dict]:
     return json.loads((Path(results_dir) / "datasets.json").read_text())["datasets"]
 
 
+def _subsample_text(sub) -> str:
+    if not sub or (sub.get("max_train") is None and sub.get("max_test") is None):
+        return "none (full data)"
+    return f"train<={sub.get('max_train')}, test<={sub.get('max_test')}, seed {sub.get('seed')}"
+
+
 def table_datasets(results_dir) -> str:
     """Dataset overview from datasets.json (written by `data.write_summary`)."""
     rows = []
@@ -80,7 +86,7 @@ def table_datasets(results_dir) -> str:
                      "train split": r["split_info"].get("train"), "test split": r["split_info"].get("test"),
                      "train docs": r["n_train"], "test docs": r["n_test"], "labels": r["n_labels"],
                      "largest test class %": _pct(max(counts.values()) / sum(counts.values())),
-                     "subsample": r["split_info"].get("subsample") or "none"})
+                     "subsample": _subsample_text(r["split_info"].get("subsample"))})
     return to_markdown(pd.DataFrame(rows))
 
 

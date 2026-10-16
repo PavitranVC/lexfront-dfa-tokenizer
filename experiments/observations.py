@@ -31,8 +31,7 @@ def obs_datasets(results_dir) -> str:
         counts = r["test_class_counts"]
         top = max(counts.values()) / sum(counts.values())
         out.append(f"- **{r['name']}**: {r['n_train']} train / {r['n_test']} test documents, {r['n_labels']} labels; "
-                   f"the largest test class holds {_p(top)} of the test set (the accuracy a majority "
-                   f"baseline would reach if train and test share their largest class).")
+                   f"the largest test class holds {_p(top)} of the test set.")
     return "\n".join(out)
 
 
