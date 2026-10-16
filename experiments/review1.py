@@ -20,6 +20,7 @@ from .dfa_report import build_report, dfa_rules
 from .figures import build_all_figures
 from .observations import observation
 from .pipeline import run_grid
+from .run_stats import write as write_bootstrap
 from .run_module2 import run_intrinsic
 from .tokenizers import MODULE1_TOKENIZERS, TOKENIZERS
 
@@ -64,6 +65,11 @@ def run_module2_experiments(quick: bool, force: bool = False, log=print):
     build_report(out)
     run_intrinsic(data.DATASET_NAMES, out, sizes(quick)["max_train"], sizes(quick)["max_test"], log=log)
     run_grid(data.DATASET_NAMES, ["lexfront"], ["nb", "lr"], out, seed=0, force=force, log=log, **sizes(quick))
+
+
+def run_stats_section(quick: bool, log=print):
+    """Bootstrap CIs and paired tests from the stored predictions of the chosen grid (no refitting)."""
+    log("wrote", write_bootstrap(results_dir(quick)))
 
 
 def build_outputs(quick: bool) -> dict:

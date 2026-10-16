@@ -18,9 +18,12 @@ Blocks between `BEGIN`/`END` markers are regenerated; the text around them is ha
 
 ## 2. Choices made
 
-* **TF-IDF lowercases first** (`lowercase=True`, sklearn default) for *every* tokenizer, so LexFront sees lowercased
-  text; its own lowercase rule is therefore inactive in the experiments and covered only by unit tests.
-  Intrinsic metrics lowercase the text the same way.
+* **TF-IDF lowercases first** (`lowercase=True`, sklearn default) for *every* tokenizer in the main grid, so LexFront
+  sees lowercased text there; its own lowercase rule is inactive in the main grid by design (P0 decision, kept so
+  every main number stays comparable). Intrinsic metrics lowercase the text the same way.
+* **Case-sensitivity grid** (`results/sensitivity_case/`, `python -m experiments.run_sensitivity`): the same runs with
+  TF-IDF `lowercase=False` for all four tokenizers x {NB, LR}. There LexFront's lowercase rule is active, so LexFront's
+  WORD tokens are lowercased while the baselines keep case: a robustness check, not a like-for-like comparison.
 * **`min_df=2`** in the TF-IDF vectorizer for all runs (keeps AG News features manageable).
 * **Naive Bayes and Logistic Regression on TF-IDF**: NB on TF-IDF is a common variant; the base paper used raw
   counts (`CountVectorizer`). We did not run NB on counts.
@@ -35,7 +38,10 @@ Blocks between `BEGIN`/`END` markers are regenerated; the text around them is ha
 * **Moore minimization** instead of Hopcroft (simpler; automata are tiny).
 * **DFA scope** as specified: EMOTICON, HASHTAG, MENTION, WORD. ELONGATED left out (back-reference).
 * **Splits**: see the datasets table; the TweetTopic choice and its reason are stored in `results/datasets.json` (`split_info`).
-* **Single seed (0), no confidence intervals.**
+* **One training run per cell (seed 0); test-set bootstrap CIs.** Every run stores its test predictions
+  (`predictions/<run>.json.gz` next to the run JSON); `python -m experiments.run_stats` resamples the test examples to
+  get 95% percentile CIs and paired CIs for differences (`results/stats/bootstrap.json`). Training randomness is not
+  covered (one run per cell; the NB and LR fits are deterministic and the full grid uses no subsampling).
 
 ## 3. Fallbacks used
 
@@ -93,7 +99,7 @@ Blocks between `BEGIN`/`END` markers are regenerated; the text around them is ha
 - **go_emotions**: best accuracy 55.47% (tweet + LR). Across the three tokenizers LR is +16.98 points vs NB on average; the tokenizer spread is 1.96 points under LR and 0.07 points under NB.
 - **ag_news**: best accuracy 91.88% (nltk + LR). Across the three tokenizers LR is +1.47 points vs NB on average; the tokenizer spread is 0.45 points under LR and 0.24 points under NB.
 
-_Single run per cell (seed 0), no confidence intervals: gaps of about one point or less should not be read as real differences._
+_One training run per cell (seed 0). The 95% confidence intervals (table `ci_table`, file `stats/bootstrap.json`) are percentile bootstraps over the test examples: they show how much a score moves with the draw of the test set, not with training randomness, which one run per cell cannot show (the NB and LR fits are deterministic; the full grid uses no subsampling, QUICK mode one fixed-seed subsample). A gap whose CI includes 0 should not be read as a real difference._
 <!-- END obs:module1 -->
 
 ### Existing (NLTK + NB) vs proposed (LexFront + LR)
@@ -112,7 +118,7 @@ _Single run per cell (seed 0), no confidence intervals: gaps of about one point 
 - **go_emotions**: proposed (LexFront+LR) vs existing (NLTK+NB): accuracy +17.58 points, macro-F1 +29.09 points. Split of the accuracy change: switching classifier with NLTK held fixed (NB to LR) +17.49; switching tokenizer with LR held fixed (NLTK to LexFront) +0.09; switching tokenizer with NB held fixed +0.00.
 - **ag_news**: proposed (LexFront+LR) vs existing (NLTK+NB): accuracy +1.50 points, macro-F1 +1.51 points. Split of the accuracy change: switching classifier with NLTK held fixed (NB to LR) +1.50; switching tokenizer with LR held fixed (NLTK to LexFront) +0.00; switching tokenizer with NB held fixed -0.30.
 
-_Single run per cell (seed 0), no confidence intervals: gaps of about one point or less should not be read as real differences._
+_One training run per cell (seed 0). The 95% confidence intervals (table `ci_table`, file `stats/bootstrap.json`) are percentile bootstraps over the test examples: they show how much a score moves with the draw of the test set, not with training randomness, which one run per cell cannot show (the NB and LR fits are deterministic; the full grid uses no subsampling, QUICK mode one fixed-seed subsample). A gap whose CI includes 0 should not be read as a real difference._
 <!-- END obs:existing_vs_proposed -->
 
 ### Intrinsic metrics
@@ -164,7 +170,8 @@ _Single run per cell (seed 0), no confidence intervals: gaps of about one point 
 Reading the tables together (hand-written, still DRAFT): LexFront has the lowest OOV rate and the smallest vocabulary on
 all three datasets, but part of that is by construction (placeholders such as `<URL>`/`<NUM>`, elongation collapsing and slang
 expansion merge strings), so it is not by itself evidence of better classification. Where the proposed-vs-existing
-accuracy change comes from differs per dataset (generated below from the JSON; no confidence intervals were computed):
+accuracy change comes from differs per dataset (generated below from the JSON; whether each difference is larger than
+test-set noise is in the confidence-interval section that follows):
 
 <!-- BEGIN obs:attribution -->
 **DRAFT observations (generated from the JSON files):**
@@ -173,8 +180,107 @@ accuracy change comes from differs per dataset (generated below from the JSON; n
 - **go_emotions**: proposed is 17.58 points above existing; almost all of it comes from the classifier (classifier switch NB to LR +17.49, tokenizer switch NLTK to LexFront under LR +0.09).
 - **ag_news**: proposed is 1.50 points above existing; almost all of it comes from the classifier (classifier switch NB to LR +1.50, tokenizer switch NLTK to LexFront under LR +0.00).
 
-_Single run per cell (seed 0), no confidence intervals: gaps of about one point or less should not be read as real differences._
+_One training run per cell (seed 0). The 95% confidence intervals (table `ci_table`, file `stats/bootstrap.json`) are percentile bootstraps over the test examples: they show how much a score moves with the draw of the test set, not with training randomness, which one run per cell cannot show (the NB and LR fits are deterministic; the full grid uses no subsampling, QUICK mode one fixed-seed subsample). A gap whose CI includes 0 should not be read as a real difference._
 <!-- END obs:attribution -->
+
+### Confidence intervals (test-set bootstrap)
+Paired differences, LexFront+LR minus each baseline, in points; percentile bootstrap over the test examples with the
+settings recorded in `results/stats/bootstrap.json` (`config`). McNemar is computed for the headline tokenizer-only pair only.
+
+<!-- BEGIN table:ci_table -->
+| dataset | difference | accuracy pts [95% CI] | macro-F1 pts [95% CI] | CI excludes 0 (acc / F1) | McNemar p (acc) |
+|---|---|---|---|---|---|
+| tweet_topic | LexFront+LR minus NLTK+LR (tokenizer only) | -1.59 [-2.38, -0.82] | -0.77 [-1.81, +0.32] | yes / no | < 0.001 |
+| tweet_topic | LexFront+LR minus TweetTokenizer+LR (tokenizer only) | -1.29 [-2.00, -0.59] | -0.52 [-1.58, +0.57] | yes / no | - |
+| tweet_topic | LexFront+LR minus NLTK+NB (proposed minus existing) | -0.26 [-1.47, +0.91] | +7.62 [+5.93, +9.31] | no / yes | - |
+| go_emotions | LexFront+LR minus NLTK+LR (tokenizer only) | +0.09 [-0.35, +0.54] | +0.11 [-0.51, +0.77] | no / no | 0.773 |
+| go_emotions | LexFront+LR minus TweetTokenizer+LR (tokenizer only) | -0.11 [-0.46, +0.22] | -0.05 [-0.55, +0.47] | no / no | - |
+| go_emotions | LexFront+LR minus NLTK+NB (proposed minus existing) | +17.58 [+16.21, +18.95] | +29.09 [+27.32, +31.07] | yes / yes | - |
+| ag_news | LexFront+LR minus NLTK+LR (tokenizer only) | +0.00 [-0.32, +0.33] | -0.01 [-0.33, +0.33] | no / no | 1.000 |
+| ag_news | LexFront+LR minus TweetTokenizer+LR (tokenizer only) | +0.04 [-0.24, +0.32] | +0.04 [-0.24, +0.31] | no / no | - |
+| ag_news | LexFront+LR minus NLTK+NB (proposed minus existing) | +1.50 [+1.00, +1.99] | +1.51 [+1.01, +2.01] | yes / yes | - |
+<!-- END table:ci_table -->
+
+<!-- BEGIN obs:ci -->
+**DRAFT observations (generated from the JSON files):**
+
+- **tweet_topic**, LexFront+LR minus NLTK+LR (tokenizer only): accuracy -1.59 points (95% CI -2.38 to -0.82, excludes 0); macro-F1 -0.77 points (95% CI -1.81 to +0.32, includes 0). Exact McNemar test on accuracy: p < 0.001 (discordant test examples: right only with nltk+lr 124, right only with lexfront+lr 70).
+- **tweet_topic**, LexFront+LR minus TweetTokenizer+LR (tokenizer only): accuracy -1.29 points (95% CI -2.00 to -0.59, excludes 0); macro-F1 -0.52 points (95% CI -1.58 to +0.57, includes 0).
+- **tweet_topic**, LexFront+LR minus NLTK+NB (proposed minus existing): accuracy -0.26 points (95% CI -1.47 to +0.91, includes 0); macro-F1 +7.62 points (95% CI +5.93 to +9.31, excludes 0).
+- **go_emotions**, LexFront+LR minus NLTK+LR (tokenizer only): accuracy +0.09 points (95% CI -0.35 to +0.54, includes 0); macro-F1 +0.11 points (95% CI -0.51 to +0.77, includes 0). Exact McNemar test on accuracy: p = 0.773 (discordant test examples: right only with nltk+lr 52, right only with lexfront+lr 56).
+- **go_emotions**, LexFront+LR minus TweetTokenizer+LR (tokenizer only): accuracy -0.11 points (95% CI -0.46 to +0.22, includes 0); macro-F1 -0.05 points (95% CI -0.55 to +0.47, includes 0).
+- **go_emotions**, LexFront+LR minus NLTK+NB (proposed minus existing): accuracy +17.58 points (95% CI +16.21 to +18.95, excludes 0); macro-F1 +29.09 points (95% CI +27.32 to +31.07, excludes 0).
+- **ag_news**, LexFront+LR minus NLTK+LR (tokenizer only): accuracy +0.00 points (95% CI -0.32 to +0.33, includes 0); macro-F1 -0.01 points (95% CI -0.33 to +0.33, includes 0). Exact McNemar test on accuracy: p = 1.000 (discordant test examples: right only with nltk+lr 81, right only with lexfront+lr 81).
+- **ag_news**, LexFront+LR minus TweetTokenizer+LR (tokenizer only): accuracy +0.04 points (95% CI -0.24 to +0.32, includes 0); macro-F1 +0.04 points (95% CI -0.24 to +0.31, includes 0).
+- **ag_news**, LexFront+LR minus NLTK+NB (proposed minus existing): accuracy +1.50 points (95% CI +1.00 to +1.99, excludes 0); macro-F1 +1.51 points (95% CI +1.01 to +2.01, excludes 0).
+- Tokenizer-only comparison (LexFront+LR vs NLTK+LR): 1 of 6 difference CIs (accuracy and macro-F1, all datasets) exclude 0.
+- Settings: percentile bootstrap over test examples, B = 2000, seed 20261016, 95% percentile intervals.
+
+_One training run per cell (seed 0). The 95% confidence intervals (table `ci_table`, file `stats/bootstrap.json`) are percentile bootstraps over the test examples: they show how much a score moves with the draw of the test set, not with training randomness, which one run per cell cannot show (the NB and LR fits are deterministic; the full grid uses no subsampling, QUICK mode one fixed-seed subsample). A gap whose CI includes 0 should not be read as a real difference._
+<!-- END obs:ci -->
+
+Per-run 95% CIs (NB and LR; the majority runs are in the JSON):
+
+<!-- BEGIN table:ci_runs -->
+| dataset | tokenizer | classifier | accuracy % [95% CI] | macro-F1 % [95% CI] |
+|---|---|---|---|---|
+| tweet_topic | whitespace | Naive Bayes | 70.26 [68.76, 71.76] | 28.83 [27.88, 29.74] |
+| tweet_topic | whitespace | Logistic Reg. | 70.49 [68.87, 72.08] | 35.76 [34.24, 37.37] |
+| tweet_topic | nltk | Naive Bayes | 70.99 [69.52, 72.49] | 28.56 [27.76, 29.44] |
+| tweet_topic | nltk | Logistic Reg. | 72.32 [70.90, 73.87] | 36.95 [35.34, 38.58] |
+| tweet_topic | tweet | Naive Bayes | 70.79 [69.29, 72.29] | 28.31 [27.53, 29.17] |
+| tweet_topic | tweet | Logistic Reg. | 72.02 [70.58, 73.61] | 36.70 [35.13, 38.28] |
+| tweet_topic | lexfront | Naive Bayes | 70.43 [68.90, 71.93] | 27.84 [27.12, 28.62] |
+| tweet_topic | lexfront | Logistic Reg. | 70.73 [69.23, 72.29] | 36.18 [34.64, 37.84] |
+| go_emotions | whitespace | Naive Bayes | 37.73 [36.34, 39.15] | 4.93 [4.47, 5.47] |
+| go_emotions | whitespace | Logistic Reg. | 53.51 [52.11, 54.95] | 31.40 [29.73, 33.40] |
+| go_emotions | nltk | Naive Bayes | 37.78 [36.38, 39.19] | 4.88 [4.42, 5.39] |
+| go_emotions | nltk | Logistic Reg. | 55.27 [53.81, 56.71] | 33.86 [32.07, 35.92] |
+| go_emotions | tweet | Naive Bayes | 37.80 [36.43, 39.24] | 4.86 [4.41, 5.37] |
+| go_emotions | tweet | Logistic Reg. | 55.47 [54.03, 56.91] | 34.02 [32.24, 36.04] |
+| go_emotions | lexfront | Naive Bayes | 37.78 [36.40, 39.19] | 4.81 [4.37, 5.32] |
+| go_emotions | lexfront | Logistic Reg. | 55.36 [53.97, 56.80] | 33.97 [32.12, 36.02] |
+| ag_news | whitespace | Naive Bayes | 90.14 [89.49, 90.79] | 90.12 [89.47, 90.75] |
+| ag_news | whitespace | Logistic Reg. | 91.43 [90.80, 92.04] | 91.42 [90.79, 92.02] |
+| ag_news | nltk | Naive Bayes | 90.38 [89.72, 91.01] | 90.35 [89.70, 90.98] |
+| ag_news | nltk | Logistic Reg. | 91.88 [91.25, 92.46] | 91.87 [91.23, 92.44] |
+| ag_news | tweet | Naive Bayes | 90.22 [89.54, 90.87] | 90.20 [89.53, 90.85] |
+| ag_news | tweet | Logistic Reg. | 91.84 [91.22, 92.43] | 91.83 [91.20, 92.41] |
+| ag_news | lexfront | Naive Bayes | 90.08 [89.39, 90.74] | 90.05 [89.37, 90.69] |
+| ag_news | lexfront | Logistic Reg. | 91.88 [91.26, 92.47] | 91.86 [91.23, 92.44] |
+<!-- END table:ci_runs -->
+
+### Case-sensitivity check (TF-IDF `lowercase=False`)
+All four tokenizers with case folding off in TF-IDF. LexFront's own lowercase rule is active here, so LexFront's WORD
+tokens are lowercased while the baselines keep case: this is a robustness check of the main result, not a like-for-like
+comparison. The last two columns compare each LR cell with the same cell of the main grid (`lowercase=True`).
+
+<!-- BEGIN table:sensitivity_case -->
+| dataset | tokenizer | Naive Bayes acc / F1 (case kept) | Logistic Reg. acc / F1 (case kept) | LR acc change vs main (pts) | LR F1 change vs main (pts) |
+|---|---|---|---|---|---|
+| tweet_topic | whitespace | 69.73 / 28.81 | 69.58 / 34.58 | -0.91 | -1.18 |
+| tweet_topic | nltk | 71.08 / 28.63 | 71.61 / 36.04 | -0.71 | -0.91 |
+| tweet_topic | tweet | 70.55 / 28.56 | 71.43 / 35.86 | -0.59 | -0.84 |
+| tweet_topic | lexfront | 70.43 / 27.99 | 70.70 / 36.27 | -0.03 | +0.09 |
+| go_emotions | whitespace | 37.78 / 4.95 | 52.64 / 29.80 | -0.87 | -1.61 |
+| go_emotions | nltk | 37.89 / 5.06 | 54.18 / 32.31 | -1.09 | -1.55 |
+| go_emotions | tweet | 37.93 / 5.03 | 54.20 / 32.33 | -1.26 | -1.69 |
+| go_emotions | lexfront | 37.78 / 4.81 | 55.34 / 34.03 | -0.02 | +0.06 |
+| ag_news | whitespace | 90.22 / 90.19 | 91.59 / 91.57 | +0.16 | +0.16 |
+| ag_news | nltk | 90.47 / 90.44 | 92.11 / 92.09 | +0.22 | +0.22 |
+| ag_news | tweet | 90.42 / 90.39 | 92.08 / 92.06 | +0.24 | +0.24 |
+| ag_news | lexfront | 90.08 / 90.05 | 91.92 / 91.90 | +0.04 | +0.04 |
+<!-- END table:sensitivity_case -->
+
+<!-- BEGIN obs:sensitivity_case -->
+**DRAFT observations (generated from the JSON files):**
+
+- **tweet_topic**: LexFront+LR minus NLTK+LR accuracy is -0.91 points with case kept vs -1.59 in the main grid; LR accuracy change from switching TF-IDF case folding off: whitespace -0.91, nltk -0.71, tweet -0.59, lexfront -0.03.
+- **go_emotions**: LexFront+LR minus NLTK+LR accuracy is +1.15 points with case kept vs +0.09 in the main grid; LR accuracy change from switching TF-IDF case folding off: whitespace -0.87, nltk -1.09, tweet -1.26, lexfront -0.02.
+- **ag_news**: LexFront+LR minus NLTK+LR accuracy is -0.18 points with case kept vs +0.00 in the main grid; LR accuracy change from switching TF-IDF case folding off: whitespace +0.16, nltk +0.22, tweet +0.24, lexfront +0.04.
+
+_Robustness check, not a like-for-like comparison: with TF-IDF case folding off, LexFront lowercases its own WORD tokens while the baselines keep case. One training run per cell, no confidence intervals for this grid._
+<!-- END obs:sensitivity_case -->
 
 Finding: the usual ELONGATED regex `(.)\1{2,}` needs a back-reference, which is outside regular expressions, so it is
 not in the DFA engine. For a finite alphabet and run length 3 the language is still regular when spelled out letter by
@@ -249,6 +355,19 @@ letter; the last row of the DFA table is that spelled-out version (lowercase onl
                 clf.fit(X_train, y_train)
                 record <- {config, accuracy(y_test, clf.predict(X_test)), macro_f1(...), timings, versions}
                 write record (with a config + code fingerprint) to results/<module>/<dataset>__<tokenizer>__<clf>.json
+                write (y_test, predictions) to results/<module>/predictions/<dataset>__<tokenizer>__<clf>.json.gz
                 # a cached record is reused only while its fingerprint still matches
     tables, figures, observations are built only from those JSON files
+
+(4) Test-set bootstrap (experiments/stats.py)
+
+    for dataset:
+        y <- gold test labels;  pred[run] <- stored predictions of every run
+        idx <- B x n matrix of indices drawn with replacement      # default_rng(seed); shared by all runs: paired
+        for b in 1..B:
+            cm[run][b] <- confusion matrix of (y[idx[b]], pred[run][idx[b]])   # one bincount for all b
+            acc = trace(cm) / n;  macro-F1 = mean over present classes of 2TP / (2TP + FP + FN)
+        CI(run)        <- 2.5th and 97.5th percentile of metric(cm[run][.])
+        CI(B minus A)  <- percentiles of metric(cm[B][.]) - metric(cm[A][.])         # same resamples
+        McNemar(A, B)  <- exact binomial test on (#A right & B wrong, #A wrong & B right)
 ```

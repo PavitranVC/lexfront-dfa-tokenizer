@@ -2,6 +2,18 @@
 
 Newest first. Dates are the day the change was made (IST workday).
 
+## 2026-10-16 (P0+P1)
+- P0: main grid unchanged (TF-IDF `lowercase=True`); new case-sensitivity grid with `lowercase=False` for all four
+  tokenizers x {NB, LR} x 3 datasets (`python -m experiments.run_sensitivity`, `results/sensitivity_case/`), with a
+  generated table and observation. Decision in `docs/DECISIONS.md`.
+- P1: every run stores its test predictions (`predictions/<run>.json.gz`, named in the run JSON as `predictions_file`).
+- P1: `experiments/stats.py` + `python -m experiments.run_stats`: percentile bootstrap CIs (accuracy, macro-F1) for every
+  run, paired CIs for LexFront+LR vs NLTK+LR / TweetTokenizer+LR / NLTK+NB, exact McNemar for the headline pair
+  (`results/stats/bootstrap.json`); generated tables `ci_table`, `ci_runs` and observation `ci` in REPORT_NOTES,
+  docs/modules, LEARN.md (new viva Q30) and the notebook (new section 5 on the QUICK grid).
+- The observations caveat now describes the CIs (test-set bootstrap, one training run per cell).
+- All main run JSONs regenerated (full and QUICK, `--force`); every metric identical to before.
+
 ## 2026-10-16 (FIXAUDIT2)
 - Fixed the findings of `docs/AUDIT_2.md` (A2-M1, A2-M2, A2-m1..m7); each decision is in `docs/DECISIONS.md`.
 - Dependencies: `requirements.txt` now holds compatible ranges (Python 3.11 and 3.12, satisfied by a fresh Colab runtime);

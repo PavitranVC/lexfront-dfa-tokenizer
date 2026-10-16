@@ -70,8 +70,9 @@ FORCE = QUICK_MODE     # recompute every run even if a cached JSON matches (chea
 # Files each mode rewrites:
 #   True : everything under results/quick/ (the committed results/ is untouched).
 #   False: in the committed results/: datasets.json, module2/dfa_states.json + dfa_min.dot/.png, module2/intrinsic__*.json
-#          (always, new timestamps and throughput), tables/ and figures/ (rebuilt from the JSON); module1/ and module2/
-#          run JSONs only where their fingerprint no longer matches (FORCE is False). `git checkout results/` undoes it.
+#          (always, new timestamps and throughput), stats/bootstrap.json, tables/ and figures/ (rebuilt from the JSON);
+#          module1/ and module2/ run JSONs and their predictions/ sidecars only where the fingerprint no longer matches
+#          (FORCE is False). `git checkout results/` undoes it.
 
 import pandas as pd
 from IPython.display import Image, Markdown, display
@@ -164,13 +165,30 @@ display(Image(f"{RES}/figures/existing_vs_proposed.png"))'''),
     md("### Observations — existing vs proposed"),
     code('''display(Markdown(observation("existing_vs_proposed", RES)))'''),
 
+    md("""## 5. Is the difference larger than test-set noise?
+
+Every run above also saved its test predictions (`predictions/<run>.json.gz` next to its JSON). The cell below
+resamples the test examples with replacement (percentile bootstrap, fixed seed; B and the seed are stored in
+`stats/bootstrap.json`) and recomputes accuracy and macro-F1 from a confusion matrix for each resample. For a
+difference, both systems are scored on the *same* resamples (paired); NLTK+LR vs LexFront+LR also gets an exact
+McNemar test. Same code as the full grid (`python -m experiments.run_stats`), here on the QUICK grid.
+These intervals cover the draw of the test set only, not training randomness (one training run per cell)."""),
+    code('''review1.run_stats_section(QUICK_MODE)
+out = review1.build_outputs(QUICK_MODE)
+display(Markdown(out["tables"]["ci_table"]))
+display(Markdown(out["tables"]["ci_runs"]))'''),
+    md("### Observations — confidence intervals"),
+    code('''display(Markdown(observation("ci", RES)))'''),
+
     md("""## Appendix — committed full-data results
 The tables below are built from the JSON files in `results/` (full datasets, produced by
-`python -m experiments.run_module1` and `python -m experiments.run_module2`)."""),
+`python -m experiments.run_module1`, `python -m experiments.run_module2`, `python -m experiments.run_stats` and
+`python -m experiments.run_sensitivity`). `sensitivity_case` is the grid with TF-IDF `lowercase=False`: LexFront's
+lowercase rule is active there while the baselines keep case, so it is a robustness check, not a like-for-like."""),
     code('''import os
 if os.path.exists("results/datasets.json") and os.path.isdir("results/module1"):
     full = report.render_all_tables("results")      # read only: does not rewrite results/tables
-    for name in ["module1_results", "existing_vs_proposed", "intrinsic_metrics"]:
+    for name in ["module1_results", "existing_vs_proposed", "intrinsic_metrics", "ci_table", "sensitivity_case"]:
         print(name); display(Markdown(full[name]))
 else:
     print("full-data results are not in this checkout")'''),

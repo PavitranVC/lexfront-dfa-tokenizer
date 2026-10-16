@@ -190,7 +190,7 @@ The headline pair changes two things at once (tokenizer and classifier). The ext
 So every tokenizer plugs into the identical vectorizer. `token_pattern=None` silences the warning that the default pattern is ignored when a tokenizer is given.
 
 **15. Why lowercase before tokenizing?**
-TF-IDF's `lowercase=True` runs first for all tokenizers (the sklearn default, as in the base paper's CountVectorizer). It keeps the comparison fair; it also means LexFront's own lowercase rule is inactive in the experiments (it is covered by unit tests and the notebook demo).
+TF-IDF's `lowercase=True` runs first for all tokenizers in the main grid (the sklearn default, as in the base paper's CountVectorizer). It keeps the comparison fair; it also means LexFront's own lowercase rule is inactive there. A separate sensitivity grid (`results/sensitivity_case/`) switches TF-IDF case folding off for all four tokenizers: LexFront's rule is then active and its WORD tokens are lowercased while the baselines keep case, so it is a robustness check, not a like-for-like comparison (table `sensitivity_case` in `results/REPORT_NOTES.md`).
 
 **16. Why accuracy and macro-F1?**
 Accuracy is the headline in the base paper; macro-F1 shows whether small classes are handled, which matters on imbalanced data such as GoEmotions.
@@ -205,7 +205,7 @@ The task here is single-label classification; multi-label examples would need a 
 Recorded in each result JSON and in `results/datasets.json` (`split_info`): the COLING 2022 pair if the dataset card confirms it, otherwise a recorded fallback.
 
 **20. Why only one seed? Are differences significant?**
-Time. Classifiers here are deterministic, and subsampling uses a fixed seed, but we have no confidence intervals; differences of about a point should not be trusted. The observation cells say so.
+Time. One training run per cell; the NB and LR fits are deterministic and the full grid uses no subsampling, so rerunning gives the same numbers. What does vary is the test set: we report bootstrap CIs over the test examples (Q30). They do not cover training randomness.
 
 **21. What is OOV rate and why does a tokenizer affect it?**
 Share of test tokens never seen in training. Placeholders (`<URL>`, `<NUM>`) and elongation collapsing merge many rare strings into frequent ones, which tends to lower OOV; see the intrinsic table for the actual values.
@@ -239,3 +239,20 @@ BPE and the LexFront + BPE hybrid, WordPiece, Unigram, ablations and transformer
 
 **31. Why are the classifier fits single-threaded, and does that change the numbers?**
 The native thread count changes the floating-point summation order inside the LR solver (lbfgs), so the same seed can give slightly different metrics on a different thread count. `experiments/pipeline.py` wraps vectorize, fit and predict in `threadpoolctl.threadpool_limits(1)`, and each run JSON records `blas_threads = 1`. The committed results were regenerated this way, so some LR numbers moved slightly; the old and new values are listed in `docs/DECISIONS.md`. `tests/test_audit_fixes.py` checks that the pinning is active.
+
+**30. How do you know the difference is not noise?**
+Only partly. Every run stores its test predictions, and `python -m experiments.run_stats` resamples the test examples B times (percentile bootstrap with a fixed seed; B, the seed and every interval are in `results/stats/bootstrap.json`). For a comparison both systems are scored on the same resamples (paired), and for NLTK+LR vs LexFront+LR we also run an exact McNemar test. If the 95% CI of a difference includes 0, we do not claim a difference. What this does not show: training randomness (one run per cell), other datasets, or other test-set distributions; and with three comparisons per dataset, one CI excluding 0 by chance is possible. The generated table:
+
+<!-- BEGIN table:ci_table -->
+| dataset | difference | accuracy pts [95% CI] | macro-F1 pts [95% CI] | CI excludes 0 (acc / F1) | McNemar p (acc) |
+|---|---|---|---|---|---|
+| tweet_topic | LexFront+LR minus NLTK+LR (tokenizer only) | -1.59 [-2.38, -0.82] | -0.77 [-1.81, +0.32] | yes / no | < 0.001 |
+| tweet_topic | LexFront+LR minus TweetTokenizer+LR (tokenizer only) | -1.29 [-2.00, -0.59] | -0.52 [-1.58, +0.57] | yes / no | - |
+| tweet_topic | LexFront+LR minus NLTK+NB (proposed minus existing) | -0.26 [-1.47, +0.91] | +7.62 [+5.93, +9.31] | no / yes | - |
+| go_emotions | LexFront+LR minus NLTK+LR (tokenizer only) | +0.09 [-0.35, +0.54] | +0.11 [-0.51, +0.77] | no / no | 0.773 |
+| go_emotions | LexFront+LR minus TweetTokenizer+LR (tokenizer only) | -0.11 [-0.46, +0.22] | -0.05 [-0.55, +0.47] | no / no | - |
+| go_emotions | LexFront+LR minus NLTK+NB (proposed minus existing) | +17.58 [+16.21, +18.95] | +29.09 [+27.32, +31.07] | yes / yes | - |
+| ag_news | LexFront+LR minus NLTK+LR (tokenizer only) | +0.00 [-0.32, +0.33] | -0.01 [-0.33, +0.33] | no / no | 1.000 |
+| ag_news | LexFront+LR minus TweetTokenizer+LR (tokenizer only) | +0.04 [-0.24, +0.32] | +0.04 [-0.24, +0.31] | no / no | - |
+| ag_news | LexFront+LR minus NLTK+NB (proposed minus existing) | +1.50 [+1.00, +1.99] | +1.51 [+1.01, +2.01] | yes / yes | - |
+<!-- END table:ci_table -->

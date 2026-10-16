@@ -1,13 +1,14 @@
-# HANDOFF (written by FIXAUDIT2, 2026-10-16, status ready)
-DONE: fixed docs/AUDIT_2.md A2-M1, A2-M2, A2-m1..m7. requirements.txt = ranges (Colab-friendly), requirements-lock.txt = exact pins (CI);
-notebook setup cell warns on git pull failure / incomplete clone and when pip changed an imported package (experiments/setup_check.py).
-Fingerprint now covers data content hash and numpy/scipy/threadpoolctl versions; VECTORIZER_PARAMS drives make_vectorizer.
-NUMBERS: all 66 run JSONs regenerated (--force, full + QUICK): every metric identical to main (results/module{1,2}/*__*__*.json,
-results/quick/module{1,2}/*__*__*.json); only fingerprints and the new data_hash field changed. Intrinsic JSONs not rerun (full).
-Tested installs: lock and lowest-range versions on Python 3.11 and 3.12, newest-range on 3.12; pytest passes in each.
-OPEN: TF-IDF lowercasing vs LexFront lowercase rule (P0). HF dataset revisions not pinned (content hash detects drift).
-DECISIONS: docs/DECISIONS.md "FIXAUDIT2" section (one entry per finding).
-NEXT: P0 - decide TF-IDF lowercase=False vs dropping the rule; rerun affected results.
-FILES TOUCHED: requirements.txt, requirements-lock.txt, experiments/{classifiers,data,pipeline,setup_check}.py, notebooks/*, tests/test_audit_fixes.py,
-.github/workflows/ci.yml, README.md, results/**/ run JSONs + results/quick intrinsic/tables, docs/{DECISIONS,HANDOFF,HANDOFF_LOG}.md, CHANGELOG.md
+# HANDOFF (written by P0P1, 2026-10-16, status ready)
+DONE: P0 main grid unchanged (TF-IDF lowercase=True); new case-sensitive grid (lowercase=False, 4 tokenizers x NB/LR x 3 datasets).
+P1 every run stores test predictions (predictions/<run>.json.gz, `predictions_file` in run JSON); experiments/stats.py + run_stats:
+percentile bootstrap (B, seed in JSON config), paired CIs for LexFront+LR vs NLTK+LR / Tweet+LR / NLTK+NB, exact McNemar on the first.
+NUMBERS: results/stats/bootstrap.json (full), results/quick/stats/bootstrap.json (QUICK), results/sensitivity_case/module{1,2}/*.json;
+tables ci_table, ci_runs, sensitivity_case + obs:ci, obs:sensitivity_case (REPORT_NOTES, docs/modules, LEARN Q30, notebook s.5).
+All 66 main run JSONs (full + QUICK) regenerated with --force: every metric identical to main (script compare).
+OPEN: CIs cover test-set sampling only (one training run per cell). No CIs for the sensitivity grid. HF revisions not pinned.
+DECISIONS: docs/DECISIONS.md "P0+P1" section.
+NEXT: P2 per-rule ablation (6 rules x 3 datasets, LR) with CIs via experiments/stats.py (pairs vs full LexFront+LR).
+FILES TOUCHED: experiments/{classifiers,pipeline,report,observations,render_docs,review1,stats,run_stats,run_sensitivity}.py,
+tests/test_stats.py, notebooks/*, results/** (run JSONs, predictions/, stats/, sensitivity_case/, tables), results/REPORT_NOTES.md,
+docs/{modules/*,LEARN,DECISIONS,HANDOFF,HANDOFF_LOG}.md, CHANGELOG.md
 CHECK: `pytest -q`, `python notebooks/make_notebook.py --check`, `python -m experiments.render_docs && git diff --exit-code`

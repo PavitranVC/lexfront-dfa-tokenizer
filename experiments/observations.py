@@ -1,15 +1,23 @@
 """Observations written *from the JSON results only* -- every number is computed here.
 
 Each function returns a markdown bullet list. They state arithmetic facts (best, spread,
-signed differences). They do not explain *why*; explanations are labelled hypotheses in the
-docs. All runs use one seed and no confidence intervals, so small gaps are not claims.
+signed differences, and whether a bootstrap CI excludes 0). They do not explain *why*; explanations are
+labelled hypotheses in the docs. Every cell is one training run (seed 0); the CIs cover test-set sampling only.
 """
 import pandas as pd
 
-from .report import DATASET_ORDER, load_datasets, load_dfa, load_intrinsic, load_runs
+from .report import (DATASET_ORDER, TOKENIZER_ORDER, load_bootstrap, load_datasets, load_dfa, load_intrinsic, load_runs,
+                     load_sensitivity_runs, p_value_text)
 
-CAVEAT = ("_Single run per cell (seed 0), no confidence intervals: gaps of about one point or less "
-          "should not be read as real differences._")
+CAVEAT = ("_One training run per cell (seed 0). The 95% confidence intervals (table `ci_table`, file "
+          "`stats/bootstrap.json`) are percentile bootstraps over the test examples: they show how much a score "
+          "moves with the draw of the test set, not with training randomness, which one run per cell cannot show "
+          "(the NB and LR fits are deterministic; the full grid uses no subsampling, QUICK mode one fixed-seed "
+          "subsample). A gap whose CI includes 0 should not be read as a real difference._")
+
+SENSITIVITY_CAVEAT = ("_Robustness check, not a like-for-like comparison: with TF-IDF case folding off, LexFront "
+                      "lowercases its own WORD tokens while the baselines keep case. One training run per cell, no "
+                      "confidence intervals for this grid._")
 
 
 def _p(x) -> str:
@@ -142,8 +150,64 @@ def obs_dfa(results_dir) -> str:
     return "\n".join(lines)
 
 
+def _ci_phrase(d: dict) -> str:
+    """'+0.09 points (95% CI -0.50 to +0.70, includes 0)' for one metric of a paired difference."""
+    verdict = "excludes 0" if d["ci_excludes_zero"] else "includes 0"
+    return f"{100 * d['diff']:+.2f} points (95% CI {100 * d['ci'][0]:+.2f} to {100 * d['ci'][1]:+.2f}, {verdict})"
+
+
+def _pair_sentence(ds: str, pair: dict) -> str:
+    line = (f"- **{ds}**, {pair['label']}: accuracy {_ci_phrase(pair['accuracy'])}; "
+            f"macro-F1 {_ci_phrase(pair['macro_f1'])}.")
+    mc = pair.get("mcnemar_accuracy")
+    if mc:
+        line += (f" Exact McNemar test on accuracy: p {p_value_text(mc['p_value'])} "
+                 f"(discordant test examples: right only "
+                 f"with {pair['a'].replace('__', '+')} {mc['a_right_b_wrong']}, right only with "
+                 f"{pair['b'].replace('__', '+')} {mc['a_wrong_b_right']}).")
+    return line
+
+
+def obs_ci(results_dir) -> str:
+    """Per dataset and pair: the paired difference, its bootstrap CI and whether the CI excludes 0."""
+    boot = load_bootstrap(results_dir)
+    cfg = boot["config"]
+    out = [_pair_sentence(ds, pair) for ds, d in boot["datasets"].items() for pair in d["pairs"].values()]
+    n_excl = sum(p[m]["ci_excludes_zero"] for d in boot["datasets"].values()
+                 for name, p in d["pairs"].items() if name == "tokenizer_only_lr" for m in ("accuracy", "macro_f1"))
+    n_all = 2 * sum("tokenizer_only_lr" in d["pairs"] for d in boot["datasets"].values())
+    out.append(f"- Tokenizer-only comparison (LexFront+LR vs NLTK+LR): {n_excl} of {n_all} difference CIs "
+               f"(accuracy and macro-F1, all datasets) exclude 0.")
+    out.append(f"- Settings: {cfg['method']}, B = {cfg['n_boot']}, seed {cfg['seed']}, "
+               f"{100 * cfg['ci_level']:.0f}% percentile intervals.")
+    return "\n".join(out + ["", CAVEAT])
+
+
+def obs_sensitivity_case(results_dir) -> str:
+    """Case-sensitive TF-IDF grid against the main grid: the tokenizer-only gap and each tokenizer's LR change."""
+    sens, main = load_sensitivity_runs(results_dir), load_runs(results_dir)
+    out = []
+    for ds in _datasets(sens):
+        parts = []
+        lf_s, nl_s = _get(sens, ds, "lexfront", "lr"), _get(sens, ds, "nltk", "lr")
+        lf_m, nl_m = _get(main, ds, "lexfront", "lr"), _get(main, ds, "nltk", "lr")
+        if all(c is not None for c in (lf_s, nl_s, lf_m, nl_m)):
+            parts.append(f"LexFront+LR minus NLTK+LR accuracy is {100 * (lf_s.accuracy - nl_s.accuracy):+.2f} "
+                         f"points with case kept vs {100 * (lf_m.accuracy - nl_m.accuracy):+.2f} in the main grid")
+        changes = []
+        for tok in TOKENIZER_ORDER:
+            s, m = _get(sens, ds, tok, "lr"), _get(main, ds, tok, "lr")
+            if s is not None and m is not None:
+                changes.append(f"{tok} {100 * (s.accuracy - m.accuracy):+.2f}")
+        if changes:
+            parts.append("LR accuracy change from switching TF-IDF case folding off: " + ", ".join(changes))
+        out.append(f"- **{ds}**: " + "; ".join(parts) + ".")
+    return "\n".join(out + ["", SENSITIVITY_CAVEAT])
+
+
 OBSERVATIONS = {"datasets": obs_datasets, "module1": obs_module1, "existing_vs_proposed": obs_existing_vs_proposed,
-                "intrinsic": obs_intrinsic, "dfa": obs_dfa, "attribution": obs_attribution}
+                "intrinsic": obs_intrinsic, "dfa": obs_dfa, "attribution": obs_attribution,
+                "ci": obs_ci, "sensitivity_case": obs_sensitivity_case}
 
 
 def observation(name: str, results_dir) -> str:
