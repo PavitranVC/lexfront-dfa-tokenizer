@@ -2,6 +2,18 @@
 
 Newest first. Dates are the day the change was made (IST workday).
 
+## 2026-10-16 (FIXAUDIT2)
+- Fixed the findings of `docs/AUDIT_2.md` (A2-M1, A2-M2, A2-m1..m7); each decision is in `docs/DECISIONS.md`.
+- Dependencies: `requirements.txt` now holds compatible ranges (Python 3.11 and 3.12, satisfied by a fresh Colab runtime);
+  the exact pins moved to `requirements-lock.txt`, which CI installs.
+- Notebook setup cell: prints the numpy/pandas/scikit-learn versions in use, warns when a restart is needed, warns when
+  `git pull` fails and stops on an incomplete clone; the `QUICK_MODE` cell lists the files each mode rewrites.
+- Result cache: the config fingerprint also covers a hash of the train/test texts and labels and the numpy, scipy and
+  threadpoolctl versions; `make_vectorizer` is built from `VECTORIZER_PARAMS`.
+- All run JSONs regenerated (full and QUICK, `--force`); every metric is identical to before.
+- Thread-pin test now fails on an unpinned run even on a 1-CPU host and also probes vectorization.
+- CI: concurrent runs are cancelled only for pull requests, not for pushes to `main`.
+
 ## 2026-10-16 (FIXAUDIT)
 - Fixed the findings of `docs/AUDIT.md` (M1-M3, m1-m13); each decision is in `docs/DECISIONS.md`.
 - Result cache: each run JSON now stores a config + code fingerprint and is recomputed when it differs.

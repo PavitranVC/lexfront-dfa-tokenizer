@@ -193,15 +193,69 @@ class _ThreadProbe:
         return {}
 
 
-def test_fit_and_predict_run_single_threaded(tmp_path, monkeypatch):
-    probe = _ThreadProbe()
+def _pool_sizes() -> list[int]:
+    from threadpoolctl import threadpool_info
+    return [pool["num_threads"] for pool in threadpool_info()]
+
+
+def test_fit_predict_and_vectorize_run_single_threaded(tmp_path, monkeypatch):
+    """A2-m4: the outer limit of 2 makes an unpinned run visible even on a 1-CPU host (it would report 2, not 1)."""
+    from threadpoolctl import threadpool_limits
+    probe, seen_by_tokenizer = _ThreadProbe(), []
+
+    def probing_tokenizer(text):
+        seen_by_tokenizer.extend(_pool_sizes())
+        return text.split()
+
     monkeypatch.setattr(pipeline.clf_mod, "make_classifier", lambda name, seed=0: probe)
-    rec = run_cell(toy_dataset(), "whitespace", ["nb"], tmp_path, **QUIET)[0]
+    monkeypatch.setattr(pipeline, "get_tokenizer", lambda name: probing_tokenizer)
+    with threadpool_limits(limits=2):
+        assert set(_pool_sizes()) == {2}                          # the control: unpinned code would see 2
+        rec = run_cell(toy_dataset(), "whitespace", ["nb"], tmp_path, **QUIET)[0]
     assert probe.seen and set(probe.seen) == {pipeline.BLAS_THREADS} == {1}
+    assert seen_by_tokenizer and set(seen_by_tokenizer) == {1}
     assert rec["environment"]["blas_threads"] == 1
+
+
+# ---- AUDIT_2: fingerprint covers data content and numeric library versions ------------------
+def test_vectorizer_built_from_params():
+    """A2-m1: VECTORIZER_PARAMS is the single source of the TF-IDF settings."""
+    params = pipeline.clf_mod.make_vectorizer(str.split).get_params()
+    assert {k: params[k] for k in pipeline.clf_mod.VECTORIZER_PARAMS} == pipeline.clf_mod.vectorizer_kwargs()
+
+
+def test_changed_text_same_sizes_changes_fingerprint():
+    """A2-m2: same split sizes and labels, different texts -> different config fingerprint."""
+    ds, upper = toy_dataset(), toy_dataset()
+    upper.train_texts = [t.upper() for t in upper.train_texts]
+    assert ds.summary() == upper.summary()
+    assert pipeline.config_fingerprint(ds, "whitespace", "nb", 0) != pipeline.config_fingerprint(upper, "whitespace", "nb", 0)
+
+
+@pytest.mark.parametrize("library", ["numpy", "scipy", "threadpoolctl", "sklearn", "nltk"])
+def test_library_version_changes_fingerprint(monkeypatch, library):
+    """A2-m3: a numpy/scipy/threadpoolctl upgrade invalidates the cache like an sklearn upgrade does."""
+    ds = toy_dataset()
+    before = pipeline.config_fingerprint(ds, "whitespace", "lr", 0)
+    versions = dict(pipeline.library_versions(), **{library: "0.0.0-test"})
+    monkeypatch.setattr(pipeline, "library_versions", lambda: versions)
+    assert pipeline.config_fingerprint(ds, "whitespace", "lr", 0) != before
 
 
 @pytest.mark.parametrize("base", ["results", "results/quick"])
 def test_committed_runs_record_blas_threads(base):
     paths = sorted(Path(base).glob("module*/*__*__*.json"))
     assert paths and all(json.loads(p.read_text())["environment"].get("blas_threads") == 1 for p in paths)
+
+
+def test_setup_check_warns_only_for_upgraded_loaded_packages():
+    """A2-M2: an imported package whose version changed on disk needs a restart; an unimported one does not."""
+    from experiments import setup_check
+    before = setup_check.snapshot()
+    assert before["numpy"]["loaded"] and setup_check.needs_restart(before) == []
+    before["numpy"]["installed"] = "0.0.0-old"             # as if pip had replaced the imported numpy
+    before["pandas"] = {"installed": "0.0.0-old", "loaded": False}
+    logged = []
+    assert setup_check.report_after_install(before, log=logged.append)
+    assert setup_check.needs_restart(before) == ["numpy"] and "WARNING" in logged[-1] and "numpy" in logged[-1]
+    assert logged[0].startswith("versions in use: numpy ")

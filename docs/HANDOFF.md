@@ -1,9 +1,13 @@
-# HANDOFF (written by FIXAUDIT, 2026-10-16, status ready)
-DONE: fixed docs/AUDIT.md M1-M3, m1-m13: fingerprinted result cache (experiments/pipeline.py), generated obs:attribution, notebook setup/FORCE, pinned deps, CI checks, overnight mode (docs/PIPELINE.md), docs/versions/v4-tokenizer-lineup.md.
-REPRO: all fits single-threaded via threadpoolctl (environment.blas_threads=1, in fingerprint); thread count had changed LR metrics. All JSONs regenerated; LR cells rerun with 4 threads are identical.
-NUMBERS: 6 LR runs changed by <= 0.18 pts (old -> new table in docs/DECISIONS.md "BLAS threads"); TweetTopic proposed - existing = -0.26 pts unchanged; go_emotions +17.58, ag_news +1.50 (results/REPORT_NOTES.md obs:attribution).
-OPEN: TF-IDF lowercasing vs LexFront lowercase rule (P0). Committed JSONs go stale after any change to files in pipeline.CODE_GLOBS; rerun to refresh.
-DECISIONS: BLAS threads = 1; M1 fingerprint {config, code}; m1 CLI guard; m2 exact slang lookup; m3/m4 documented (docs/DECISIONS.md).
-NEXT: P0 - decide TF-IDF lowercase=False vs dropping the rule; rerun affected results (run_cell recomputes stale cells).
-FILES TOUCHED: experiments/{pipeline,report,observations,render_docs,review1,figures,run_module2}.py, lexer/normalize.py, notebooks/*, tests/*, results/**, docs/*, requirements.txt, .github/workflows/ci.yml, CHANGELOG.md
-CHECK: `pytest -q` (all pass) and `python -m experiments.render_docs && git diff --exit-code`
+# HANDOFF (written by FIXAUDIT2, 2026-10-16, status ready)
+DONE: fixed docs/AUDIT_2.md A2-M1, A2-M2, A2-m1..m7. requirements.txt = ranges (Colab-friendly), requirements-lock.txt = exact pins (CI);
+notebook setup cell warns on git pull failure / incomplete clone and when pip changed an imported package (experiments/setup_check.py).
+Fingerprint now covers data content hash and numpy/scipy/threadpoolctl versions; VECTORIZER_PARAMS drives make_vectorizer.
+NUMBERS: all 66 run JSONs regenerated (--force, full + QUICK): every metric identical to main (results/module{1,2}/*__*__*.json,
+results/quick/module{1,2}/*__*__*.json); only fingerprints and the new data_hash field changed. Intrinsic JSONs not rerun (full).
+Tested installs: lock and lowest-range versions on Python 3.11 and 3.12, newest-range on 3.12; pytest passes in each.
+OPEN: TF-IDF lowercasing vs LexFront lowercase rule (P0). HF dataset revisions not pinned (content hash detects drift).
+DECISIONS: docs/DECISIONS.md "FIXAUDIT2" section (one entry per finding).
+NEXT: P0 - decide TF-IDF lowercase=False vs dropping the rule; rerun affected results.
+FILES TOUCHED: requirements.txt, requirements-lock.txt, experiments/{classifiers,data,pipeline,setup_check}.py, notebooks/*, tests/test_audit_fixes.py,
+.github/workflows/ci.yml, README.md, results/**/ run JSONs + results/quick intrinsic/tables, docs/{DECISIONS,HANDOFF,HANDOFF_LOG}.md, CHANGELOG.md
+CHECK: `pytest -q`, `python notebooks/make_notebook.py --check`, `python -m experiments.render_docs && git diff --exit-code`

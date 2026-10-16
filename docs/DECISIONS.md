@@ -3,6 +3,44 @@
 Newest first. One short entry each: decision, reason, source. Gaps filled on 2026-10-16 from the team's notes; items
 already recorded elsewhere are only pointed to. Citations below are from abstracts only and were not re-checked here.
 
+## 2026-10-16 (FIXAUDIT2, fixes for docs/AUDIT_2.md)
+
+### A2-M1/A2-M2: two dependency files
+- Decision: `requirements.txt` = compatible ranges (numpy>=1.26,<3, pandas>=2.2,<4, scipy>=1.12,<2,
+  scikit-learn>=1.5,<2, matplotlib>=3.8,<4, threadpoolctl>=3.1,<4, ipykernel>=6; `nltk==3.10.3` and `ply==3.11` stay
+  exact); `requirements-lock.txt` = the exact pins behind the committed results, installed by CI. The notebook installs
+  the ranges, prints the numpy/pandas/scikit-learn versions in use and warns when pip changed an already-imported
+  package (`experiments/setup_check.py`).
+- Reason: exact pins forced reinstalls inside a running Colab kernel. Verified: lowest allowed versions and the lock
+  install and pass `pytest -q` on Python 3.11 and 3.12; newest resolved versions on 3.12. Python 3.10 not claimed.
+
+### A2-m1: VECTORIZER_PARAMS is the single source
+- Decision: `make_vectorizer` builds `TfidfVectorizer(**vectorizer_kwargs())` from the dict (`ngram_range` as tuple).
+
+### A2-m2: data content in the fingerprint; no HF `revision=` pin
+- Decision: config fingerprint includes `Dataset.content_hash()` (SHA-256 of train/test texts and labels), also stored as
+  `data_hash` in each run JSON. HF revisions not pinned: the content hash already detects an upstream edit, and a pin
+  would need commit SHAs looked up by hand. `Dataset` now stores plain lists (datasets 5 Columns were slow to hash).
+
+### A2-m3: library versions in the fingerprint
+- Decision: numpy, scipy and threadpoolctl versions join sklearn and nltk in the config fingerprint (`library_versions()`).
+
+### A2-m4: thread-pin test works on a 1-CPU host
+- Decision: the probe runs inside `threadpool_limits(2)` and also probes the tokenizer inside `vectorize`. Mutation check
+  under `taskset -c 0`: removing either pin fails the test.
+
+### A2-m5: what full mode rewrites is documented
+- Decision: comment next to `QUICK_MODE` lists the files each mode rewrites; no skip logic for `run_intrinsic`.
+- Reason: throughput is machine-dependent anyway; a cache for it would add code for little gain.
+
+### A2-m6/A2-m7: CI concurrency and notebook setup
+- Decision: `cancel-in-progress` only for pull_request events; the setup cell prints a warning when `git pull` fails and
+  stops if `lexer/token_spec.py` is missing after `chdir`.
+
+### Results regenerated
+- All run JSONs (full and QUICK) regenerated with `--force` for the new fingerprints; every metric identical to main
+  (checked by script). Intrinsic JSONs are not fingerprinted and were not rerun.
+
 ## 2026-10-16 (FIXAUDIT, fixes for docs/AUDIT.md)
 
 ### BLAS threads: every fit is single-threaded (decision by the conductor)

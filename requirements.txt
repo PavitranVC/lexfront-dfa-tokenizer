@@ -1,24 +1,27 @@
-# Pinned to the versions the committed results were produced with (Python 3.11, CPU only, no torch).
+# Compatible ranges (Python 3.11 and 3.12; CPU only, no torch). The notebook installs this file: a fresh Colab
+# runtime already satisfies the numpy/pandas/scipy/scikit-learn/matplotlib/ipykernel ranges, so nothing it has
+# loaded gets reinstalled. The exact versions behind the committed results are in requirements-lock.txt (CI uses it).
+# Library versions are part of each run's fingerprint, so other versions recompute instead of mixing with old JSONs.
 # Graphviz is used through its `dot` binary (apt package `graphviz`), not a pip package.
 
 # Data + classic ML
-numpy==2.4.6
-pandas==3.0.6
-scipy==1.17.1
-scikit-learn==1.9.1
-threadpoolctl==3.7.0
-tqdm==4.70.1
-matplotlib==3.11.2
+numpy>=1.26,<3
+pandas>=2.2,<4
+scipy>=1.12,<2
+scikit-learn>=1.5,<2
+threadpoolctl>=3.1,<4
+tqdm>=4.66.3
+matplotlib>=3.8,<4
 
-# NLP / datasets
+# NLP / datasets (nltk exact: its tokenizers are what Module 1 compares; pure Python, cheap to install)
 nltk==3.10.3
-datasets==5.1.0
+datasets>=3.0,<6
 
-# Compiler-design tooling
+# Compiler-design tooling (3.11 is the final PLY release)
 ply==3.11
 
 # Tests + notebook execution
-pytest==9.1.1
-nbconvert==7.17.2
-nbformat==5.11.1
-ipykernel==7.4.0
+pytest>=8
+nbconvert>=7
+nbformat>=5.9
+ipykernel>=6

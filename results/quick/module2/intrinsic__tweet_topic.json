@@ -1,5 +1,5 @@
 {
-  "timestamp_utc": "2026-10-16T19:50:58+00:00",
+  "timestamp_utc": "2026-10-16T20:28:46+00:00",
   "dataset": {
     "name": "tweet_topic",
     "hf_id": "cardiffnlp/tweet_topic_single",
@@ -34,7 +34,10 @@
   "environment": {
     "python": "3.11.17",
     "sklearn": "1.9.1",
+    "nltk": "3.10.3",
     "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "threadpoolctl": "3.7.0",
     "machine": "x86_64",
     "platform": "Linux-6.18.44-fc-v139-x86_64-with-glibc2.39"
   },
@@ -46,8 +49,8 @@
       "vocab_size": 14325,
       "n_test_tokens": 14075,
       "n_test_whitespace_words": 14075,
-      "throughput_tokens_per_s": 20847126.500449523,
-      "throughput_docs_per_s": 740572.8774582424,
+      "throughput_tokens_per_s": 22754719.478916217,
+      "throughput_docs_per_s": 808338.1697661178,
       "throughput_docs": 500
     },
     "nltk": {
@@ -57,8 +60,8 @@
       "vocab_size": 10816,
       "n_test_tokens": 20062,
       "n_test_whitespace_words": 14075,
-      "throughput_tokens_per_s": 232340.74276637787,
-      "throughput_docs_per_s": 5790.567808951696,
+      "throughput_tokens_per_s": 216265.6497635868,
+      "throughput_docs_per_s": 5389.932453483871,
       "throughput_docs": 500
     },
     "tweet": {
@@ -68,8 +71,8 @@
       "vocab_size": 11289,
       "n_test_tokens": 19367,
       "n_test_whitespace_words": 14075,
-      "throughput_tokens_per_s": 283933.4108930884,
-      "throughput_docs_per_s": 7330.340550758723,
+      "throughput_tokens_per_s": 280523.13545288565,
+      "throughput_docs_per_s": 7242.297089195168,
       "throughput_docs": 500
     },
     "lexfront": {
@@ -79,8 +82,8 @@
       "vocab_size": 9977,
       "n_test_tokens": 19565,
       "n_test_whitespace_words": 14075,
-      "throughput_tokens_per_s": 234838.9069914914,
-      "throughput_docs_per_s": 6001.505417620531,
+      "throughput_tokens_per_s": 252127.59478468494,
+      "throughput_docs_per_s": 6443.332348190262,
       "throughput_docs": 500
     }
   }

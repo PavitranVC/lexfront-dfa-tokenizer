@@ -1,5 +1,5 @@
 {
-  "timestamp_utc": "2026-10-16T19:51:13+00:00",
+  "timestamp_utc": "2026-10-16T20:29:04+00:00",
   "dataset": {
     "name": "ag_news",
     "hf_id": "fancyzhx/ag_news",
@@ -24,6 +24,7 @@
       }
     }
   },
+  "data_hash": "4a7a95beceae5959",
   "tokenizer": "lexfront",
   "vectorizer": {
     "type": "TfidfVectorizer",
@@ -47,21 +48,24 @@
   },
   "seed": 0,
   "fingerprint": {
-    "config": "8d5f29afd3bdf6d8",
-    "code": "0d32cc8c8210a24d"
+    "config": "e2a95130b4090401",
+    "code": "290c17daf9b8284c"
   },
   "metrics": {
     "accuracy": 0.882,
     "macro_f1": 0.8815622090402042
   },
   "timing_seconds": {
-    "tokenize_and_vectorize": 0.5675564289999784,
-    "classifier_fit": 0.002949897000007695
+    "tokenize_and_vectorize": 0.5154559640000116,
+    "classifier_fit": 0.0032449220000216883
   },
   "environment": {
     "python": "3.11.17",
     "sklearn": "1.9.1",
+    "nltk": "3.10.3",
     "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "threadpoolctl": "3.7.0",
     "machine": "x86_64",
     "platform": "Linux-6.18.44-fc-v139-x86_64-with-glibc2.39",
     "blas_threads": 1

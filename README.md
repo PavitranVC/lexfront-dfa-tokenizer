@@ -12,10 +12,22 @@ existing tokenizers with the classifier held fixed. Compiler Design course proje
 * Design versions: `docs/versions/`  · Changelog: `CHANGELOG.md`
 * Results (JSON), tables, figures and notes: `results/` (`results/REPORT_NOTES.md`)
 
-## Run locally (Python 3.11, CPU only, no Docker)
+## Run locally (Python 3.11 or 3.12, CPU only, no Docker)
+
+Two dependency files:
+
+* `requirements.txt`: compatible version ranges. Install this for Colab or a new environment; a fresh Colab runtime
+  already satisfies the numpy/pandas/scipy/scikit-learn/matplotlib ranges, so nothing it loaded is reinstalled.
+* `requirements-lock.txt`: the exact versions the committed results were produced with (Python 3.11). CI installs it;
+  use it to reproduce `results/` exactly.
+
+Tested: both files install on Python 3.11 and 3.12, and `pytest -q` passes with the lock file, with the lowest
+versions `requirements.txt` allows, and with the newest it resolved to (2026-10-16). Python 3.10 is not supported.
+Library versions are part of each run's fingerprint, so a run with other versions recomputes instead of reusing a
+committed JSON.
 
 ```
-pip install -r requirements.txt
+pip install -r requirements-lock.txt      # or requirements.txt
 python -c "import nltk; [nltk.download(p) for p in ('punkt','punkt_tab','stopwords')]"
 pytest -q
 python -m experiments.run_datasets

@@ -1,5 +1,5 @@
 {
-  "timestamp_utc": "2026-10-16T19:51:02+00:00",
+  "timestamp_utc": "2026-10-16T20:28:51+00:00",
   "dataset": {
     "name": "go_emotions",
     "hf_id": "google-research-datasets/go_emotions",
@@ -54,7 +54,10 @@
   "environment": {
     "python": "3.11.17",
     "sklearn": "1.9.1",
+    "nltk": "3.10.3",
     "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "threadpoolctl": "3.7.0",
     "machine": "x86_64",
     "platform": "Linux-6.18.44-fc-v139-x86_64-with-glibc2.39"
   },
@@ -66,8 +69,8 @@
       "vocab_size": 6320,
       "n_test_tokens": 6420,
       "n_test_whitespace_words": 6420,
-      "throughput_tokens_per_s": 24800188.507609066,
-      "throughput_docs_per_s": 1931478.8557327935,
+      "throughput_tokens_per_s": 27982879.00711892,
+      "throughput_docs_per_s": 2179351.947594932,
       "throughput_docs": 500
     },
     "nltk": {
@@ -77,8 +80,8 @@
       "vocab_size": 4789,
       "n_test_tokens": 7847,
       "n_test_whitespace_words": 6420,
-      "throughput_tokens_per_s": 173773.1591709835,
-      "throughput_docs_per_s": 11072.585648718205,
+      "throughput_tokens_per_s": 182876.5680116661,
+      "throughput_docs_per_s": 11652.642284418638,
       "throughput_docs": 500
     },
     "tweet": {
@@ -88,8 +91,8 @@
       "vocab_size": 4809,
       "n_test_tokens": 7676,
       "n_test_whitespace_words": 6420,
-      "throughput_tokens_per_s": 262061.7809626127,
-      "throughput_docs_per_s": 17070.20459631401,
+      "throughput_tokens_per_s": 243002.1490937191,
+      "throughput_docs_per_s": 15828.696527730532,
       "throughput_docs": 500
     },
     "lexfront": {
@@ -99,8 +102,8 @@
       "vocab_size": 4707,
       "n_test_tokens": 7669,
       "n_test_whitespace_words": 6420,
-      "throughput_tokens_per_s": 233330.8262972424,
-      "throughput_docs_per_s": 15212.597880899883,
+      "throughput_tokens_per_s": 236299.84697346645,
+      "throughput_docs_per_s": 15406.170750649788,
       "throughput_docs": 500
     }
   }
