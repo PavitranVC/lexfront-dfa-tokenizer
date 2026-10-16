@@ -16,7 +16,7 @@ DEV_BRANCH = "claude/lexfront-lexical-analyzer-tl3l0y"   # used only if main doe
 def find_repo_root():
     here = os.getcwd()
     while here != os.path.dirname(here):
-        if os.path.exists(os.path.join(here, "requirements.txt")) and os.path.isdir(os.path.join(here, "lexer")):
+        if os.path.exists(os.path.join(here, "requirements.txt")) and os.path.exists(os.path.join(here, "lexer", "token_spec.py")):
             return here
         here = os.path.dirname(here)
 
@@ -24,7 +24,7 @@ root = find_repo_root()
 if root is None:                                   # fresh Colab runtime: clone the repo
     subprocess.run(["git", "clone", "-q", REPO_URL], check=True)
     os.chdir("lexfront-dfa-tokenizer")
-    if not os.path.isdir("lexer"):
+    if not os.path.exists("lexer/token_spec.py"):
         subprocess.run(["git", "checkout", "-q", DEV_BRANCH], check=True)
 else:
     os.chdir(root)

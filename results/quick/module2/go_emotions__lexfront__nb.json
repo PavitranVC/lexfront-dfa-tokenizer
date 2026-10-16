@@ -1,0 +1,90 @@
+{
+  "timestamp_utc": "2026-10-16T08:28:46+00:00",
+  "dataset": {
+    "name": "go_emotions",
+    "hf_id": "google-research-datasets/go_emotions",
+    "config": "simplified",
+    "n_train": 2000,
+    "n_test": 500,
+    "n_labels": 28,
+    "label_names": [
+      "admiration",
+      "amusement",
+      "anger",
+      "annoyance",
+      "approval",
+      "caring",
+      "confusion",
+      "curiosity",
+      "desire",
+      "disappointment",
+      "disapproval",
+      "disgust",
+      "embarrassment",
+      "excitement",
+      "fear",
+      "gratitude",
+      "grief",
+      "joy",
+      "love",
+      "nervousness",
+      "optimism",
+      "pride",
+      "realization",
+      "relief",
+      "remorse",
+      "sadness",
+      "surprise",
+      "neutral"
+    ],
+    "split_info": {
+      "train": "train",
+      "test": "test",
+      "reason": "official splits; examples with more than one label removed",
+      "n_train_before_filter": 43410,
+      "n_test_before_filter": 5427,
+      "subsample": {
+        "max_train": 2000,
+        "max_test": 500,
+        "seed": 0
+      }
+    }
+  },
+  "tokenizer": "lexfront",
+  "vectorizer": {
+    "type": "TfidfVectorizer",
+    "lowercase": true,
+    "min_df": 2,
+    "ngram_range": [
+      1,
+      1
+    ],
+    "token_pattern": null,
+    "n_features": 1779
+  },
+  "classifier": {
+    "name": "nb",
+    "params": {
+      "alpha": 1.0,
+      "class_prior": null,
+      "fit_prior": true,
+      "force_alpha": true
+    }
+  },
+  "seed": 0,
+  "metrics": {
+    "accuracy": 0.352,
+    "macro_f1": 0.024118165784832453
+  },
+  "timing_seconds": {
+    "tokenize_and_vectorize": 0.25951862599958986,
+    "classifier_fit": 0.004161824000220804
+  },
+  "environment": {
+    "python": "3.11.17",
+    "sklearn": "1.9.1",
+    "numpy": "2.4.6",
+    "machine": "x86_64",
+    "platform": "Linux-6.18.44-fc-v139-x86_64-with-glibc2.39"
+  }
+}
