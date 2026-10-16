@@ -28,6 +28,11 @@ class Dataset:
     label_names: list
     split_info: dict = field(default_factory=dict)
 
+    def __post_init__(self):
+        """Plain lists: `datasets` >= 4 returns lazy Column objects, which are slow to iterate repeatedly."""
+        for name in ("train_texts", "train_labels", "test_texts", "test_labels"):
+            setattr(self, name, list(getattr(self, name)))
+
     def summary(self) -> dict:
         return {"name": self.name, "hf_id": self.hf_id, "config": self.config,
                 "n_train": len(self.train_texts), "n_test": len(self.test_texts),
