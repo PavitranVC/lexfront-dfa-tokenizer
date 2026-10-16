@@ -4,6 +4,10 @@ Every run writes one JSON file holding its full configuration, so tables and fig
 can be rebuilt from `results/` alone. Each record also carries a *fingerprint* of its
 configuration and of the code that produced it; a cached record is reused only while both
 still match (compiler analogy: an incremental build that recompiles when a source hash changes).
+
+All vectorize/fit/predict work runs with BLAS/OpenMP pinned to one thread: the thread count changes
+the order of floating-point sums inside lbfgs, so a deterministic build must fix it (like a compiler
+that must not depend on how many cores ran it).
 """
 import hashlib
 import json
@@ -16,6 +20,7 @@ from pathlib import Path
 import nltk
 import numpy as np
 import sklearn
+from threadpoolctl import threadpool_limits
 
 from . import classifiers as clf_mod
 from .metrics import classification_metrics
@@ -25,6 +30,13 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 # Source files whose change can change a run's result (tokenizers, normalizer, data, vectorizer, classifiers).
 CODE_GLOBS = ["lexer/*.py", "lexer/dfa/*.py", "lexer/*.csv", "experiments/tokenizers.py", "experiments/classifiers.py",
               "experiments/pipeline.py", "experiments/metrics.py", "experiments/data.py"]
+# Native thread count for every fit; part of the fingerprint because it changes LR metrics.
+BLAS_THREADS = 1
+
+
+def single_threaded():
+    """Context manager pinning BLAS/OpenMP pools to BLAS_THREADS (reproducible float summation order)."""
+    return threadpool_limits(limits=BLAS_THREADS)
 
 
 def environment() -> dict:
@@ -50,7 +62,8 @@ def config_fingerprint(ds, tokenizer_name: str, classifier_name: str, seed: int)
     """Hash of everything a run is configured by: data subset, tokenizer, vectorizer, classifier, seed, versions."""
     config = {"dataset": ds.summary(), "tokenizer": tokenizer_name, "vectorizer": clf_mod.VECTORIZER_PARAMS,
               "classifier": classifier_name, "params": clf_mod.classifier_params(classifier_name, seed),
-              "seed": seed, "sklearn": sklearn.__version__, "nltk": nltk.__version__}
+              "seed": seed, "sklearn": sklearn.__version__, "nltk": nltk.__version__,
+              "blas_threads": BLAS_THREADS}
     return _sha256(json.dumps(config, sort_keys=True, default=str).encode())
 
 
@@ -73,8 +86,9 @@ def vectorize(ds, tokenizer_name: str):
     """Fit TF-IDF on train, transform test; returns (X_train, X_test, seconds)."""
     vec = clf_mod.make_vectorizer(get_tokenizer(tokenizer_name))
     start = time.perf_counter()
-    x_train = vec.fit_transform(ds.train_texts)
-    x_test = vec.transform(ds.test_texts)
+    with single_threaded():
+        x_train = vec.fit_transform(ds.train_texts)
+        x_test = vec.transform(ds.test_texts)
     return x_train, x_test, time.perf_counter() - start, len(vec.vocabulary_)
 
 
@@ -82,10 +96,12 @@ def run_one(ds, tokenizer_name: str, classifier_name: str, features, seed: int =
     """Fit one classifier on prepared features and return the result record."""
     x_train, x_test, vec_seconds, n_features = features
     clf = clf_mod.make_classifier(classifier_name, seed)
-    start = time.perf_counter()
-    clf.fit(x_train, ds.train_labels)
-    fit_seconds = time.perf_counter() - start
-    metrics = classification_metrics(ds.test_labels, clf.predict(x_test))
+    with single_threaded():
+        start = time.perf_counter()
+        clf.fit(x_train, ds.train_labels)
+        fit_seconds = time.perf_counter() - start
+        predictions = clf.predict(x_test)
+    metrics = classification_metrics(ds.test_labels, predictions)
     return {
         "timestamp_utc": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "dataset": ds.summary(),
@@ -96,7 +112,7 @@ def run_one(ds, tokenizer_name: str, classifier_name: str, features, seed: int =
         "fingerprint": fingerprint(ds, tokenizer_name, classifier_name, seed),
         "metrics": metrics,
         "timing_seconds": {"tokenize_and_vectorize": vec_seconds, "classifier_fit": fit_seconds},
-        "environment": environment(),
+        "environment": {**environment(), "blas_threads": BLAS_THREADS},
     }
 
 

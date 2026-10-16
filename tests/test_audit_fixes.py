@@ -167,3 +167,41 @@ def test_existing_vs_proposed_figure_skips_missing_cell(tmp_path, monkeypatch):
     monkeypatch.setattr(figures, "_save", lambda fig, _: drawn.setdefault("bars", [len(ax.patches) for ax in fig.axes]))
     figures.figure_existing_vs_proposed(res, tmp_path / "x.png")
     assert drawn["bars"] == [1, 1]                                    # only the existing bar on each panel
+
+
+# ---- FIXAUDIT: BLAS/OpenMP thread count is pinned (lbfgs summation order) -------------------
+class _ThreadProbe:
+    """Stand-in classifier that records the native thread pools' sizes seen inside fit/predict."""
+
+    def __init__(self):
+        self.seen = []
+
+    def _probe(self):
+        from threadpoolctl import threadpool_info
+        self.seen += [pool["num_threads"] for pool in threadpool_info()]
+
+    def fit(self, x, y):
+        self._probe()
+        self.label = y[0]
+        return self
+
+    def predict(self, x):
+        self._probe()
+        return [self.label] * x.shape[0]
+
+    def get_params(self):
+        return {}
+
+
+def test_fit_and_predict_run_single_threaded(tmp_path, monkeypatch):
+    probe = _ThreadProbe()
+    monkeypatch.setattr(pipeline.clf_mod, "make_classifier", lambda name, seed=0: probe)
+    rec = run_cell(toy_dataset(), "whitespace", ["nb"], tmp_path, **QUIET)[0]
+    assert probe.seen and set(probe.seen) == {pipeline.BLAS_THREADS} == {1}
+    assert rec["environment"]["blas_threads"] == 1
+
+
+@pytest.mark.parametrize("base", ["results", "results/quick"])
+def test_committed_runs_record_blas_threads(base):
+    paths = sorted(Path(base).glob("module*/*__*__*.json"))
+    assert paths and all(json.loads(p.read_text())["environment"].get("blas_threads") == 1 for p in paths)
