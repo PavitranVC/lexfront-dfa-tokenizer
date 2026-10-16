@@ -1,5 +1,5 @@
 {
-  "timestamp_utc": "2026-10-16T08:28:33+00:00",
+  "timestamp_utc": "2026-10-16T19:32:48+00:00",
   "dataset": {
     "name": "go_emotions",
     "hf_id": "google-research-datasets/go_emotions",
@@ -66,8 +66,8 @@
       "vocab_size": 6320,
       "n_test_tokens": 6420,
       "n_test_whitespace_words": 6420,
-      "throughput_tokens_per_s": 10418915.043067526,
-      "throughput_docs_per_s": 811441.9815473151,
+      "throughput_tokens_per_s": 26198093.492745224,
+      "throughput_docs_per_s": 2040349.9604941765,
       "throughput_docs": 500
     },
     "nltk": {
@@ -77,8 +77,8 @@
       "vocab_size": 4789,
       "n_test_tokens": 7847,
       "n_test_whitespace_words": 6420,
-      "throughput_tokens_per_s": 99539.31575849315,
-      "throughput_docs_per_s": 6342.507694564366,
+      "throughput_tokens_per_s": 173516.9064221575,
+      "throughput_docs_per_s": 11056.257577555594,
       "throughput_docs": 500
     },
     "tweet": {
@@ -88,8 +88,8 @@
       "vocab_size": 4809,
       "n_test_tokens": 7676,
       "n_test_whitespace_words": 6420,
-      "throughput_tokens_per_s": 130543.50724611749,
-      "throughput_docs_per_s": 8503.35508377524,
+      "throughput_tokens_per_s": 244355.8447588689,
+      "throughput_docs_per_s": 15916.873681531324,
       "throughput_docs": 500
     },
     "lexfront": {
@@ -99,8 +99,8 @@
       "vocab_size": 4707,
       "n_test_tokens": 7669,
       "n_test_whitespace_words": 6420,
-      "throughput_tokens_per_s": 178544.65918026146,
-      "throughput_docs_per_s": 11640.674089207294,
+      "throughput_tokens_per_s": 226622.07431371554,
+      "throughput_docs_per_s": 14775.203697595223,
       "throughput_docs": 500
     }
   }

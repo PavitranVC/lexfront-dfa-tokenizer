@@ -1,5 +1,5 @@
 {
-  "timestamp_utc": "2026-10-16T08:28:26+00:00",
+  "timestamp_utc": "2026-10-16T19:32:43+00:00",
   "dataset": {
     "name": "tweet_topic",
     "hf_id": "cardiffnlp/tweet_topic_single",
@@ -46,8 +46,8 @@
       "vocab_size": 14325,
       "n_test_tokens": 14075,
       "n_test_whitespace_words": 14075,
-      "throughput_tokens_per_s": 11639205.30615458,
-      "throughput_docs_per_s": 413470.88121330657,
+      "throughput_tokens_per_s": 20290277.102136422,
+      "throughput_docs_per_s": 720791.3713014715,
       "throughput_docs": 500
     },
     "nltk": {
@@ -57,8 +57,8 @@
       "vocab_size": 10816,
       "n_test_tokens": 20062,
       "n_test_whitespace_words": 14075,
-      "throughput_tokens_per_s": 172626.13020393107,
-      "throughput_docs_per_s": 4302.3160752649555,
+      "throughput_tokens_per_s": 220997.0896945356,
+      "throughput_docs_per_s": 5507.852898378416,
       "throughput_docs": 500
     },
     "tweet": {
@@ -68,8 +68,8 @@
       "vocab_size": 11289,
       "n_test_tokens": 19367,
       "n_test_whitespace_words": 14075,
-      "throughput_tokens_per_s": 177755.51170785193,
-      "throughput_docs_per_s": 4589.133879998243,
+      "throughput_tokens_per_s": 273046.46371907566,
+      "throughput_docs_per_s": 7049.271020784728,
       "throughput_docs": 500
     },
     "lexfront": {
@@ -79,8 +79,8 @@
       "vocab_size": 9977,
       "n_test_tokens": 19565,
       "n_test_whitespace_words": 14075,
-      "throughput_tokens_per_s": 193308.767921284,
-      "throughput_docs_per_s": 4940.167848742243,
+      "throughput_tokens_per_s": 245029.94669213353,
+      "throughput_docs_per_s": 6261.945992643331,
       "throughput_docs": 500
     }
   }
