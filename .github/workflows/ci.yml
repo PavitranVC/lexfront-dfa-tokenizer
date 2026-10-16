@@ -5,6 +5,13 @@ on:
     branches: [main]
   pull_request:
 
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   tests:
     runs-on: ubuntu-latest
@@ -17,9 +24,15 @@ jobs:
       - run: pip install -r requirements.txt
       - run: python -c "import nltk; [nltk.download(p) for p in ('punkt', 'punkt_tab', 'stopwords')]"
       - run: pytest -q
+      - name: Generated doc blocks match the committed JSON
+        run: |
+          python -m experiments.render_docs
+          git diff --exit-code
+      - name: Notebook matches its generator
+        run: python notebooks/make_notebook.py --check
 
   notebook:
-    # Runs the Colab notebook top to bottom in QUICK_MODE (needs Hugging Face; takes a few minutes).
+    # Runs the Colab notebook top to bottom in QUICK_MODE with FORCE (every run recomputed; needs Hugging Face).
     needs: tests
     runs-on: ubuntu-latest
     timeout-minutes: 20
@@ -29,5 +42,6 @@ jobs:
         with:
           python-version: "3.11"
           cache: pip
+      - run: sudo apt-get update -q && sudo apt-get install -y -q graphviz
       - run: pip install -r requirements.txt
       - run: jupyter nbconvert --to notebook --execute --ExecutePreprocessor.timeout=1200 --output-dir "$RUNNER_TEMP" notebooks/LexFront_Review1.ipynb

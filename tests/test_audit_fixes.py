@@ -155,3 +155,15 @@ def test_learn_md_dfa_numbers():
     assert f"q{q[0]} → q{q[1]} (`#`) → q{q[2]} (`h`) →\nq{q[3]} (`i`)" in learn
     assert " → ".join(f"q{i}" for i in _trace(scanner, ":-)")) in learn
     assert f"`@bob` ends in q{_trace(scanner, '@bob')[-1]}" in learn
+
+
+# ---- m13: a missing cell is not drawn as a 0 bar ------------------------------------------
+def test_existing_vs_proposed_figure_skips_missing_cell(tmp_path, monkeypatch):
+    from experiments import figures
+    from tests.test_report import make_results
+    res = make_results(tmp_path)
+    (res / "module2" / "ag_news__lexfront__lr.json").unlink()          # proposed cell missing
+    drawn = {}
+    monkeypatch.setattr(figures, "_save", lambda fig, _: drawn.setdefault("bars", [len(ax.patches) for ax in fig.axes]))
+    figures.figure_existing_vs_proposed(res, tmp_path / "x.png")
+    assert drawn["bars"] == [1, 1]                                    # only the existing bar on each panel

@@ -26,7 +26,7 @@ Run: `python -m experiments.run_module1` (add `--max-train N --max-test N` to su
         for tokenizer in [whitespace, nltk, tweet] (module 1) or [lexfront] (module 2):
             X_train <- TfidfVectorizer(tokenizer, token_pattern=None, lowercase=True, min_df=2).fit_transform(train)
             X_test  <- vectorizer.transform(test)
-            for clf in [majority, naive_bayes, logistic_regression]:
+            for clf in [majority, naive_bayes, logistic_regression] (module 1) or [naive_bayes, logistic_regression] (module 2):
                 clf.fit(X_train, y_train)
                 record <- {config, accuracy(y_test, clf.predict(X_test)), macro_f1(...), timings, versions}
                 write record to results/<module>/<dataset>__<tokenizer>__<clf>.json

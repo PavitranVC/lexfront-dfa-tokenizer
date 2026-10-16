@@ -1,21 +1,23 @@
-# Data + classic ML (CPU only, no torch)
-numpy
-pandas
-scipy
-scikit-learn
-tqdm
-matplotlib
+# Pinned to the versions the committed results were produced with (Python 3.11, CPU only, no torch).
+# Graphviz is used through its `dot` binary (apt package `graphviz`), not a pip package.
+
+# Data + classic ML
+numpy==2.4.6
+pandas==3.0.6
+scipy==1.17.1
+scikit-learn==1.9.1
+tqdm==4.70.1
+matplotlib==3.11.2
 
 # NLP / datasets
-nltk
-datasets
+nltk==3.10.3
+datasets==5.1.0
 
 # Compiler-design tooling
-ply
-graphviz
+ply==3.11
 
 # Tests + notebook execution
-pytest
-nbconvert
-nbformat
-ipykernel
+pytest==9.1.1
+nbconvert==7.17.2
+nbformat==5.11.1
+ipykernel==7.4.0

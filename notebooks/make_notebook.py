@@ -1,9 +1,14 @@
 """Builds notebooks/LexFront_Review1.ipynb (run: python notebooks/make_notebook.py).
 
+`python notebooks/make_notebook.py --check` only compares the cell sources with the committed notebook
+(exit 1 if they differ), so CI can tell when the generator and the notebook drift apart.
+
 The notebook holds no logic: every code cell calls a function from experiments/ or lexer/.
 """
-import nbformat as nbf
+import sys
 from pathlib import Path
+
+import nbformat as nbf
 
 NB_PATH = Path(__file__).with_name("LexFront_Review1.ipynb")
 md, code = nbf.v4.new_markdown_cell, nbf.v4.new_code_cell
@@ -168,5 +173,15 @@ def build() -> Path:
     return NB_PATH
 
 
+def matches_committed() -> bool:
+    """True if the committed notebook has exactly the cells (type and source) that CELLS defines."""
+    committed = nbf.read(NB_PATH, as_version=4).cells
+    return [(c.cell_type, c.source) for c in committed] == [(c.cell_type, c.source) for c in CELLS]
+
+
 if __name__ == "__main__":
+    if "--check" in sys.argv:
+        ok = matches_committed()
+        print("notebook matches make_notebook.py" if ok else "notebook differs: run python notebooks/make_notebook.py")
+        sys.exit(0 if ok else 1)
     print(build())
