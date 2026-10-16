@@ -3,6 +3,38 @@
 Newest first. One short entry each: decision, reason, source. Gaps filled on 2026-10-16 from the team's notes; items
 already recorded elsewhere are only pointed to. Citations below are from abstracts only and were not re-checked here.
 
+## 2026-10-16 (P0+P1: case sensitivity, stored predictions, bootstrap CIs)
+
+### P0: TF-IDF lowercasing vs LexFront's lowercase rule (decision by the conductor)
+- Decision: keep the main grid exactly as it was (TF-IDF `lowercase=True` for every tokenizer; LexFront's own
+  lowercase rule is inactive there by design, so every committed main number stays identical and comparable). Add a
+  sensitivity grid with TF-IDF `lowercase=False` for all four tokenizers x {NB, LR} x 3 datasets in
+  `results/sensitivity_case/{module1,module2}/` (`python -m experiments.run_sensitivity`).
+- Reason: in the sensitivity grid LexFront's rule is active, so LexFront's WORD tokens are lowercased while the
+  baselines keep case; it is a robustness check, not a like-for-like comparison (said in the docs next to its table).
+- How: `VECTORIZER_PARAMS` stays the single source; the grid passes `vectorizer_params(CASE_SENSITIVE_OVERRIDES)`
+  (`{"lowercase": False}`), which goes into the run JSON and the config fingerprint. Results: table and observation
+  `sensitivity_case` (generated).
+
+### P1a: per-example predictions stored for every run
+- Decision: `predictions/<run>.json.gz` next to each run JSON holds `{y_true, y_pred}`; the run JSON names it in
+  `predictions_file` (relative to its own directory). gzip header has mtime 0 and no file name, so identical
+  predictions give identical bytes. A cached run without its sidecar is recomputed.
+- Reason: test-set statistics without refitting; JSON stays readable; small files (whole full grid about 0.2 MB).
+- Safety check: changing `pipeline.py` changed every code fingerprint; all 66 main run JSONs (full + QUICK) were
+  regenerated with `--force` and compared by script with `main`, ignoring timestamp, timing, fingerprint and the new
+  `predictions_file`: no difference in any metric or other field.
+
+### P1b/P1c: bootstrap CIs and paired tests
+- Decision: `experiments/stats.py` + `python -m experiments.run_stats` -> `results/stats/bootstrap.json`. Percentile
+  bootstrap over test examples, B = 2000, `numpy.random.default_rng(20261016)` per dataset; all runs of a dataset share
+  the resampled indices, so differences are paired. Accuracy and macro-F1 from bincount confusion matrices (macro-F1
+  averages classes present in gold or predictions, = sklearn `zero_division=0`; the script checks the point estimate
+  equals the stored metric). Pairs (LexFront+LR minus A): A = NLTK+LR (headline, plus exact McNemar), TweetTokenizer+LR,
+  NLTK+NB. Tables `ci_table`, `ci_runs`, observation `ci`; the shared CAVEAT now describes these CIs.
+- Reason: the CIs cover test-set sampling only; training randomness is not covered (one run per cell; NB/LR fits are
+  deterministic; no subsampling in the full grid). McNemar only on the headline pair to limit the number of tests.
+
 ## 2026-10-16 (FIXAUDIT2, fixes for docs/AUDIT_2.md)
 
 ### A2-M1/A2-M2: two dependency files

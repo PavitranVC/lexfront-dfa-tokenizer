@@ -2,10 +2,10 @@
 |---|---|---|---|---|
 | tweet_topic | whitespace | Naive Bayes | 63.80 [59.40, 67.80] | 25.73 [23.88, 27.70] |
 | tweet_topic | whitespace | Logistic Reg. | 65.60 [61.20, 69.40] | 30.78 [28.17, 33.23] |
-| tweet_topic | nltk | Naive Bayes | 66.20 [62.00, 70.20] | 26.64 [24.93, 28.46] |
+| tweet_topic | nltk | Naive Bayes | 66.20 [61.99, 70.20] | 26.64 [24.93, 28.46] |
 | tweet_topic | nltk | Logistic Reg. | 66.20 [62.00, 70.00] | 31.70 [29.08, 34.14] |
 | tweet_topic | tweet | Naive Bayes | 66.40 [62.20, 70.20] | 26.77 [25.02, 28.64] |
-| tweet_topic | tweet | Logistic Reg. | 65.40 [61.20, 69.00] | 31.05 [28.50, 33.49] |
+| tweet_topic | tweet | Logistic Reg. | 65.40 [61.20, 69.01] | 31.05 [28.50, 33.49] |
 | tweet_topic | lexfront | Naive Bayes | 66.20 [62.00, 70.20] | 26.68 [24.99, 28.59] |
 | tweet_topic | lexfront | Logistic Reg. | 66.60 [62.40, 70.60] | 31.30 [28.68, 33.78] |
 | go_emotions | whitespace | Naive Bayes | 35.40 [31.40, 39.60] | 2.64 [1.99, 3.48] |
@@ -22,5 +22,5 @@
 | ag_news | nltk | Logistic Reg. | 85.80 [82.60, 88.60] | 85.69 [82.31, 88.57] |
 | ag_news | tweet | Naive Bayes | 88.00 [85.00, 90.80] | 87.97 [84.99, 90.62] |
 | ag_news | tweet | Logistic Reg. | 86.00 [82.80, 89.00] | 85.85 [82.48, 88.78] |
-| ag_news | lexfront | Naive Bayes | 88.20 [85.40, 90.80] | 88.16 [85.21, 90.76] |
-| ag_news | lexfront | Logistic Reg. | 85.20 [82.00, 88.20] | 85.14 [81.78, 88.18] |
+| ag_news | lexfront | Naive Bayes | 88.20 [85.39, 90.80] | 88.16 [85.21, 90.76] |
+| ag_news | lexfront | Logistic Reg. | 85.20 [81.99, 88.20] | 85.14 [81.78, 88.18] |

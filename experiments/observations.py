@@ -161,7 +161,8 @@ def _pair_sentence(ds: str, pair: dict) -> str:
             f"macro-F1 {_ci_phrase(pair['macro_f1'])}.")
     mc = pair.get("mcnemar_accuracy")
     if mc:
-        line += (f" Exact McNemar test on accuracy: p {p_value_text(mc['p_value'])} (discordant test examples: right only "
+        line += (f" Exact McNemar test on accuracy: p {p_value_text(mc['p_value'])} "
+                 f"(discordant test examples: right only "
                  f"with {pair['a'].replace('__', '+')} {mc['a_right_b_wrong']}, right only with "
                  f"{pair['b'].replace('__', '+')} {mc['a_wrong_b_right']}).")
     return line
@@ -205,7 +206,8 @@ def obs_sensitivity_case(results_dir) -> str:
 
 
 OBSERVATIONS = {"datasets": obs_datasets, "module1": obs_module1, "existing_vs_proposed": obs_existing_vs_proposed,
-                "intrinsic": obs_intrinsic, "dfa": obs_dfa, "attribution": obs_attribution, "ci": obs_ci, "sensitivity_case": obs_sensitivity_case}
+                "intrinsic": obs_intrinsic, "dfa": obs_dfa, "attribution": obs_attribution,
+                "ci": obs_ci, "sensitivity_case": obs_sensitivity_case}
 
 
 def observation(name: str, results_dir) -> str:
