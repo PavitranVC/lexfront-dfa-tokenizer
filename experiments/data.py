@@ -4,7 +4,10 @@ Every loader returns train/test texts, integer labels and label names. Which spl
 pair was used (and why) is stored in `Dataset.split_info` and ends up in each result
 JSON.
 """
+import json
 import random
+from collections import Counter
+from pathlib import Path
 from dataclasses import dataclass, field
 
 TWEET_TOPIC = "cardiffnlp/tweet_topic_single"
@@ -120,3 +123,20 @@ DATASET_NAMES = tuple(LOADERS)
 def load(name: str, max_train: int | None = None, max_test: int | None = None, seed: int = 0) -> Dataset:
     """Load a dataset by short name, optionally subsampled with a fixed seed."""
     return subsample(LOADERS[name](), max_train, max_test, seed)
+
+
+def write_summary(out_dir, max_train: int | None = None, max_test: int | None = None, seed: int = 0,
+                  names=DATASET_NAMES, log=print) -> Path:
+    """Load every dataset and save `datasets.json` (sizes, labels, splits, class counts)."""
+    records = []
+    for name in names:
+        ds = load(name, max_train, max_test, seed)
+        record = ds.summary()
+        record["train_class_counts"] = dict(sorted(Counter(ds.train_labels).items()))
+        record["test_class_counts"] = dict(sorted(Counter(ds.test_labels).items()))
+        records.append(record)
+        log(f"loaded {name}: train={record['n_train']} test={record['n_test']} labels={record['n_labels']}")
+    path = Path(out_dir) / "datasets.json"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps({"datasets": records}, indent=2))
+    return path
