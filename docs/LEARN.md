@@ -236,3 +236,6 @@ Every number comes from a JSON file in `results/`, written by a script (`python 
 
 **30. What is out of scope for this review?**
 BPE and the LexFront + BPE hybrid, WordPiece, Unigram, ablations and transformers.
+
+**31. Why are the classifier fits single-threaded, and does that change the numbers?**
+The native thread count changes the floating-point summation order inside the LR solver (lbfgs), so the same seed can give slightly different metrics on a different thread count. `experiments/pipeline.py` wraps vectorize, fit and predict in `threadpoolctl.threadpool_limits(1)`, and each run JSON records `blas_threads = 1`. The committed results were regenerated this way, so some LR numbers moved slightly; the old and new values are listed in `docs/DECISIONS.md`. `tests/test_audit_fixes.py` checks that the pinning is active.
