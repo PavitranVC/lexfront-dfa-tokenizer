@@ -25,6 +25,13 @@ jobs:
       - run: pip install -r requirements-lock.txt   # exact pins that produced the committed results
       - run: python -c "import nltk; [nltk.download(p) for p in ('punkt', 'punkt_tab', 'stopwords')]"
       - run: pytest -q
+      - name: Stored statistics match the committed predictions
+        run: |
+          python -m experiments.run_stats --results results
+          python -m experiments.run_stats --results results/quick
+          python -m experiments.run_stats --results results/sensitivity_case
+          python -m experiments.run_ablation --stats-only --out results/ablation
+          git diff --exit-code results
       - name: Generated doc blocks match the committed JSON
         run: |
           python -m experiments.render_docs

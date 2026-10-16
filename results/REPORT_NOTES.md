@@ -272,6 +272,12 @@ comparison. The last two columns compare each LR cell with the same cell of the 
 | ag_news | lexfront | 90.08 / 90.05 | 91.92 / 91.90 | +0.04 | +0.04 |
 <!-- END table:sensitivity_case -->
 
+Paired bootstrap CIs in this grid (`python -m experiments.run_stats --results results/sensitivity_case`, same code, B and seed as the main grid), next to the same pair in the main grid:
+
+<!-- BEGIN table:sensitivity_ci -->
+-
+<!-- END table:sensitivity_ci -->
+
 <!-- BEGIN obs:sensitivity_case -->
 **DRAFT observations (generated from the JSON files):**
 
@@ -285,6 +291,24 @@ _Robustness check, not a like-for-like comparison: with TF-IDF case folding off,
 Finding: the usual ELONGATED regex `(.)\1{2,}` needs a back-reference, which is outside regular expressions, so it is
 not in the DFA engine. For a finite alphabet and run length 3 the language is still regular when spelled out letter by
 letter; the last row of the DFA table is that spelled-out version (lowercase only), shown for comparison.
+
+### Which normalization rule matters? (per-rule ablation)
+LexFront + LR with one normalization rule switched off at a time, everything else fixed
+(`python -m experiments.run_ablation`, `results/ablation/`, protocol in `docs/versions/v4-ablation.md`). Main setting
+(TF-IDF lowercases, as the main grid): no_url, no_mention, no_number, no_elongated, no_slang, and all_off (the lexer's
+segmentation only). The lowercase rule cannot have an effect there, because TF-IDF lowercases the text before LexFront
+sees it; it is tested in the case-kept setting (TF-IDF `lowercase=False`, as the sensitivity grid): no_lowercase and
+all_off_cs against full_cs. Differences are variant minus full LexFront of the same setting, paired bootstrap over the
+test examples (same code, B and seed as `ci_table`), with an exact McNemar test on accuracy. The table says which
+removals change the scores; it does not say why.
+
+<!-- BEGIN table:ablation_table -->
+-
+<!-- END table:ablation_table -->
+
+<!-- BEGIN obs:ablation -->
+-
+<!-- END obs:ablation -->
 
 ## 5. Pseudocode
 

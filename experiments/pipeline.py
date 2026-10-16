@@ -16,6 +16,7 @@ import io
 import json
 import platform
 import time
+from dataclasses import asdict
 from datetime import datetime, timezone
 from functools import lru_cache
 from pathlib import Path
@@ -29,7 +30,7 @@ from threadpoolctl import threadpool_limits
 
 from . import classifiers as clf_mod
 from .metrics import classification_metrics
-from .tokenizers import get_tokenizer
+from .tokenizers import get_tokenizer, normalize_config
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 # Source files whose change can change a run's result (tokenizers, normalizer, data, vectorizer, classifiers).
@@ -75,8 +76,14 @@ def config_fingerprint(ds, tokenizer_name: str, classifier_name: str, seed: int,
     config = {"dataset": ds.summary(), "data_hash": ds.content_hash(), "tokenizer": tokenizer_name,
               "vectorizer": vec_params or clf_mod.VECTORIZER_PARAMS, "classifier": classifier_name,
               "params": clf_mod.classifier_params(classifier_name, seed), "seed": seed, **library_versions(),
-              "blas_threads": BLAS_THREADS}
+              "blas_threads": BLAS_THREADS, **normalize_record(tokenizer_name)}
     return _sha256(json.dumps(config, sort_keys=True, default=str).encode())
+
+
+def normalize_record(tokenizer_name: str) -> dict:
+    """{"normalize": rule switches} for a LexFront tokenizer, {} for a baseline (so their fingerprints are unchanged)."""
+    config = normalize_config(tokenizer_name)
+    return {} if config is None else {"normalize": asdict(config)}
 
 
 def fingerprint(ds, tokenizer_name: str, classifier_name: str, seed: int, vec_params: dict | None = None) -> dict:
@@ -94,7 +101,8 @@ def is_fresh(path: Path, expected: dict) -> bool:
 
 
 def result_path(out_dir, dataset: str, tokenizer: str, classifier: str) -> Path:
-    return Path(out_dir) / f"{dataset}__{tokenizer}__{classifier}.json"
+    """Run JSON path; ':' of a variant name becomes '-' ('lexfront:no_url' -> 'lexfront-no_url'), valid on Windows."""
+    return Path(out_dir) / f"{dataset}__{tokenizer.replace(':', '-')}__{classifier}.json"
 
 
 def predictions_relpath(result_file: Path) -> str:
@@ -147,6 +155,7 @@ def run_one(ds, tokenizer_name: str, classifier_name: str, features, seed: int =
         "dataset": ds.summary(),
         "data_hash": ds.content_hash(),
         "tokenizer": tokenizer_name,
+        **normalize_record(tokenizer_name),
         "vectorizer": {"type": "TfidfVectorizer", **vec_params, "n_features": n_features},
         "classifier": {"name": classifier_name, "params": clf_mod.classifier_params(classifier_name, seed)},
         "seed": seed,

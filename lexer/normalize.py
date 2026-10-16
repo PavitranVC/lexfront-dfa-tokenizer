@@ -18,6 +18,7 @@ from pathlib import Path
 
 SLANG_PATH = Path(__file__).with_name("slang_table.csv")
 WORD_LIKE = {"WORD", "CONTRACTION", "ELONGATED"}
+RULES = ("url", "mention", "number", "elongated", "lowercase", "slang")   # the six switches of NormalizeConfig
 _RUN = re.compile(r"([A-Za-z])\1{2,}", re.IGNORECASE)
 
 
@@ -33,6 +34,11 @@ class NormalizeConfig:
 
     def switched(self, **changes) -> "NormalizeConfig":
         return replace(self, **changes)
+
+    @classmethod
+    def all_off(cls) -> "NormalizeConfig":
+        """Every rule off: tokens are the lexer's lexemes unchanged (segmentation only)."""
+        return cls(**{rule: False for rule in RULES})
 
 
 @lru_cache(maxsize=None)
