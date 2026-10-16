@@ -9,7 +9,8 @@ already recorded elsewhere are only pointed to. Citations below are from abstrac
 - Decision: every run JSON stores `fingerprint = {config, code}` (hash of data subset, tokenizer, vectorizer and
   classifier params, seed, sklearn/nltk versions; hash of `lexer/` and the experiment modules that affect a run).
   `run_cell` reuses a JSON only if both match. The notebook sets `FORCE = QUICK_MODE`, so the CI notebook job and the
-  committed notebook recompute every QUICK run. All 66 run JSONs were regenerated with `--force`; metrics identical.
+  committed notebook recompute every QUICK run. The 33 QUICK run JSONs were regenerated (metrics identical); the full-data
+  rerun changed 5 LR metrics, so full JSONs are left as on main (BLOCKED, see `docs/FIXAUDIT_BLOCKED.md`).
 - Reason: the file name alone hid stale results (AUDIT M1). No test asserts that committed JSONs match the current
   code hash: that would force every later code change to rerun the full grid; a stale JSON is recomputed on next run.
 

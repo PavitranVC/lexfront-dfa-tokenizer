@@ -4,8 +4,8 @@ Newest first. Dates are the day the change was made (IST workday).
 
 ## 2026-10-16 (FIXAUDIT)
 - Fixed the findings of `docs/AUDIT.md` (M1-M3, m1-m13); each decision is in `docs/DECISIONS.md`.
-- Result cache: each run JSON now stores a config + code fingerprint and is recomputed when it differs; all run JSONs
-  in `results/` and `results/quick/` regenerated with `--force` (metrics unchanged).
+- Result cache: each run JSON now stores a config + code fingerprint and is recomputed when it differs; QUICK run JSONs
+  regenerated (metrics unchanged); full-data rerun changed 5 LR metrics and is not committed (`docs/FIXAUDIT_BLOCKED.md`).
 - `obs:attribution` (generated) replaces the incorrect hand-written attribution sentence in `results/REPORT_NOTES.md`.
 - Notebook: setup cell reuses an existing clone (Colab restart), dead dev-branch fallback removed, `FORCE` flag;
   re-executed in QUICK_MODE with every run recomputed.
