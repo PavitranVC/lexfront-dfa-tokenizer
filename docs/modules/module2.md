@@ -82,25 +82,42 @@ Run: `python -m experiments.run_module2` (`--only dfa intrinsic classify` to pic
 Generated from `results/module2/*.json`. Minimized DFA: `results/module2/dfa_min.dot` and `dfa_min.png`.
 
 <!-- BEGIN table:dfa_states -->
-_pending_
+| automaton | alphabet atoms | NFA states | DFA states | minimized DFA states |
+|---|---|---|---|---|
+| MENTION | 5 | 9 | 3 | 3 |
+| HASHTAG | 8 | 9 | 3 | 3 |
+| EMOTICON | 17 | 19 | 6 | 5 |
+| WORD | 6 | 9 | 3 | 2 |
+| combined (MENTION+HASHTAG+EMOTICON+WORD) | 31 | 43 | 12 | 10 |
+| ELONGATED, 26 spelled-out branches (extra, not in LexFront) | 26 | 221 | 157 | 54 |
 <!-- END table:dfa_states -->
 
 <!-- BEGIN obs:dfa -->
-_pending_
+**DRAFT observations (generated from the JSON files):**
+
+- Combined automaton for MENTION, HASHTAG, EMOTICON, WORD: 43 NFA states -> 12 DFA states -> 10 after minimization (31 alphabet atoms).
+- Per class (NFA / DFA / minimized): MENTION 9/3/3; HASHTAG 9/3/3; EMOTICON 19/6/5; WORD 9/3/2.
+- ELONGATED is written with a back-reference (`[A-Za-z]*([A-Za-z])\1{2,}[A-Za-z]*`) and is not accepted by our regex parser, so it is not in the DFA engine. Spelled out as 26 alternatives (lowercase only) it compiles to 221 NFA / 157 DFA / 54 minimized states.
 <!-- END obs:dfa -->
 
 <!-- BEGIN table:intrinsic_metrics -->
-_pending_
+_not available: AttributeError("'DataFrame' object has no attribute 'oov_rate_tokens'")_
 <!-- END table:intrinsic_metrics -->
 
 <!-- BEGIN obs:intrinsic -->
-_pending_
+**DRAFT observations (generated from the JSON files):**
+
+
 <!-- END obs:intrinsic -->
 
 <!-- BEGIN table:existing_vs_proposed -->
-_pending_
+|  |
+||
 <!-- END table:existing_vs_proposed -->
 
 <!-- BEGIN obs:existing_vs_proposed -->
-_pending_
+**DRAFT observations (generated from the JSON files):**
+
+
+_Single run per cell (seed 0), no confidence intervals: gaps of about one point or less should not be read as real differences._
 <!-- END obs:existing_vs_proposed -->

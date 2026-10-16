@@ -37,15 +37,19 @@ Run: `python -m experiments.run_module1` (add `--max-train N --max-test N` to su
 Generated from `results/module1/*.json` and `results/datasets.json`.
 
 <!-- BEGIN table:datasets -->
-_pending_
+_not available: FileNotFoundError(2, 'No such file or directory')_
 <!-- END table:datasets -->
 
 <!-- BEGIN table:module1_results -->
-_pending_
+|  |
+||
 <!-- END table:module1_results -->
 
 <!-- BEGIN obs:module1 -->
-_pending_
+**DRAFT observations (generated from the JSON files):**
+
+
+_Single run per cell (seed 0), no confidence intervals: gaps of about one point or less should not be read as real differences._
 <!-- END obs:module1 -->
 
 Figure: `results/figures/module1_accuracy.png`.

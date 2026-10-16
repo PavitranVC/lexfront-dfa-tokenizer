@@ -12,6 +12,8 @@ import pandas as pd
 
 DATASET_ORDER = ["tweet_topic", "go_emotions", "ag_news"]
 TOKENIZER_ORDER = ["whitespace", "nltk", "tweet", "lexfront"]
+RUN_COLUMNS = ["module", "dataset", "tokenizer", "classifier", "accuracy", "macro_f1", "n_train", "n_test",
+               "n_labels", "hf_id", "config", "split_info"]
 CLASSIFIER_LABEL = {"majority": "Majority", "nb": "Naive Bayes", "lr": "Logistic Reg."}
 
 
@@ -26,7 +28,7 @@ def load_runs(results_dir) -> pd.DataFrame:
                          "n_train": r["dataset"]["n_train"], "n_test": r["dataset"]["n_test"],
                          "n_labels": r["dataset"]["n_labels"], "hf_id": r["dataset"]["hf_id"],
                          "config": r["dataset"]["config"], "split_info": r["dataset"]["split_info"]})
-    return pd.DataFrame(rows)
+    return pd.DataFrame(rows, columns=RUN_COLUMNS) if not rows else pd.DataFrame(rows)
 
 
 def load_intrinsic(results_dir) -> pd.DataFrame:
@@ -36,7 +38,7 @@ def load_intrinsic(results_dir) -> pd.DataFrame:
         for tok, m in r["tokenizers"].items():
             rows.append({"dataset": r["dataset"]["name"], "tokenizer": tok, **m,
                          "n_train": r["dataset"]["n_train"], "n_test": r["dataset"]["n_test"]})
-    return pd.DataFrame(rows)
+    return pd.DataFrame(rows, columns=["dataset", "tokenizer"]) if not rows else pd.DataFrame(rows)
 
 
 def load_dfa(results_dir) -> dict:
@@ -163,7 +165,7 @@ def build_all_tables(results_dir, out_dir=None) -> dict[str, str]:
     for name, fn in TABLES.items():
         try:
             tables[name] = fn(results_dir)
-        except (FileNotFoundError, KeyError, ValueError) as err:   # input JSON not produced yet
+        except (FileNotFoundError, KeyError, ValueError, IndexError, AttributeError) as err:   # input JSON not produced yet
             tables[name] = f"_not available: {err!r}_"
             continue
         (out_dir / f"{name}.md").write_text(tables[name] + "\n")

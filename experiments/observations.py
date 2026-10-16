@@ -118,5 +118,5 @@ def observation(name: str, results_dir) -> str:
     """Observation markdown for one section, or a note if its JSON is not there."""
     try:
         return OBSERVATIONS[name](results_dir)
-    except (FileNotFoundError, KeyError, IndexError, ValueError) as err:
+    except (FileNotFoundError, KeyError, IndexError, ValueError, AttributeError) as err:
         return f"_not available: {err!r}_"
