@@ -237,11 +237,13 @@ _Robustness check, not a like-for-like comparison: with TF-IDF case folding off,
 LexFront + LR with one normalization rule switched off at a time, everything else fixed
 (`python -m experiments.run_ablation`, `results/ablation/`, protocol in `docs/versions/v4-ablation.md`). Main setting
 (TF-IDF lowercases, as the main grid): no_url, no_mention, no_number, no_elongated, no_slang, and all_off (the lexer's
-segmentation only). The lowercase rule cannot have an effect there, because TF-IDF lowercases the text before LexFront
+segmentation only; TF-IDF still lowercases). The lowercase rule cannot have an effect there, because TF-IDF lowercases the text before LexFront
 sees it; it is tested in the case-kept setting (TF-IDF `lowercase=False`, as the sensitivity grid): no_lowercase and
 all_off_cs against full_cs. Differences are variant minus full LexFront of the same setting, paired bootstrap over the
 test examples (same code, B and seed as `ci_table`), with an exact McNemar test on accuracy. The table says which
-removals change the scores; it does not say why.
+removals change the scores; it does not say why. The column "rule fires" counts the train / test documents in which
+the removed rule changes at least one token: a variant whose rule never fires (0 / 0) is the full system itself and is
+not a test of the rule, so the observation lists it apart and leaves it out of the counts.
 
 <!-- BEGIN table:ablation_table -->
 | dataset | setting | variant | TF-IDF features | acc / F1 % | acc minus full, pts [95% CI] | F1 minus full, pts [95% CI] | CI excludes 0 (acc / F1) | predictions changed | McNemar p (acc) |

@@ -57,8 +57,31 @@ def test_ablation_runs_stats_table_and_observation(tmp_path, monkeypatch):
     assert run_ablation.compute(out, n_boot=50, seed=1) == abl
     table = report.render_all_tables(tmp_path)["ablation_table"]
     assert table.count("\n") == 1 + sum(len(s.variants) for s in run_ablation.SETTINGS)
+    assert "rule fires, docs train / test" in table
+    fires = main["variants"]["no_url"]["rule_fires"]
+    assert fires["train"]["docs"] > 0 and main["variants"]["no_number"]["rule_fires"]["train"]["tokens"] == 0
     text = observation("ablation", tmp_path)
-    assert "**ag_news** (8 variants vs full)" in text and "no multiplicity correction" in text
+    # the toy texts have no numbers or slang and are lowercase already: those three variants are the full system
+    assert "**ag_news** (5 variants vs full)" in text and "no multiplicity correction" in text
+    assert "Rule never fires on this data (train and test), so not a test of the rule: no_number, no_slang, " \
+           "no_lowercase (case kept)" in text
+    assert "10 difference CIs of the compared variants" in text and "if the intervals were independent" in text
+    assert "all_off (TF-IDF still lowercases)" in table
+
+
+def test_count_firing_counts_documents_and_tokens():
+    configs = {"no_url": normalize_config("lexfront:no_url"), "no_number": normalize_config("lexfront:no_number")}
+    counts = run_ablation.count_firing(["see https://a.co and https://b.co", "no link 42", "plain"], configs)
+    assert counts["no_url"] == {"docs": 1, "tokens": 2, "n_docs": 3}
+    assert counts["no_number"] == {"docs": 1, "tokens": 1, "n_docs": 3}
+
+
+def test_train_only_firing_is_named_and_still_compared():
+    from experiments.observations import _split_variants
+    diff = {m: {"diff": 0.0, "ci": [0.0, 0.0], "ci_excludes_zero": False} for m in ("accuracy", "macro_f1")}
+    variant = {"minus_reference": diff, "rule_fires": {"train": {"docs": 6, "tokens": 6}, "test": {"docs": 0, "tokens": 0}}}
+    compared, never, train_only = _split_variants({"main": {"variants": {"full": {}, "no_mention": variant}}})
+    assert [v for v, _ in compared] == ["no_mention"] and never == [] and train_only == [("no_mention", 6)]
 
 
 def test_missing_ablation_is_reported_not_raised(tmp_path):

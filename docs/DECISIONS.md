@@ -3,6 +3,25 @@
 Newest first. One short entry each: decision, reason, source. Gaps filled on 2026-10-16 from the team's notes; items
 already recorded elsewhere are only pointed to. Citations below are from abstracts only and were not re-checked here.
 
+## 2026-10-16 (P3: AUDIT_4 fixes; BPE and the LexFront + BPE hybrid)
+
+### AUDIT_4 fixes (stage A)
+- A4-1: `run_ablation` counts, per setting, dataset and split, how often each removed rule fires: documents whose token
+  list and lexer tokens whose normalized form differ from full LexFront, on the text LexFront sees in that setting
+  (lowercased in main, as stored in case). One lexer scan per document, every configuration normalizes the same
+  tokens. Stored in `<out>/<setting>/firing__<dataset>.json` (stamped with data hash and code fingerprint, recomputed
+  when either changes, so `--stats-only` needs no dataset) and copied into `stats/bootstrap.json` (`rule_fires`);
+  table column "rule fires, docs train / test". The observation lists variants with 0 firing tokens in train and test
+  apart ("rule never fires on this data: not a test of the rule") and leaves them out of the comparison and chance
+  counts. A variant that fires only in train (go_emotions no_mention, 6 train documents) stays a comparison, since
+  the fit differs, and is named as train-only. The P2 proxy "0 changed predictions = never fires" is withdrawn: it is
+  not reliable (no_mention on go_emotions changes test predictions while the rule never fires in the test set).
+  LEARN Q33, `v4-ablation.md` ("What it cannot show") and module2 / REPORT_NOTES prose say the same.
+- A4-2: the chance statement counts only the compared (non-identical) variants and says "roughly, if the intervals
+  were independent" (they are not: all_off contains every single-rule change). "(TF-IDF still lowercases)" is added
+  next to all_off of the main setting in the table, observation, caveat, module2, REPORT_NOTES, notebook and
+  `v4-ablation.md`.
+
 ## 2026-10-16 (P2: per-rule normalization ablation; AUDIT_3 minor fixes)
 
 ### P2 protocol (decisions by the conductor)
@@ -22,8 +41,9 @@ already recorded elsewhere are only pointed to. Citations below are from abstrac
 - Decision: the full variants are recomputed inside `results/ablation/` (not copied); `results/ablation/stats/
   bootstrap.json` records per setting and dataset whether their predictions are identical to the full-LexFront+LR run
   of the main or sensitivity grid (`reference_vs_grid`).
-- Decision: the ablation table also shows the TF-IDF vocabulary size and how many test predictions changed, so a rule
-  that never fires on a dataset is visible as 0 changed predictions.
+- Decision: the ablation table also shows the TF-IDF vocabulary size and how many test predictions changed.
+  (Corrected by AUDIT_4 A4-1, see the P3 section: "0 changed predictions" is not a reliable sign that a rule never
+  fires; firing is now counted directly.)
 
 ### Safety check
 - The code fingerprint changed (tokenizers, pipeline, normalize), so all main, QUICK and sensitivity runs were

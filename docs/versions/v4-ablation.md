@@ -19,7 +19,7 @@ Which of LexFront's six normalization rules changes the downstream classificatio
   lexer's lexemes (segmentation only). Variants are registered in `experiments/tokenizers.py` (`LEXFRONT_VARIANTS`)
   and are not part of the main tokenizer list.
 * **Main setting** (TF-IDF `lowercase=True`, as the main grid): full, no_url, no_mention, no_number, no_elongated,
-  no_slang, all_off. The lowercase rule cannot show an effect here: TF-IDF lowercases the text before LexFront sees it.
+  no_slang, all_off (TF-IDF still lowercases). The lowercase rule cannot show an effect here: TF-IDF lowercases the text before LexFront sees it.
 * **Case-kept setting** (TF-IDF `lowercase=False`, as the sensitivity grid): full_cs, no_lowercase, all_off_cs.
 * **Comparison.** Each variant minus the full variant of its setting, accuracy and macro-F1: paired percentile
   bootstrap over the test examples, the same code, B and seed as P1 (`experiments/stats.py`); exact McNemar test on
@@ -38,4 +38,12 @@ Which of LexFront's six normalization rules changes the downstream classificatio
 
 ## What it cannot show
 Training randomness (one run per variant); interactions between rules beyond all-off; why a rule matters (any reason
-is a hypothesis, e.g. how often URLs occur in a dataset, not measured here).
+is a hypothesis). It also cannot test a rule that never fires on a dataset: then the variant is the full system. How
+often each rule fires is now counted (AUDIT_4 A4-1): per setting, dataset and split, the documents and lexer tokens
+whose normalized form differs from full LexFront (`<out>/<setting>/firing__<dataset>.json`, copied into
+`stats/bootstrap.json` as `rule_fires`, table column "rule fires"). On the full data the URL rule never fires in
+tweet_topic or go_emotions and the mention rule never fires in ag_news (train and test); the mention rule fires in 6
+go_emotions train documents and no test document. Never-firing variants are listed apart in the observation and left
+out of the comparison and chance counts. "0 changed predictions" is not a reliable sign of a never-firing rule: a rule
+that fires only in train still changes the fit. In the main setting all_off keeps TF-IDF's lowercasing (TF-IDF still
+lowercases).

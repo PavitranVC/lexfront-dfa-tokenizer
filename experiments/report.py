@@ -279,12 +279,19 @@ def load_ablation(results_dir) -> dict:
     return load_bootstrap(Path(results_dir) / ABLATION_SUBDIR)
 
 
+def _fires_text(fires: dict | None) -> str:
+    """'12 / 3' documents (train / test) where the removed rule changes a token; '-' if not counted."""
+    return f"{fires['train']['docs']} / {fires['test']['docs']}" if fires else "-"
+
+
 def _ablation_row(ds: str, setting: dict, variant: str, v: dict) -> dict:
     """One table row: the variant's scores and, unless it is the reference, its paired difference to the reference."""
     diff, mc = v.get("minus_reference"), v.get("mcnemar_accuracy")
     excl = (f"{'yes' if diff['accuracy']['ci_excludes_zero'] else 'no'} / "
             f"{'yes' if diff['macro_f1']['ci_excludes_zero'] else 'no'}") if diff else "-"
-    return {"dataset": ds, "setting": setting["label"], "variant": variant + (" (reference)" if not diff else ""),
+    label = variant + (" (TF-IDF still lowercases)" if variant == "all_off" else "")
+    return {"dataset": ds, "setting": setting["label"], "variant": label + (" (reference)" if not diff else ""),
+            "rule fires, docs train / test": _fires_text(v.get("rule_fires")) if diff else "-",
             "TF-IDF features": v["n_features"],
             "acc / F1 %": f"{_pct(v['accuracy']['value'])} / {_pct(v['macro_f1']['value'])}",
             "acc minus full, pts [95% CI]": _ci_text(diff["accuracy"]["diff"], diff["accuracy"]["ci"]) if diff else "-",

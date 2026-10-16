@@ -189,11 +189,12 @@ LexFront's normalizer has six switchable rules (URL, MENTION, NUMBER, ELONGATED,
 below is LexFront + Logistic Regression with one rule switched off, everything else fixed, compared with full
 LexFront on the same resampled test examples (paired bootstrap, as in section 5; McNemar on accuracy).
 *Main setting* (TF-IDF lowercases, as the main grid): no_url, no_mention, no_number, no_elongated, no_slang and
-all_off (lexer segmentation only). The lowercase rule cannot show an effect there, because TF-IDF lowercases the text
+all_off (lexer segmentation only; TF-IDF still lowercases). The lowercase rule cannot show an effect there, because TF-IDF lowercases the text
 before LexFront sees it, so it is tested in the *case-kept* setting (TF-IDF `lowercase=False`): no_lowercase and
 all_off_cs against full_cs. On the QUICK subsample (500 test examples) these intervals are wide; the full-data
-ablation is in `results/ablation/` (appendix). With 8 comparisons per dataset and no multiplicity correction, an
-interval can exclude 0 by chance."""),
+ablation is in `results/ablation/` (appendix). With up to 8 comparisons per dataset and no multiplicity correction,
+an interval can exclude 0 by chance. The column "rule fires" counts the train / test documents in which the removed
+rule changes a token; a rule that never fires on the subsample (0 / 0) gives the full system, not a test of the rule."""),
     code('''review1.run_ablation_section(QUICK_MODE, force=FORCE)
 out = review1.build_outputs(QUICK_MODE)
 display(Markdown(out["tables"]["ablation_table"]))'''),

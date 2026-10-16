@@ -239,12 +239,27 @@ def _sensitivity_ci_lines(results_dir) -> list[str]:
 
 
 ABLATION_CAVEAT = ("_Ablation: each variant is LexFront + LR with the named rule (all_off: every rule) switched off, "
-                   "everything else fixed; differences are variant minus full LexFront of the same setting, paired bootstrap over the test "
-                   "examples (same code, B and seed as `ci_table`). One training run per variant, so training "
+                   "everything else fixed; in the main setting all_off still has TF-IDF's lowercasing (TF-IDF still "
+                   "lowercases). Differences are variant minus full LexFront of the same setting, paired bootstrap over "
+                   "the test examples (same code, B and seed as `ci_table`). One training run per variant, so training "
                    "randomness is not covered. The lowercase rule is tested only with case kept: in the main setting "
                    "TF-IDF lowercases the text before LexFront sees it, so switching the rule off cannot change "
-                   "anything there. These numbers say which removals change the scores, not why; any reason given "
-                   "elsewhere is a hypothesis._")
+                   "anything there. A variant whose rule never fires on a dataset (train and test) is the full system "
+                   "itself, so it is listed apart and not counted as a comparison; 0 changed predictions alone does "
+                   "not show that (a rule firing only in train still changes the fit). These numbers say which "
+                   "removals change the scores, not why; any reason given elsewhere is a hypothesis._")
+
+
+def _variant_label(setting_name: str, variant: str) -> str:
+    """'no_url', 'all_off (TF-IDF still lowercases)', 'no_lowercase (case kept)'."""
+    if setting_name == "case":
+        return f"{variant} (case kept)"
+    return f"{variant} (TF-IDF still lowercases)" if variant == "all_off" else variant
+
+
+def never_fires(fires: dict | None) -> bool:
+    """True if the removed rule changes no lexer token in train or test (the variant is the full system)."""
+    return fires is not None and all(split["tokens"] == 0 for split in fires.values())
 
 
 def _removal_list(diffs: list[tuple[str, dict]], metric: str) -> str:
@@ -254,21 +269,52 @@ def _removal_list(diffs: list[tuple[str, dict]], metric: str) -> str:
     return ", ".join(hits) if hits else "none"
 
 
+def _split_variants(settings: dict) -> tuple[list, list, list]:
+    """(compared [(label, minus_reference)], never-firing labels, train-only labels [(label, train docs)])."""
+    compared, never, train_only = [], [], []
+    for name, setting in settings.items():
+        for v, r in setting["variants"].items():
+            if "minus_reference" not in r:
+                continue
+            label, fires = _variant_label(name, v), r.get("rule_fires")
+            if never_fires(fires):
+                never.append(label)
+                continue
+            compared.append((label, r["minus_reference"]))
+            if fires and fires["test"]["tokens"] == 0:
+                train_only.append((label, fires["train"]["docs"]))
+    return compared, never, train_only
+
+
+def _dataset_ablation_line(ds: str, compared, never, train_only) -> str:
+    line = (f"- **{ds}** ({len(compared)} variants vs full): accuracy CI excludes 0 for "
+            f"{_removal_list(compared, 'accuracy')}; macro-F1 CI excludes 0 for "
+            f"{_removal_list(compared, 'macro_f1')}. Every other compared interval includes 0.")
+    if never:
+        line += (f" Rule never fires on this data (train and test), so not a test of the rule: {', '.join(never)}"
+                 f" (identical to full, left out of the counts).")
+    if train_only:
+        line += " Fires in train only, never in test: " + ", ".join(
+            f"{v} ({n} train documents)" for v, n in train_only) + "."
+    return line
+
+
 def obs_ablation(results_dir) -> str:
-    """Per dataset: which rule removals have a paired CI excluding 0, in which direction; and the chance caveat."""
+    """Per dataset: which rule removals have a paired CI excluding 0, in which direction; never-firing rules apart;
+    and the chance caveat over the non-identical variants only."""
     abl = load_ablation(results_dir)
-    out, n_ci, n_excl = [], 0, 0
+    out, n_ci, n_excl, n_never = [], 0, 0, 0
     for ds, settings in abl["datasets"].items():
-        diffs = [(f"{v}" + (" (case kept)" if name == "case" else ""), r["minus_reference"])
-                 for name, setting in settings.items() for v, r in setting["variants"].items() if "minus_reference" in r]
-        n_ci += 2 * len(diffs)
-        n_excl += sum(d[m]["ci_excludes_zero"] for _, d in diffs for m in ("accuracy", "macro_f1"))
-        out.append(f"- **{ds}** ({len(diffs)} variants vs full): accuracy CI excludes 0 for "
-                   f"{_removal_list(diffs, 'accuracy')}; macro-F1 CI excludes 0 for "
-                   f"{_removal_list(diffs, 'macro_f1')}. Every other interval includes 0.")
-    out.append(f"- In all, {n_excl} of {n_ci} difference CIs exclude 0. There is no multiplicity correction: with "
-               f"{n_ci} separate 95% intervals, about {0.05 * n_ci:.1f} would exclude 0 by chance even if no rule "
-               f"had any effect, so a single interval that excludes 0 is weak evidence on its own.")
+        compared, never, train_only = _split_variants(settings)
+        n_ci += 2 * len(compared)
+        n_never += len(never)
+        n_excl += sum(d[m]["ci_excludes_zero"] for _, d in compared for m in ("accuracy", "macro_f1"))
+        out.append(_dataset_ablation_line(ds, compared, never, train_only))
+    out.append(f"- In all, {n_excl} of {n_ci} difference CIs of the compared variants exclude 0 ({n_never} "
+               f"never-firing variants left out). There is no multiplicity correction: with {n_ci} separate 95% "
+               f"intervals, roughly {0.05 * n_ci:.1f} would exclude 0 by chance even if no rule had any effect, if the "
+               f"intervals were independent (they are not: all_off contains every single-rule change), so a single "
+               f"interval that excludes 0 is weak evidence on its own.")
     return "\n".join(out + ["", ABLATION_CAVEAT])
 
 
