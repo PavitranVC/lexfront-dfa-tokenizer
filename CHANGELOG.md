@@ -10,6 +10,8 @@ Newest first. Dates are the day the change was made (IST workday).
   (sources in `report/diagrams/`, PNGs in `report/figures/`).
 - 35 references, each checked by opening its ACL Anthology / arXiv / DOI-or-author / official-docs page this session.
   Thompson (1968) and Reps (1998) were confirmed through secondary records because the ACM pages returned HTTP 403.
+- `report/Screenshots_and_Finalization_Guide.md` (and `.docx`): which screenshots to take and how to run them, how to
+  make the report the team's own, and how to produce the figures by hand.
 - Open markers in the report: base-paper citation `[TEAM]`, course-textbook citation `[TEAM]` (twice),
   reason for dropping Docker `[MISSING]`.
 
