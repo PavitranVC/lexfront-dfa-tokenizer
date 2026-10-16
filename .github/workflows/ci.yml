@@ -32,6 +32,9 @@ jobs:
           python -m experiments.run_stats --results results/sensitivity_case
           python -m experiments.run_ablation --stats-only --out results/ablation
           python -m experiments.run_ablation --stats-only --out results/quick/ablation
+          python -m experiments.run_bpe --stats-only --out results/bpe
+          python -m experiments.run_bpe --stats-only --out results/quick/bpe
+          python -m experiments.run_bpe --stats-only --out results/bpe_v32000 --vocab-size 32000
           git diff --exit-code results
       - name: Generated doc blocks match the committed JSON
         run: |

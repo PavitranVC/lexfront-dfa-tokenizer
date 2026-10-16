@@ -6,8 +6,9 @@ labelled hypotheses in the docs. Every cell is one training run (seed 0); the CI
 """
 import pandas as pd
 
-from .report import (DATASET_ORDER, TOKENIZER_ORDER, load_ablation, load_bootstrap, load_datasets, load_dfa,
-                     load_intrinsic, load_runs, load_sensitivity_bootstrap, load_sensitivity_runs, p_value_text)
+from .report import (DATASET_ORDER, SUBWORD_ORDER, TOKENIZER_ORDER, load_ablation, load_bootstrap, load_bpe,
+                     load_datasets, load_dfa, load_intrinsic, load_runs, load_sensitivity_bootstrap,
+                     load_sensitivity_runs, p_value_text)
 
 CAVEAT = ("_One training run per cell (seed 0). The 95% confidence intervals (table `ci_table`, file "
           "`stats/bootstrap.json`) are percentile bootstraps over the test examples: they show how much a score "
@@ -118,11 +119,23 @@ def obs_attribution(results_dir) -> str:
     return "\n".join(out + ["", CAVEAT])
 
 
+def _subword_intrinsic(sub) -> str:
+    """'BPE: OOV 0.05%, fertility 1.234, vocabulary 7990; ...' for the subword tokenizers present ('' if none)."""
+    parts = [f"{tok}: OOV {_p(sub.loc[tok].oov_rate_tokens)}, fertility {sub.loc[tok].fertility:.3f}, "
+             f"vocabulary {int(sub.loc[tok].vocab_size)}" for tok in SUBWORD_ORDER if tok in sub.index]
+    if not parts:
+        return ""
+    return (" Subword tokenizers (trained on the train split; their OOV rate is near zero by construction, so it is "
+            "not comparable with the word-level ones above): " + "; ".join(parts) + ".")
+
+
 def obs_intrinsic(results_dir) -> str:
+    """Per dataset: lowest OOV and smallest vocabulary among the four word-level tokenizers; subword ones apart."""
     df = load_intrinsic(results_dir)
     out = []
     for ds in _datasets(df):
-        sub = df[df.dataset == ds].set_index("tokenizer")
+        everything = df[df.dataset == ds].set_index("tokenizer")
+        sub = everything[~everything.index.isin(SUBWORD_ORDER)]
         low_oov = sub.oov_rate_tokens.idxmin()
         small_vocab = sub.vocab_size.idxmin()
         parts = [f"lowest OOV rate {_p(sub.oov_rate_tokens.min())} ({low_oov})",
@@ -134,7 +147,7 @@ def obs_intrinsic(results_dir) -> str:
             if "nltk" in sub.index:
                 ratio = lf.throughput_tokens_per_s / sub.loc["nltk"].throughput_tokens_per_s
                 parts.append(f"LexFront throughput is {ratio:.2f}x NLTK's (tokens/s, this machine)")
-        out.append(f"- **{ds}**: " + "; ".join(parts) + ".")
+        out.append(f"- **{ds}**: " + "; ".join(parts) + "." + _subword_intrinsic(everything))
     return "\n".join(out)
 
 
@@ -318,10 +331,49 @@ def obs_ablation(results_dir) -> str:
     return "\n".join(out + ["", ABLATION_CAVEAT])
 
 
+BPE_CAVEAT = ("_Subword grid: each BPE (vocabulary size in the last line) is trained on the lowercased train split of "
+              "its dataset only; LexFront + BPE keeps LexFront's structural tokens whole and splits only word-like "
+              "tokens. Differences are paired bootstraps over the test examples (same code, B and seed as `ci_table`), "
+              "against the NLTK+LR and LexFront+LR runs of the main grid. One training run per cell, so training "
+              "randomness is not covered; no multiplicity correction. These lines say which differences exclude 0 and "
+              "in which direction, not why; any reason given elsewhere is a hypothesis._")
+
+
+def _ci_verdicts(pairs: dict) -> str:
+    """'BPE+LR minus NLTK+LR: accuracy -0.50 (lower), macro-F1 includes 0; ...' for every pair of one dataset."""
+    parts = []
+    for p in pairs.values():
+        metrics = []
+        for m, label in (("accuracy", "accuracy"), ("macro_f1", "macro-F1")):
+            d = p[m]
+            metrics.append(f"{label} {100 * d['diff']:+.2f} (CI excludes 0, {'higher' if d['diff'] > 0 else 'lower'})"
+                           if d["ci_excludes_zero"] else f"{label} {100 * d['diff']:+.2f} (CI includes 0)")
+        parts.append(f"{p['label']}: " + ", ".join(metrics))
+    return "; ".join(parts)
+
+
+def obs_bpe(results_dir) -> str:
+    """Per dataset: the four subword differences, whether each CI excludes 0 and in which direction; McNemar."""
+    boot = load_bpe(results_dir)
+    out, n_ci, n_excl = [], 0, 0
+    for ds, d in boot["datasets"].items():
+        line = f"- **{ds}**: {_ci_verdicts(d['pairs'])}."
+        mc = d["pairs"].get("bpe_vs_nltk_lr", {}).get("mcnemar_accuracy")
+        if mc:
+            line += f" Exact McNemar p (BPE+LR vs NLTK+LR, accuracy) {p_value_text(mc['p_value'])}."
+        out.append(line)
+        n_ci += 2 * len(d["pairs"])
+        n_excl += sum(p[m]["ci_excludes_zero"] for p in d["pairs"].values() for m in ("accuracy", "macro_f1"))
+    cfg = boot["config"]
+    out.append(f"- In all, {n_excl} of {n_ci} difference CIs exclude 0 (vocabulary {cfg['vocab_size']}, B = "
+               f"{cfg['n_boot']}, seed {cfg['seed']}).")
+    return "\n".join(out + ["", BPE_CAVEAT])
+
+
 OBSERVATIONS = {"datasets": obs_datasets, "module1": obs_module1, "existing_vs_proposed": obs_existing_vs_proposed,
                 "intrinsic": obs_intrinsic, "dfa": obs_dfa, "attribution": obs_attribution,
                 "ci": obs_ci, "sensitivity_case": obs_sensitivity_case,
-                "ablation": obs_ablation}
+                "ablation": obs_ablation, "bpe": obs_bpe}
 
 
 def observation(name: str, results_dir) -> str:

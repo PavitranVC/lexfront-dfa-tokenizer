@@ -30,11 +30,11 @@ from threadpoolctl import threadpool_limits
 
 from . import classifiers as clf_mod
 from .metrics import classification_metrics
-from .tokenizers import get_tokenizer, normalize_config
+from .tokenizers import build_tokenizer, normalize_config, subword_record
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 # Source files whose change can change a run's result (tokenizers, normalizer, data, vectorizer, classifiers).
-CODE_GLOBS = ["lexer/*.py", "lexer/dfa/*.py", "lexer/*.csv", "experiments/tokenizers.py", "experiments/classifiers.py",
+CODE_GLOBS = ["lexer/*.py", "lexer/dfa/*.py", "lexer/*.csv", "subword/*.py", "experiments/tokenizers.py", "experiments/classifiers.py",
               "experiments/pipeline.py", "experiments/metrics.py", "experiments/data.py"]
 # Native thread count for every fit; part of the fingerprint because it changes LR metrics.
 BLAS_THREADS = 1
@@ -72,11 +72,13 @@ def library_versions() -> dict:
 
 def config_fingerprint(ds, tokenizer_name: str, classifier_name: str, seed: int, vec_params: dict | None = None) -> str:
     """Hash of everything a run is configured by: data subset and its content, tokenizer, vectorizer, classifier,
-    seed, library versions and thread count."""
+    seed, library versions and thread count; for a trained subword tokenizer also its BPE config, vocabulary size
+    and the hash of its training text."""
     config = {"dataset": ds.summary(), "data_hash": ds.content_hash(), "tokenizer": tokenizer_name,
               "vectorizer": vec_params or clf_mod.VECTORIZER_PARAMS, "classifier": classifier_name,
               "params": clf_mod.classifier_params(classifier_name, seed), "seed": seed, **library_versions(),
-              "blas_threads": BLAS_THREADS, **normalize_record(tokenizer_name)}
+              "blas_threads": BLAS_THREADS, **normalize_record(tokenizer_name),
+              **subword_record(tokenizer_name, ds.train_texts)}
     return _sha256(json.dumps(config, sort_keys=True, default=str).encode())
 
 
@@ -129,9 +131,12 @@ def load_predictions(result_file) -> tuple[np.ndarray, np.ndarray]:
 
 
 def vectorize(ds, tokenizer_name: str, vec_params: dict | None = None):
-    """Fit TF-IDF on train, transform test; returns (X_train, X_test, seconds, n_features)."""
-    vec = clf_mod.make_vectorizer(get_tokenizer(tokenizer_name), vec_params)
+    """Fit TF-IDF on train, transform test; returns (X_train, X_test, seconds, n_features).
+
+    A subword tokenizer is trained here on the train texts only; the seconds include that training.
+    """
     start = time.perf_counter()
+    vec = clf_mod.make_vectorizer(build_tokenizer(tokenizer_name, ds.train_texts), vec_params)
     with single_threaded():
         x_train = vec.fit_transform(ds.train_texts)
         x_test = vec.transform(ds.test_texts)
@@ -156,6 +161,7 @@ def run_one(ds, tokenizer_name: str, classifier_name: str, features, seed: int =
         "data_hash": ds.content_hash(),
         "tokenizer": tokenizer_name,
         **normalize_record(tokenizer_name),
+        **subword_record(tokenizer_name, ds.train_texts),
         "vectorizer": {"type": "TfidfVectorizer", **vec_params, "n_features": n_features},
         "classifier": {"name": classifier_name, "params": clf_mod.classifier_params(classifier_name, seed)},
         "seed": seed,

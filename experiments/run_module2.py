@@ -3,7 +3,8 @@
     python -m experiments.run_module2 [--out results/module2] [--only dfa intrinsic classify]
 
 * dfa        : state counts + .dot/.png of the minimized DFA  (dfa_states.json)
-* intrinsic  : OOV, fertility, vocab size, throughput for 4 tokenizers (intrinsic__<dataset>.json)
+* intrinsic  : OOV, fertility, vocab size, throughput for the 4 tokenizers and the 2 subword tokenizers of P3
+               (BPE, LexFront + BPE; trained on the lowercased train texts) (intrinsic__<dataset>.json)
 * classify   : LexFront + {NB, LR} with exactly the Module 1 settings
 """
 import argparse
@@ -15,11 +16,22 @@ from . import data
 from .dfa_report import build_report
 from .metrics import intrinsic_metrics
 from .pipeline import environment, run_grid
-from .tokenizers import TOKENIZERS
+from .tokenizers import PRIMARY_SUBWORD, TOKENIZERS, build_tokenizer, subword_record
+
+
+def intrinsic_tokenizers(train_texts):
+    """(name, tokenizer) for the four fixed tokenizers, then the subword ones trained on `train_texts` only."""
+    yield from TOKENIZERS.items()
+    for name in PRIMARY_SUBWORD:
+        yield name, build_tokenizer(name, train_texts)
 
 
 def run_intrinsic(dataset_names, out_dir, max_train=None, max_test=None, seed=0, log=print):
-    """Intrinsic metrics for every tokenizer on every dataset (texts lowercased like the vectorizer)."""
+    """Intrinsic metrics for every tokenizer on every dataset (texts lowercased like the vectorizer).
+
+    A BPE's OOV rate is near zero by construction (unseen words split into known pieces), so it is not comparable
+    with the word-level tokenizers; `trained_vocab_size` is the size of the learned BPE vocabulary.
+    """
     out = Path(out_dir)
     out.mkdir(parents=True, exist_ok=True)
     for dname in dataset_names:
@@ -29,9 +41,12 @@ def run_intrinsic(dataset_names, out_dir, max_train=None, max_test=None, seed=0,
         record = {"timestamp_utc": datetime.now(timezone.utc).isoformat(timespec="seconds"),
                   "dataset": ds.summary(), "preprocessing": "lowercase", "environment": environment(),
                   "tokenizers": {}}
-        for tname, tok in TOKENIZERS.items():
+        for tname, tok in intrinsic_tokenizers(train):
             record["tokenizers"][tname] = intrinsic_metrics(tok, train, test)
             m = record["tokenizers"][tname]
+            if tname in PRIMARY_SUBWORD:
+                m["trained_vocab_size"] = tok.model.get_vocab_size()
+                record.setdefault("subword", {})[tname] = subword_record(tname, train)["subword"]
             log(f"{dname:12s} {tname:10s} oov={m['oov_rate_tokens']:.4f} fert={m['fertility']:.3f} "
                 f"vocab={m['vocab_size']} tok/s={m['throughput_tokens_per_s']:.0f}")
         (out / f"intrinsic__{dname}.json").write_text(json.dumps(record, indent=2))
