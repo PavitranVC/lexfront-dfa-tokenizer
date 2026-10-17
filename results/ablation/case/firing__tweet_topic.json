@@ -1,0 +1,31 @@
+{
+  "data_hash": "2d3ea347071a7775",
+  "code": "16dcea03d83ab451",
+  "text": "as stored (case kept)",
+  "splits": {
+    "train": {
+      "no_lowercase": {
+        "docs": 3584,
+        "tokens": 29319,
+        "n_docs": 3598
+      },
+      "all_off_cs": {
+        "docs": 3598,
+        "tokens": 35024,
+        "n_docs": 3598
+      }
+    },
+    "test": {
+      "no_lowercase": {
+        "docs": 3381,
+        "tokens": 27307,
+        "n_docs": 3399
+      },
+      "all_off_cs": {
+        "docs": 3399,
+        "tokens": 33170,
+        "n_docs": 3399
+      }
+    }
+  }
+}

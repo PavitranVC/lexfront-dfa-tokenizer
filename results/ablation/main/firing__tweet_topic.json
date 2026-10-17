@@ -1,0 +1,71 @@
+{
+  "data_hash": "2d3ea347071a7775",
+  "code": "16dcea03d83ab451",
+  "text": "lowercased (as TF-IDF does)",
+  "splits": {
+    "train": {
+      "no_url": {
+        "docs": 0,
+        "tokens": 0,
+        "n_docs": 3598
+      },
+      "no_mention": {
+        "docs": 2414,
+        "tokens": 3221,
+        "n_docs": 3598
+      },
+      "no_number": {
+        "docs": 1165,
+        "tokens": 2263,
+        "n_docs": 3598
+      },
+      "no_elongated": {
+        "docs": 89,
+        "tokens": 112,
+        "n_docs": 3598
+      },
+      "no_slang": {
+        "docs": 247,
+        "tokens": 297,
+        "n_docs": 3598
+      },
+      "all_off": {
+        "docs": 2856,
+        "tokens": 5893,
+        "n_docs": 3598
+      }
+    },
+    "test": {
+      "no_url": {
+        "docs": 0,
+        "tokens": 0,
+        "n_docs": 3399
+      },
+      "no_mention": {
+        "docs": 2416,
+        "tokens": 3286,
+        "n_docs": 3399
+      },
+      "no_number": {
+        "docs": 1172,
+        "tokens": 2367,
+        "n_docs": 3399
+      },
+      "no_elongated": {
+        "docs": 76,
+        "tokens": 84,
+        "n_docs": 3399
+      },
+      "no_slang": {
+        "docs": 221,
+        "tokens": 263,
+        "n_docs": 3399
+      },
+      "all_off": {
+        "docs": 2815,
+        "tokens": 6000,
+        "n_docs": 3399
+      }
+    }
+  }
+}

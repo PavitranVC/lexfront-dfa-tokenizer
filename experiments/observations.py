@@ -6,7 +6,7 @@ labelled hypotheses in the docs. Every cell is one training run (seed 0); the CI
 """
 import pandas as pd
 
-from .report import (DATASET_ORDER, SUBWORD_ORDER, TOKENIZER_ORDER, load_ablation, load_bootstrap, load_bpe,
+from .report import (BPE_SENSITIVITY_SUBDIR, BPE_SUBDIR, DATASET_ORDER, SUBWORD_ORDER, TOKENIZER_ORDER, load_ablation, load_bootstrap, load_bpe,
                      load_datasets, load_dfa, load_intrinsic, load_runs, load_sensitivity_bootstrap,
                      load_sensitivity_runs, p_value_text)
 
@@ -125,8 +125,10 @@ def _subword_intrinsic(sub) -> str:
              f"vocabulary {int(sub.loc[tok].vocab_size)}" for tok in SUBWORD_ORDER if tok in sub.index]
     if not parts:
         return ""
-    return (" Subword tokenizers (trained on the train split; their OOV rate is near zero by construction, so it is "
-            "not comparable with the word-level ones above): " + "; ".join(parts) + ".")
+    return (" Subword tokenizers (trained on the train split; BPE splits every word into pieces seen in train, so its "
+            "OOV rate is near zero by construction and not comparable with the word-level ones above; LexFront + BPE "
+            "splits only word-like tokens, so its OOV tokens are structural tokens passed through whole, or `[UNK]`): "
+            + "; ".join(parts) + ".")
 
 
 def obs_intrinsic(results_dir) -> str:
@@ -352,9 +354,9 @@ def _ci_verdicts(pairs: dict) -> str:
     return "; ".join(parts)
 
 
-def obs_bpe(results_dir) -> str:
+def obs_bpe(results_dir, subdir: str = BPE_SUBDIR) -> str:
     """Per dataset: the four subword differences, whether each CI excludes 0 and in which direction; McNemar."""
-    boot = load_bpe(results_dir)
+    boot = load_bpe(results_dir, subdir)
     out, n_ci, n_excl = [], 0, 0
     for ds, d in boot["datasets"].items():
         line = f"- **{ds}**: {_ci_verdicts(d['pairs'])}."
@@ -373,7 +375,8 @@ def obs_bpe(results_dir) -> str:
 OBSERVATIONS = {"datasets": obs_datasets, "module1": obs_module1, "existing_vs_proposed": obs_existing_vs_proposed,
                 "intrinsic": obs_intrinsic, "dfa": obs_dfa, "attribution": obs_attribution,
                 "ci": obs_ci, "sensitivity_case": obs_sensitivity_case,
-                "ablation": obs_ablation, "bpe": obs_bpe}
+                "ablation": obs_ablation, "bpe": obs_bpe,
+                "bpe_v32000": lambda r: obs_bpe(r, BPE_SENSITIVITY_SUBDIR)}
 
 
 def observation(name: str, results_dir) -> str:

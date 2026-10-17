@@ -314,20 +314,21 @@ def table_ablation(results_dir) -> str:
 
 
 BPE_SUBDIR = "bpe"
+BPE_SENSITIVITY_SUBDIR = "bpe_v32000"          # same code, vocabulary 32000 (python -m experiments.run_bpe --vocab-size)
 
 
-def load_bpe(results_dir) -> dict:
+def load_bpe(results_dir, subdir: str = BPE_SUBDIR) -> dict:
     """Statistics of the subword grid (python -m experiments.run_bpe): runs, pairs and BPE configs per dataset."""
-    return load_bootstrap(Path(results_dir) / BPE_SUBDIR)
+    return load_bootstrap(Path(results_dir) / subdir)
 
 
 def _score_text(run: dict | None) -> str:
     return f"{_pct(run['accuracy']['value'])} / {_pct(run['macro_f1']['value'])}" if run else "-"
 
 
-def table_bpe_runs(results_dir) -> str:
+def table_bpe_runs(results_dir, subdir: str = BPE_SUBDIR) -> str:
     """Accuracy / macro-F1 (%) of BPE and LexFront + BPE with NB and LR, next to NLTK+LR and LexFront+LR."""
-    boot = load_bpe(results_dir)
+    boot = load_bpe(results_dir, subdir)
     rows = []
     for ds, d in boot["datasets"].items():
         bpe, hybrid = (k.removesuffix("__lr") for k in (d["pairs"]["hybrid_vs_bpe_lr"]["a"],
@@ -342,9 +343,9 @@ def table_bpe_runs(results_dir) -> str:
     return to_markdown(pd.DataFrame(rows))
 
 
-def table_bpe(results_dir) -> str:
+def table_bpe(results_dir, subdir: str = BPE_SUBDIR) -> str:
     """Paired bootstrap 95% CIs (points) of the four subword differences, McNemar p for BPE+LR vs NLTK+LR."""
-    boot = load_bpe(results_dir)
+    boot = load_bpe(results_dir, subdir)
     rows = []
     for ds, d in boot["datasets"].items():
         for p in d["pairs"].values():
@@ -362,7 +363,9 @@ TABLES = {"datasets": table_datasets, "module1_results": table_module1,
           "existing_vs_proposed": table_existing_vs_proposed, "intrinsic_metrics": table_intrinsic,
           "dfa_states": table_dfa, "ci_table": table_ci, "ci_runs": table_ci_runs,
           "sensitivity_case": table_sensitivity_case, "sensitivity_ci": table_sensitivity_ci,
-          "ablation_table": table_ablation, "bpe_runs": table_bpe_runs, "bpe_table": table_bpe}
+          "ablation_table": table_ablation, "bpe_runs": table_bpe_runs, "bpe_table": table_bpe,
+          "bpe_v32000_runs": lambda r: table_bpe_runs(r, BPE_SENSITIVITY_SUBDIR),
+          "bpe_v32000_table": lambda r: table_bpe(r, BPE_SENSITIVITY_SUBDIR)}
 
 
 def render_all_tables(results_dir) -> dict[str, str]:

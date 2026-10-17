@@ -1,5 +1,5 @@
 {
-  "timestamp_utc": "2026-10-16T08:05:10+00:00",
+  "timestamp_utc": "2026-10-16T23:53:33+00:00",
   "dataset": {
     "name": "go_emotions",
     "hf_id": "google-research-datasets/go_emotions",
@@ -54,7 +54,10 @@
   "environment": {
     "python": "3.11.17",
     "sklearn": "1.9.1",
+    "nltk": "3.10.3",
     "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "threadpoolctl": "3.7.0",
     "machine": "x86_64",
     "platform": "Linux-6.18.44-fc-v139-x86_64-with-glibc2.39"
   },
@@ -66,8 +69,8 @@
       "vocab_size": 44476,
       "n_test_tokens": 57399,
       "n_test_whitespace_words": 57399,
-      "throughput_tokens_per_s": 19737435.003484845,
-      "throughput_docs_per_s": 1609248.6753758537,
+      "throughput_tokens_per_s": 27530864.207322165,
+      "throughput_docs_per_s": 2244668.91213389,
       "throughput_docs": 1000
     },
     "nltk": {
@@ -77,8 +80,8 @@
       "vocab_size": 26410,
       "n_test_tokens": 70015,
       "n_test_whitespace_words": 57399,
-      "throughput_tokens_per_s": 137377.03544621682,
-      "throughput_docs_per_s": 9120.164339521796,
+      "throughput_tokens_per_s": 247701.2035779021,
+      "throughput_docs_per_s": 16444.347313144932,
       "throughput_docs": 1000
     },
     "tweet": {
@@ -88,8 +91,8 @@
       "vocab_size": 25907,
       "n_test_tokens": 68596,
       "n_test_whitespace_words": 57399,
-      "throughput_tokens_per_s": 122889.14521690858,
-      "throughput_docs_per_s": 8332.032355882337,
+      "throughput_tokens_per_s": 311791.2873477066,
+      "throughput_docs_per_s": 21139.825571069672,
       "throughput_docs": 1000
     },
     "lexfront": {
@@ -99,9 +102,68 @@
       "vocab_size": 24459,
       "n_test_tokens": 68587,
       "n_test_whitespace_words": 57399,
-      "throughput_tokens_per_s": 163799.7070661968,
-      "throughput_docs_per_s": 11153.45955782356,
+      "throughput_tokens_per_s": 284024.6317387738,
+      "throughput_docs_per_s": 19339.822398118875,
       "throughput_docs": 1000
+    },
+    "bpe": {
+      "oov_rate_tokens": 0.0018213553919708583,
+      "oov_rate_types": 0.002265597769257581,
+      "fertility": 1.3774107562849527,
+      "vocab_size": 7704,
+      "n_test_tokens": 79062,
+      "n_test_whitespace_words": 57399,
+      "throughput_tokens_per_s": 1003854.6297399095,
+      "throughput_docs_per_s": 58918.57200022946,
+      "throughput_docs": 1000,
+      "trained_vocab_size": 8000
+    },
+    "lexfront_bpe": {
+      "oov_rate_tokens": 0.002258625958255278,
+      "oov_rate_types": 0.01973138782954734,
+      "fertility": 1.3112946218575237,
+      "vocab_size": 8236,
+      "n_test_tokens": 75267,
+      "n_test_whitespace_words": 57399,
+      "throughput_tokens_per_s": 344368.8789831156,
+      "throughput_docs_per_s": 21291.50976772076,
+      "throughput_docs": 1000,
+      "trained_vocab_size": 8000
+    }
+  },
+  "subword": {
+    "bpe": {
+      "model": "bpe",
+      "vocab_size": 8000,
+      "pre_tokenizer": "whitespace",
+      "continuing_subword_prefix": "##",
+      "unk_token": "[UNK]",
+      "hybrid": false,
+      "pass_through_classes": [],
+      "train_text": "train split, lowercased",
+      "train_text_hash": "7a7321a89e527b6d",
+      "tokenizers": "0.23.3"
+    },
+    "lexfront_bpe": {
+      "model": "bpe",
+      "vocab_size": 8000,
+      "pre_tokenizer": "whitespace_split",
+      "continuing_subword_prefix": "##",
+      "unk_token": "[UNK]",
+      "hybrid": true,
+      "pass_through_classes": [
+        "URL",
+        "MENTION",
+        "NUMBER",
+        "HASHTAG",
+        "EMOTICON",
+        "EMOJI",
+        "PUNCT",
+        "UNKNOWN"
+      ],
+      "train_text": "train split, lowercased",
+      "train_text_hash": "7a7321a89e527b6d",
+      "tokenizers": "0.23.3"
     }
   }
 }
