@@ -2,6 +2,22 @@
 
 Newest first. Dates are the day the change was made (IST workday).
 
+## 2026-10-17 (P4)
+- AUDIT_5 A5-1: `build_tokenizer` lists its training texts first (an iterator was consumed by the hash); test added.
+- AUDIT_5 A5-2/A5-3: OOV wording corrected in the generated intrinsic lines, LEARN, module2 / REPORT_NOTES text, the
+  `run_module2` docstring and the notebook (subword tokenizers split words into vocabulary pieces; only characters
+  never seen in train and rare pieces can be OOV); "lowest OOV rate among the word-level tokenizers".
+- AUDIT_5 A5-4: the hybrid's piece cache is cleared before each timed repetition of the intrinsic throughput.
+- P4: WordPiece and Unigram (`subword/wordpiece.py`, `subword/unigram.py`), same factory and protocol as BPE (train
+  split only, vocabulary 8000, `Whitespace`, `[UNK]`, `##` for WordPiece). Neither trainer was deterministic as shipped;
+  fixed as in DECISIONS (sorted seeded alphabet for WordPiece; canonical Unigram form: restored characters get their
+  scores back in code-point order, scores rounded to 3 decimals, pieces ordered). Version file
+  `docs/versions/v6-wordpiece-unigram.md`.
+- P4 grid `python -m experiments.run_subword2`: 3 datasets x {wordpiece, unigram} x {NB, LR} (`results/subword2/`, QUICK
+  `results/quick/subword2/`); paired bootstrap CIs vs NLTK+LR and BPE+LR and unigram vs wordpiece, McNemar vs NLTK+LR.
+  Generated tables `subword_runs`, `subword_table`, observation `subword`; intrinsic metrics for both; REPORT_NOTES,
+  module2.md, LEARN Q35, notebook section 8. Pre-existing metrics unchanged (checked by script against `main`).
+
 ## 2026-10-17 (P3)
 - AUDIT_4 A4-1: the ablation counts how often each removed rule fires (train / test documents and lexer tokens whose
   normalized form differs from full LexFront; `<out>/<setting>/firing__<dataset>.json`, `rule_fires` in

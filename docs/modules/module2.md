@@ -305,7 +305,7 @@ tokens of the train split (`python -m experiments.run_bpe`, `results/bpe/`, prot
 Same TF-IDF (main setting, TF-IDF lowercases), NB and LR as the main grid. Differences are paired bootstraps over the
 test examples (same code, B and seed as `ci_table`) against the main grid's NLTK+LR and LexFront+LR, with an exact
 McNemar test for BPE+LR vs NLTK+LR. A vocabulary-size sensitivity run at 32000 is in `results/bpe_v32000/`. In the
-intrinsic table BPE's OOV rate is near zero by construction (every word splits into known pieces), so OOV is not
+intrinsic table BPE's OOV rate is near zero (words split into vocabulary pieces; only characters never seen in train and rare pieces can be OOV), so OOV is not
 comparable with the word-level tokenizers.
 
 <!-- BEGIN table:bpe_runs -->

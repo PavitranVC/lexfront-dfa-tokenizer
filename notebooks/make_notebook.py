@@ -71,8 +71,8 @@ FORCE = QUICK_MODE     # recompute every run even if a cached JSON matches (chea
 #   True : everything under results/quick/ (the committed results/ is untouched).
 #   False: in the committed results/: datasets.json, module2/dfa_states.json + dfa_min.dot/.png, module2/intrinsic__*.json
 #          (always, new timestamps and throughput), stats/bootstrap.json, ablation/stats/bootstrap.json,
-#          bpe/stats/bootstrap.json, tables/ and figures/ (rebuilt from the JSON); module1/, module2/, ablation/ and
-#          bpe/ run JSONs and their predictions/
+#          bpe/stats/bootstrap.json, subword2/stats/bootstrap.json, tables/ and figures/ (rebuilt from the JSON); module1/, module2/, ablation/ and
+#          bpe/ and subword2/ run JSONs and their predictions/
 #          sidecars only where the fingerprint no longer matches (FORCE is False). `git checkout results/` undoes it.
 
 import pandas as pd
@@ -205,14 +205,14 @@ display(Markdown(out["tables"]["ablation_table"]))'''),
     md("""## 7. Subword tokenizers: BPE and LexFront + BPE
 
 **BPE** (byte-pair encoding, Hugging Face `tokenizers`) learns a vocabulary of 8000 subword pieces from each dataset's
-*train* split (lowercased, never the test split) and splits every word into known pieces; a piece that continues a
+*train* split (lowercased, never the test split) and splits words into vocabulary pieces; a piece that continues a
 word carries `##`. **LexFront + BPE** keeps LexFront's scanner and normalizer: structural tokens (`<URL>`, `<USER>`,
 `<NUM>`, hashtags, emoticons, emoji, punctuation, UNKNOWN) pass through whole, and only word-like tokens are split by
 a BPE trained on the word-like tokens of the train split. Both feed the same TF-IDF + NB / LR as before. The first
 cell shows the pieces on three example tweets with a toy BPE trained on the eight example tweets (illustration only).
 The second runs the grid on the QUICK subsample and the paired bootstrap against NLTK+LR and LexFront+LR (same code
 as section 5); the full-data results are in `results/bpe/` (appendix). BPE's OOV rate in the intrinsic table is near
-zero by construction, so it is not comparable with the word-level tokenizers."""),
+zero (only characters never seen in train and rare pieces can be OOV), so it is not comparable with the word-level tokenizers."""),
     code('''display(review1.bpe_demo())'''),
     code('''review1.run_bpe_section(QUICK_MODE, force=FORCE)
 out = review1.build_outputs(QUICK_MODE)
@@ -221,16 +221,34 @@ display(Markdown(out["tables"]["bpe_table"]))'''),
     md("### Observations — BPE and the hybrid"),
     code('''display(Markdown(observation("bpe", RES)))'''),
 
+    md("""## 8. WordPiece and Unigram
+
+Two more learned vocabularies, from the same library and the same protocol as BPE: 8000 pieces per dataset, trained on
+the *train* split only (lowercased), `Whitespace` pre-tokenizer, `[UNK]`. **WordPiece** grows its vocabulary by merging
+the pair that most raises the likelihood of the text and encodes by greedy longest match (continuing pieces carry
+`##`). **Unigram** starts from many candidate pieces, prunes them by EM and encodes by the best-scoring split (Viterbi);
+it has no `##`. No hybrid with LexFront. The first cell shows the three on three example tweets (toy vocabularies
+trained on the eight example tweets, illustration only). The second runs the grid on the QUICK subsample and the paired
+bootstrap against NLTK+LR and BPE+LR; the full-data results are in `results/subword2/` (appendix). OOV in the intrinsic
+table is near zero for these too, so it is not comparable with the word-level tokenizers."""),
+    code('''display(review1.subword2_demo())'''),
+    code('''review1.run_subword2_section(QUICK_MODE, force=FORCE)
+out = review1.build_outputs(QUICK_MODE)
+display(Markdown(out["tables"]["subword_runs"]))
+display(Markdown(out["tables"]["subword_table"]))'''),
+    md("### Observations — WordPiece and Unigram"),
+    code('''display(Markdown(observation("subword", RES)))'''),
+
     md("""## Appendix — committed full-data results
 The tables below are built from the JSON files in `results/` (full datasets, produced by
 `python -m experiments.run_module1`, `python -m experiments.run_module2`, `python -m experiments.run_stats` and
-`python -m experiments.run_sensitivity`, `python -m experiments.run_ablation`, `python -m experiments.run_bpe`). `sensitivity_case` is the grid with TF-IDF `lowercase=False`: LexFront's
+`python -m experiments.run_sensitivity`, `python -m experiments.run_ablation`, `python -m experiments.run_bpe`, `python -m experiments.run_subword2`). `sensitivity_case` is the grid with TF-IDF `lowercase=False`: LexFront's
 lowercase rule is active there while the baselines keep case, so it is a robustness check, not a like-for-like."""),
     code('''import os
 if os.path.exists("results/datasets.json") and os.path.isdir("results/module1"):
     full = report.render_all_tables("results")      # read only: does not rewrite results/tables
     for name in ["module1_results", "existing_vs_proposed", "intrinsic_metrics", "ci_table", "sensitivity_case",
-                 "sensitivity_ci", "ablation_table", "bpe_runs", "bpe_table"]:
+                 "sensitivity_ci", "ablation_table", "bpe_runs", "bpe_table", "subword_runs", "subword_table"]:
         print(name); display(Markdown(full[name]))
 else:
     print("full-data results are not in this checkout")'''),

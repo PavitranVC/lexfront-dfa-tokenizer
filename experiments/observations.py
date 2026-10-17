@@ -6,7 +6,7 @@ labelled hypotheses in the docs. Every cell is one training run (seed 0); the CI
 """
 import pandas as pd
 
-from .report import (BPE_SENSITIVITY_SUBDIR, BPE_SUBDIR, DATASET_ORDER, SUBWORD_ORDER, TOKENIZER_ORDER, load_ablation, load_bootstrap, load_bpe,
+from .report import (BPE_SENSITIVITY_SUBDIR, BPE_SUBDIR, DATASET_ORDER, SUBWORD2_SUBDIR, SUBWORD_ORDER, TOKENIZER_ORDER, load_ablation, load_bootstrap, load_bpe,
                      load_datasets, load_dfa, load_intrinsic, load_runs, load_sensitivity_bootstrap,
                      load_sensitivity_runs, p_value_text)
 
@@ -125,9 +125,10 @@ def _subword_intrinsic(sub) -> str:
              f"vocabulary {int(sub.loc[tok].vocab_size)}" for tok in SUBWORD_ORDER if tok in sub.index]
     if not parts:
         return ""
-    return (" Subword tokenizers (trained on the train split; BPE splits every word into pieces seen in train, so its "
-            "OOV rate is near zero by construction and not comparable with the word-level ones above; LexFront + BPE "
-            "splits only word-like tokens, so its OOV tokens are structural tokens passed through whole, or `[UNK]`): "
+    return (" Subword tokenizers (trained on the train split; they split words into vocabulary pieces, so only characters "
+            "never seen in train (`[UNK]`) and rare pieces can be OOV: the OOV rate is near zero and not comparable with "
+            "the word-level ones above; LexFront + BPE splits only word-like tokens, so its OOV tokens are structural "
+            "tokens passed through whole, `[UNK]`, or word pieces unseen in train): "
             + "; ".join(parts) + ".")
 
 
@@ -140,7 +141,7 @@ def obs_intrinsic(results_dir) -> str:
         sub = everything[~everything.index.isin(SUBWORD_ORDER)]
         low_oov = sub.oov_rate_tokens.idxmin()
         small_vocab = sub.vocab_size.idxmin()
-        parts = [f"lowest OOV rate {_p(sub.oov_rate_tokens.min())} ({low_oov})",
+        parts = [f"lowest OOV rate among the word-level tokenizers {_p(sub.oov_rate_tokens.min())} ({low_oov})",
                  f"smallest vocabulary {int(sub.vocab_size.min())} ({small_vocab})"]
         if "lexfront" in sub.index:
             lf = sub.loc["lexfront"]
@@ -372,10 +373,37 @@ def obs_bpe(results_dir, subdir: str = BPE_SUBDIR) -> str:
     return "\n".join(out + ["", BPE_CAVEAT])
 
 
+SUBWORD2_CAVEAT = ("_WordPiece and Unigram (vocabulary 8000, `Whitespace` pre-tokenizer) are each trained on the lowercased "
+                   "train split of their dataset only, and feed the same TF-IDF + LR / NB as the other tokenizers. "
+                   "Differences are paired bootstraps over the test examples (same code, B and seed as `ci_table`) "
+                   "against the NLTK+LR run of the main grid and the BPE+LR run of the P3 grid. One training run per "
+                   "cell, so training randomness is not covered; no multiplicity correction. These lines say which "
+                   "differences exclude 0 and in which direction, not why; any reason given elsewhere is a "
+                   "hypothesis._")
+
+
+def obs_subword(results_dir) -> str:
+    """Per dataset: the five WordPiece / Unigram differences, whether each CI excludes 0 and in which direction."""
+    boot = load_bpe(results_dir, SUBWORD2_SUBDIR)
+    out, n_ci, n_excl = [], 0, 0
+    for ds, d in boot["datasets"].items():
+        line = f"- **{ds}**: {_ci_verdicts(d['pairs'])}."
+        mcnemar = [f"{p['label'].split(' minus ')[0]} vs NLTK+LR {p_value_text(p['mcnemar_accuracy']['p_value'])}"
+                   for p in d["pairs"].values() if "mcnemar_accuracy" in p]
+        if mcnemar:
+            line += " Exact McNemar p (accuracy): " + "; ".join(mcnemar) + "."
+        out.append(line)
+        n_ci += 2 * len(d["pairs"])
+        n_excl += sum(p[m]["ci_excludes_zero"] for p in d["pairs"].values() for m in ("accuracy", "macro_f1"))
+    cfg = boot["config"]
+    out.append(f"- In all, {n_excl} of {n_ci} difference CIs exclude 0 (B = {cfg['n_boot']}, seed {cfg['seed']}).")
+    return "\n".join(out + ["", SUBWORD2_CAVEAT])
+
+
 OBSERVATIONS = {"datasets": obs_datasets, "module1": obs_module1, "existing_vs_proposed": obs_existing_vs_proposed,
                 "intrinsic": obs_intrinsic, "dfa": obs_dfa, "attribution": obs_attribution,
                 "ci": obs_ci, "sensitivity_case": obs_sensitivity_case,
-                "ablation": obs_ablation, "bpe": obs_bpe,
+                "ablation": obs_ablation, "bpe": obs_bpe, "subword": obs_subword,
                 "bpe_v32000": lambda r: obs_bpe(r, BPE_SENSITIVITY_SUBDIR)}
 
 

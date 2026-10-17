@@ -120,3 +120,24 @@ def test_vocab_size_names():
     assert run_bpe.tokenizer_names(32000) == ("bpe:v32000", "lexfront_bpe:v32000")
     with pytest.raises(ValueError):
         run_bpe.tokenizer_names(123)
+
+
+# ---- AUDIT_5 -------------------------------------------------------------------------------
+def test_a5_1_build_tokenizer_accepts_an_iterator():
+    """A5-1: an iterator of train texts is listed first, so the hash does not consume it."""
+    for name in ("bpe", "lexfront_bpe"):
+        from_list = build_tokenizer(name, list(TRAIN))
+        from_iter = build_tokenizer(name, iter(TRAIN))
+        assert from_iter.model.get_vocab_size() > 1 and from_iter.model.to_str() == from_list.model.to_str()
+
+
+def test_a5_4_cold_cache_for_timing():
+    """A5-4: the hybrid forgets its memoized pieces on request, and the intrinsic timing asks for that."""
+    from experiments.metrics import intrinsic_metrics
+    hybrid = LexFrontBpe(TRAIN, HYBRID)
+    hybrid("the cat sat")
+    assert hybrid._pieces
+    hybrid.clear_cache()
+    assert not hybrid._pieces
+    intrinsic_metrics(hybrid, TRAIN, TRAIN, throughput_docs=3, repeats=1)
+    assert hybrid._pieces and hybrid("the cat sat") == LexFrontBpe(TRAIN, HYBRID)("the cat sat")
