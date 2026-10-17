@@ -103,32 +103,38 @@ Generated from `results/module2/*.json`. Minimized DFA: `results/module2/dfa_min
 <!-- BEGIN table:intrinsic_metrics -->
 | dataset | tokenizer | OOV rate % (tokens) | OOV rate % (types) | fertility | vocab size | throughput (tokens/s) |
 |---|---|---|---|---|---|---|
-| tweet_topic | whitespace | 18.45 | 65.83 | 1.000 | 21653 | 25,963,607 |
-| tweet_topic | nltk | 8.74 | 58.23 | 1.431 | 15712 | 299,281 |
-| tweet_topic | tweet | 9.86 | 59.72 | 1.376 | 16524 | 458,680 |
-| tweet_topic | lexfront | 8.25 | 57.13 | 1.391 | 14483 | 343,864 |
-| tweet_topic | bpe | 0.44 | 2.05 | 1.633 | 7413 | 1,024,642 |
-| tweet_topic | lexfront_bpe | 2.20 | 26.89 | 1.578 | 10101 | 316,674 |
-| go_emotions | whitespace | 6.04 | 30.11 | 1.000 | 44476 | 27,530,864 |
-| go_emotions | nltk | 2.57 | 21.55 | 1.220 | 26410 | 247,701 |
-| go_emotions | tweet | 2.56 | 20.84 | 1.195 | 25907 | 311,791 |
-| go_emotions | lexfront | 2.45 | 19.89 | 1.195 | 24459 | 284,025 |
-| go_emotions | bpe | 0.18 | 0.23 | 1.377 | 7704 | 1,003,855 |
-| go_emotions | lexfront_bpe | 0.23 | 1.97 | 1.311 | 8236 | 344,369 |
-| ag_news | whitespace | 1.90 | 14.97 | 1.000 | 158733 | 31,257,097 |
-| ag_news | nltk | 0.96 | 11.52 | 1.158 | 98994 | 353,857 |
-| ag_news | tweet | 0.75 | 9.13 | 1.154 | 86096 | 314,775 |
-| ag_news | lexfront | 0.48 | 6.78 | 1.207 | 65337 | 303,222 |
-| ag_news | bpe | 0.00 | 0.01 | 1.435 | 7916 | 1,059,959 |
-| ag_news | lexfront_bpe | 0.00 | 0.01 | 1.408 | 7989 | 405,243 |
+| tweet_topic | whitespace | 18.45 | 65.83 | 1.000 | 21653 | 26,769,229 |
+| tweet_topic | nltk | 8.74 | 58.23 | 1.431 | 15712 | 243,754 |
+| tweet_topic | tweet | 9.86 | 59.72 | 1.376 | 16524 | 295,726 |
+| tweet_topic | lexfront | 8.25 | 57.13 | 1.391 | 14483 | 290,545 |
+| tweet_topic | bpe | 0.44 | 2.05 | 1.633 | 7413 | 1,039,367 |
+| tweet_topic | lexfront_bpe | 2.20 | 26.89 | 1.578 | 10101 | 251,860 |
+| tweet_topic | wordpiece | 0.31 | 2.39 | 1.618 | 7267 | 1,266,539 |
+| tweet_topic | unigram | 0.26 | 2.12 | 1.834 | 7020 | 927,536 |
+| go_emotions | whitespace | 6.04 | 30.11 | 1.000 | 44476 | 25,609,705 |
+| go_emotions | nltk | 2.57 | 21.55 | 1.220 | 26410 | 190,698 |
+| go_emotions | tweet | 2.56 | 20.84 | 1.195 | 25907 | 273,224 |
+| go_emotions | lexfront | 2.45 | 19.89 | 1.195 | 24459 | 281,843 |
+| go_emotions | bpe | 0.18 | 0.23 | 1.377 | 7704 | 942,109 |
+| go_emotions | lexfront_bpe | 0.23 | 1.97 | 1.311 | 8236 | 237,066 |
+| go_emotions | wordpiece | 0.03 | 0.30 | 1.373 | 7585 | 1,155,009 |
+| go_emotions | unigram | 0.04 | 0.07 | 1.516 | 7898 | 786,663 |
+| ag_news | whitespace | 1.90 | 14.97 | 1.000 | 158733 | 24,396,944 |
+| ag_news | nltk | 0.96 | 11.52 | 1.158 | 98994 | 340,852 |
+| ag_news | tweet | 0.75 | 9.13 | 1.154 | 86096 | 268,415 |
+| ag_news | lexfront | 0.48 | 6.78 | 1.207 | 65337 | 286,773 |
+| ag_news | bpe | 0.00 | 0.01 | 1.435 | 7916 | 1,065,421 |
+| ag_news | lexfront_bpe | 0.00 | 0.01 | 1.408 | 7989 | 283,587 |
+| ag_news | wordpiece | 0.00 | 0.07 | 1.433 | 7806 | 1,096,802 |
+| ag_news | unigram | 0.00 | 0.00 | 1.609 | 7998 | 949,478 |
 <!-- END table:intrinsic_metrics -->
 
 <!-- BEGIN obs:intrinsic -->
 **DRAFT observations (generated from the JSON files):**
 
-- **tweet_topic**: lowest OOV rate 8.25% (lexfront); smallest vocabulary 14483 (lexfront); LexFront: OOV 8.25%, fertility 1.391, vocabulary 14483; LexFront throughput is 1.15x NLTK's (tokens/s, this machine). Subword tokenizers (trained on the train split; BPE splits every word into pieces seen in train, so its OOV rate is near zero by construction and not comparable with the word-level ones above; LexFront + BPE splits only word-like tokens, so its OOV tokens are structural tokens passed through whole, or `[UNK]`): bpe: OOV 0.44%, fertility 1.633, vocabulary 7413; lexfront_bpe: OOV 2.20%, fertility 1.578, vocabulary 10101.
-- **go_emotions**: lowest OOV rate 2.45% (lexfront); smallest vocabulary 24459 (lexfront); LexFront: OOV 2.45%, fertility 1.195, vocabulary 24459; LexFront throughput is 1.15x NLTK's (tokens/s, this machine). Subword tokenizers (trained on the train split; BPE splits every word into pieces seen in train, so its OOV rate is near zero by construction and not comparable with the word-level ones above; LexFront + BPE splits only word-like tokens, so its OOV tokens are structural tokens passed through whole, or `[UNK]`): bpe: OOV 0.18%, fertility 1.377, vocabulary 7704; lexfront_bpe: OOV 0.23%, fertility 1.311, vocabulary 8236.
-- **ag_news**: lowest OOV rate 0.48% (lexfront); smallest vocabulary 65337 (lexfront); LexFront: OOV 0.48%, fertility 1.207, vocabulary 65337; LexFront throughput is 0.86x NLTK's (tokens/s, this machine). Subword tokenizers (trained on the train split; BPE splits every word into pieces seen in train, so its OOV rate is near zero by construction and not comparable with the word-level ones above; LexFront + BPE splits only word-like tokens, so its OOV tokens are structural tokens passed through whole, or `[UNK]`): bpe: OOV 0.00%, fertility 1.435, vocabulary 7916; lexfront_bpe: OOV 0.00%, fertility 1.408, vocabulary 7989.
+- **tweet_topic**: lowest OOV rate among the word-level tokenizers 8.25% (lexfront); smallest vocabulary 14483 (lexfront); LexFront: OOV 8.25%, fertility 1.391, vocabulary 14483; LexFront throughput is 1.19x NLTK's (tokens/s, this machine). Subword tokenizers (trained on the train split; they split words into vocabulary pieces, so only characters never seen in train (`[UNK]`) and rare pieces can be OOV: the OOV rate is near zero and not comparable with the word-level ones above; LexFront + BPE splits only word-like tokens, so its OOV tokens are structural tokens passed through whole, `[UNK]`, or word pieces unseen in train): bpe: OOV 0.44%, fertility 1.633, vocabulary 7413; lexfront_bpe: OOV 2.20%, fertility 1.578, vocabulary 10101; wordpiece: OOV 0.31%, fertility 1.618, vocabulary 7267; unigram: OOV 0.26%, fertility 1.834, vocabulary 7020.
+- **go_emotions**: lowest OOV rate among the word-level tokenizers 2.45% (lexfront); smallest vocabulary 24459 (lexfront); LexFront: OOV 2.45%, fertility 1.195, vocabulary 24459; LexFront throughput is 1.48x NLTK's (tokens/s, this machine). Subword tokenizers (trained on the train split; they split words into vocabulary pieces, so only characters never seen in train (`[UNK]`) and rare pieces can be OOV: the OOV rate is near zero and not comparable with the word-level ones above; LexFront + BPE splits only word-like tokens, so its OOV tokens are structural tokens passed through whole, `[UNK]`, or word pieces unseen in train): bpe: OOV 0.18%, fertility 1.377, vocabulary 7704; lexfront_bpe: OOV 0.23%, fertility 1.311, vocabulary 8236; wordpiece: OOV 0.03%, fertility 1.373, vocabulary 7585; unigram: OOV 0.04%, fertility 1.516, vocabulary 7898.
+- **ag_news**: lowest OOV rate among the word-level tokenizers 0.48% (lexfront); smallest vocabulary 65337 (lexfront); LexFront: OOV 0.48%, fertility 1.207, vocabulary 65337; LexFront throughput is 0.84x NLTK's (tokens/s, this machine). Subword tokenizers (trained on the train split; they split words into vocabulary pieces, so only characters never seen in train (`[UNK]`) and rare pieces can be OOV: the OOV rate is near zero and not comparable with the word-level ones above; LexFront + BPE splits only word-like tokens, so its OOV tokens are structural tokens passed through whole, `[UNK]`, or word pieces unseen in train): bpe: OOV 0.00%, fertility 1.435, vocabulary 7916; lexfront_bpe: OOV 0.00%, fertility 1.408, vocabulary 7989; wordpiece: OOV 0.00%, fertility 1.433, vocabulary 7806; unigram: OOV 0.00%, fertility 1.609, vocabulary 7998.
 <!-- END obs:intrinsic -->
 
 <!-- BEGIN table:existing_vs_proposed -->
@@ -381,3 +387,23 @@ Vocabulary-size sensitivity (same code and protocol, vocabulary 32000, `results/
 
 _Subword grid: each BPE (vocabulary size in the last line) is trained on the lowercased train split of its dataset only; LexFront + BPE keeps LexFront's structural tokens whole and splits only word-like tokens. Differences are paired bootstraps over the test examples (same code, B and seed as `ci_table`), against the NLTK+LR and LexFront+LR runs of the main grid. One training run per cell, so training randomness is not covered; no multiplicity correction. These lines say which differences exclude 0 and in which direction, not why; any reason given elsewhere is a hypothesis._
 <!-- END obs:bpe_v32000 -->
+
+### WordPiece and Unigram (P4)
+Two more learned vocabularies from the same library and protocol as BPE (`docs/versions/v6-wordpiece-unigram.md`,
+`python -m experiments.run_subword2`, `results/subword2/`): 8000 pieces per dataset, trained on the lowercased train
+split only, `Whitespace` pre-tokenizer, `[UNK]`, same TF-IDF (main setting) with NB and LR; no hybrid with LexFront.
+WordPiece merges the pair that most raises the likelihood of the text and encodes by greedy longest match (`##` marks
+continuing pieces); Unigram prunes a large candidate set by EM and encodes by the best-scoring split (no `##`).
+Differences are paired bootstraps over the test examples (same code, B and seed as `ci_table`) against the main
+grid's NLTK+LR and the P3 BPE+LR; exact McNemar on accuracy against NLTK+LR. As for BPE, the intrinsic OOV rate of
+these two is near zero because words split into vocabulary pieces, so it is not comparable with the word-level
+tokenizers.
+
+<!-- BEGIN table:subword_runs -->
+<!-- END table:subword_runs -->
+
+<!-- BEGIN table:subword_table -->
+<!-- END table:subword_table -->
+
+<!-- BEGIN obs:subword -->
+<!-- END obs:subword -->
