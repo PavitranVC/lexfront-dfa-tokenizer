@@ -16,7 +16,13 @@ Newest first. Dates are the day the change was made (IST workday).
 - P4 grid `python -m experiments.run_subword2`: 3 datasets x {wordpiece, unigram} x {NB, LR} (`results/subword2/`, QUICK
   `results/quick/subword2/`); paired bootstrap CIs vs NLTK+LR and BPE+LR and unigram vs wordpiece, McNemar vs NLTK+LR.
   Generated tables `subword_runs`, `subword_table`, observation `subword`; intrinsic metrics for both; REPORT_NOTES,
-  module2.md, LEARN Q35, notebook section 8. Pre-existing metrics unchanged (checked by script against `main`).
+  module2.md, LEARN Q37-Q38, notebook section 8. Pre-existing metrics unchanged (checked by script against `main`).
+
+- P4 finished (`claude/finish-3-p4`): full-data runs for go_emotions and ag_news, stats (`results/subword2/stats/bootstrap.json`),
+  generated tables and observation in REPORT_NOTES and module2.md, LEARN Q37-Q38, QUICK results and notebook re-executed,
+  independent audit `docs/AUDIT_6.md` (leakage, determinism, CI recomputation: pass; Unigram rounding margin noted).
+  `experiments/compare_results.py` ignores the code hash and has `--additive` (new keys allowed in existing files); all pre-existing
+  metrics identical to `main` by script.
 
 ## 2026-10-17 (finish 1: notebook setup)
 - Notebook setup cell, reproduced failure (the traceback from the owner's Colab was not available, so this is the

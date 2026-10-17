@@ -17,6 +17,13 @@ already recorded elsewhere are only pointed to. Citations below are from abstrac
 - A5-4: the hybrid's piece cache is cleared before every timed repetition of the intrinsic throughput (`clear_cache`), so
   `lexfront_bpe` is timed cold like the tokenizers without a cache.
 
+### AUDIT_6 (independent check of P4; `docs/AUDIT_6.md`)
+- Leakage, determinism and independent CI recomputation passed. One low note, kept as is: Unigram's rounding to 3 decimals has
+  a margin of 2e-10 (nearest score) against numerical noise of at most 4e-11, so a different CPU or library version could
+  flip one rounded score. Reason for not changing it: any edit under `subword/` changes the code fingerprint of every
+  committed run. Mitigation: documented here, in the v6 file and in LEARN Q38; if it ever flips, the symptom is a changed
+  serialized Unigram and a fingerprint-stale rerun, not a silent wrong result.
+
 ### P4 protocol (conductor's decisions)
 - WordPiece and Unigram from the Hugging Face `tokenizers` trainers (`WordPieceTrainer`, `UnigramTrainer`), same protocol
   as BPE: trained only on the train split (lowercased as the vectorizer does), one vocabulary size 8000 for every

@@ -54,6 +54,6 @@ notebooks/    LexFront_Review1.ipynb (+ make_notebook.py)
 docs/         versions/, modules/, LEARN.md
 ```
 
-Out of scope for review 1: transformers. Added since: the per-rule normalization ablation
+Out of scope: transformers (they need torch), Hinglish, more seeds. Added since review 1: the per-rule normalization ablation
 (`docs/versions/v4-ablation.md`) BPE + the LexFront + BPE hybrid (`docs/versions/v5-bpe-hybrid.md`), and WordPiece and Unigram
 (`docs/versions/v6-wordpiece-unigram.md`).

@@ -51,7 +51,11 @@ than NLTK's word tokenizer and than BPE (v5)? No LexFront hybrid is built for th
   vocabulary pieces, and only characters never seen in train (`[UNK]`) and rare pieces can be OOV, so it is **not
   comparable** with the word-level tokenizers. Throughput depends on the machine.
 * **Outputs.** Generated tables `subword_runs` and `subword_table`, observation `subword` (REPORT_NOTES,
-  `docs/modules/module2.md`, LEARN viva question 35, notebook section 8).
+  `docs/modules/module2.md`, LEARN viva questions 37 and 38, notebook section 8).
+
+* **Audit.** `docs/AUDIT_6.md`: test texts replaced by garbage leave the trained tokenizers and the TF-IDF vocabulary
+  bit-identical; 6 trainings per tokenizer give one model; the confidence intervals were recomputed independently.
+  Known weak point: Unigram's score rounding has a margin of about 5x over the measured numerical noise.
 
 ## Commands
     python -m experiments.run_subword2                  # runs (cached by fingerprint) + stats

@@ -60,8 +60,8 @@ Blocks between `BEGIN`/`END` markers are regenerated; the text around them is ha
 4. **No subsampling** was needed for the committed results: every run finished well under 10 minutes. Only the notebook's
    `QUICK_MODE` subsamples (2,000 train / 500 test per dataset, seed 0) and writes to `results/quick/`.
 5. **DFA regex parser fallback (constructor-function ASTs) was not needed**: the parser works and covers all four classes.
-6. **Not run / out of scope**: WordPiece, Unigram, transformers; Hinglish; multiple seeds. (The per-rule ablation and BPE + the
-   LexFront + BPE hybrid are now run: sections below.)
+6. **Not run / out of scope**: transformers (need torch); Hinglish; multiple seeds. (The per-rule ablation, BPE + the
+   LexFront + BPE hybrid and WordPiece + Unigram are now run: sections below.)
 
 ## 4. Tables and DRAFT observations
 
@@ -130,32 +130,38 @@ _One training run per cell (seed 0). The 95% confidence intervals (table `ci_tab
 <!-- BEGIN table:intrinsic_metrics -->
 | dataset | tokenizer | OOV rate % (tokens) | OOV rate % (types) | fertility | vocab size | throughput (tokens/s) |
 |---|---|---|---|---|---|---|
-| tweet_topic | whitespace | 18.45 | 65.83 | 1.000 | 21653 | 25,963,607 |
-| tweet_topic | nltk | 8.74 | 58.23 | 1.431 | 15712 | 299,281 |
-| tweet_topic | tweet | 9.86 | 59.72 | 1.376 | 16524 | 458,680 |
-| tweet_topic | lexfront | 8.25 | 57.13 | 1.391 | 14483 | 343,864 |
-| tweet_topic | bpe | 0.44 | 2.05 | 1.633 | 7413 | 1,024,642 |
-| tweet_topic | lexfront_bpe | 2.20 | 26.89 | 1.578 | 10101 | 316,674 |
-| go_emotions | whitespace | 6.04 | 30.11 | 1.000 | 44476 | 27,530,864 |
-| go_emotions | nltk | 2.57 | 21.55 | 1.220 | 26410 | 247,701 |
-| go_emotions | tweet | 2.56 | 20.84 | 1.195 | 25907 | 311,791 |
-| go_emotions | lexfront | 2.45 | 19.89 | 1.195 | 24459 | 284,025 |
-| go_emotions | bpe | 0.18 | 0.23 | 1.377 | 7704 | 1,003,855 |
-| go_emotions | lexfront_bpe | 0.23 | 1.97 | 1.311 | 8236 | 344,369 |
-| ag_news | whitespace | 1.90 | 14.97 | 1.000 | 158733 | 31,257,097 |
-| ag_news | nltk | 0.96 | 11.52 | 1.158 | 98994 | 353,857 |
-| ag_news | tweet | 0.75 | 9.13 | 1.154 | 86096 | 314,775 |
-| ag_news | lexfront | 0.48 | 6.78 | 1.207 | 65337 | 303,222 |
-| ag_news | bpe | 0.00 | 0.01 | 1.435 | 7916 | 1,059,959 |
-| ag_news | lexfront_bpe | 0.00 | 0.01 | 1.408 | 7989 | 405,243 |
+| tweet_topic | whitespace | 18.45 | 65.83 | 1.000 | 21653 | 26,769,229 |
+| tweet_topic | nltk | 8.74 | 58.23 | 1.431 | 15712 | 243,754 |
+| tweet_topic | tweet | 9.86 | 59.72 | 1.376 | 16524 | 295,726 |
+| tweet_topic | lexfront | 8.25 | 57.13 | 1.391 | 14483 | 290,545 |
+| tweet_topic | bpe | 0.44 | 2.05 | 1.633 | 7413 | 1,039,367 |
+| tweet_topic | lexfront_bpe | 2.20 | 26.89 | 1.578 | 10101 | 251,860 |
+| tweet_topic | wordpiece | 0.31 | 2.39 | 1.618 | 7267 | 1,266,539 |
+| tweet_topic | unigram | 0.26 | 2.12 | 1.834 | 7020 | 927,536 |
+| go_emotions | whitespace | 6.04 | 30.11 | 1.000 | 44476 | 25,609,705 |
+| go_emotions | nltk | 2.57 | 21.55 | 1.220 | 26410 | 190,698 |
+| go_emotions | tweet | 2.56 | 20.84 | 1.195 | 25907 | 273,224 |
+| go_emotions | lexfront | 2.45 | 19.89 | 1.195 | 24459 | 281,843 |
+| go_emotions | bpe | 0.18 | 0.23 | 1.377 | 7704 | 942,109 |
+| go_emotions | lexfront_bpe | 0.23 | 1.97 | 1.311 | 8236 | 237,066 |
+| go_emotions | wordpiece | 0.03 | 0.30 | 1.373 | 7585 | 1,155,009 |
+| go_emotions | unigram | 0.04 | 0.07 | 1.516 | 7898 | 786,663 |
+| ag_news | whitespace | 1.90 | 14.97 | 1.000 | 158733 | 24,396,944 |
+| ag_news | nltk | 0.96 | 11.52 | 1.158 | 98994 | 340,852 |
+| ag_news | tweet | 0.75 | 9.13 | 1.154 | 86096 | 268,415 |
+| ag_news | lexfront | 0.48 | 6.78 | 1.207 | 65337 | 286,773 |
+| ag_news | bpe | 0.00 | 0.01 | 1.435 | 7916 | 1,065,421 |
+| ag_news | lexfront_bpe | 0.00 | 0.01 | 1.408 | 7989 | 283,587 |
+| ag_news | wordpiece | 0.00 | 0.07 | 1.433 | 7806 | 1,096,802 |
+| ag_news | unigram | 0.00 | 0.00 | 1.609 | 7998 | 949,478 |
 <!-- END table:intrinsic_metrics -->
 
 <!-- BEGIN obs:intrinsic -->
 **DRAFT observations (generated from the JSON files):**
 
-- **tweet_topic**: lowest OOV rate 8.25% (lexfront); smallest vocabulary 14483 (lexfront); LexFront: OOV 8.25%, fertility 1.391, vocabulary 14483; LexFront throughput is 1.15x NLTK's (tokens/s, this machine). Subword tokenizers (trained on the train split; BPE splits every word into pieces seen in train, so its OOV rate is near zero by construction and not comparable with the word-level ones above; LexFront + BPE splits only word-like tokens, so its OOV tokens are structural tokens passed through whole, or `[UNK]`): bpe: OOV 0.44%, fertility 1.633, vocabulary 7413; lexfront_bpe: OOV 2.20%, fertility 1.578, vocabulary 10101.
-- **go_emotions**: lowest OOV rate 2.45% (lexfront); smallest vocabulary 24459 (lexfront); LexFront: OOV 2.45%, fertility 1.195, vocabulary 24459; LexFront throughput is 1.15x NLTK's (tokens/s, this machine). Subword tokenizers (trained on the train split; BPE splits every word into pieces seen in train, so its OOV rate is near zero by construction and not comparable with the word-level ones above; LexFront + BPE splits only word-like tokens, so its OOV tokens are structural tokens passed through whole, or `[UNK]`): bpe: OOV 0.18%, fertility 1.377, vocabulary 7704; lexfront_bpe: OOV 0.23%, fertility 1.311, vocabulary 8236.
-- **ag_news**: lowest OOV rate 0.48% (lexfront); smallest vocabulary 65337 (lexfront); LexFront: OOV 0.48%, fertility 1.207, vocabulary 65337; LexFront throughput is 0.86x NLTK's (tokens/s, this machine). Subword tokenizers (trained on the train split; BPE splits every word into pieces seen in train, so its OOV rate is near zero by construction and not comparable with the word-level ones above; LexFront + BPE splits only word-like tokens, so its OOV tokens are structural tokens passed through whole, or `[UNK]`): bpe: OOV 0.00%, fertility 1.435, vocabulary 7916; lexfront_bpe: OOV 0.00%, fertility 1.408, vocabulary 7989.
+- **tweet_topic**: lowest OOV rate among the word-level tokenizers 8.25% (lexfront); smallest vocabulary 14483 (lexfront); LexFront: OOV 8.25%, fertility 1.391, vocabulary 14483; LexFront throughput is 1.19x NLTK's (tokens/s, this machine). Subword tokenizers (trained on the train split; they split words into vocabulary pieces, so only characters never seen in train (`[UNK]`) and rare pieces can be OOV: the OOV rate is near zero and not comparable with the word-level ones above; LexFront + BPE splits only word-like tokens, so its OOV tokens are structural tokens passed through whole, `[UNK]`, or word pieces unseen in train): bpe: OOV 0.44%, fertility 1.633, vocabulary 7413; lexfront_bpe: OOV 2.20%, fertility 1.578, vocabulary 10101; wordpiece: OOV 0.31%, fertility 1.618, vocabulary 7267; unigram: OOV 0.26%, fertility 1.834, vocabulary 7020.
+- **go_emotions**: lowest OOV rate among the word-level tokenizers 2.45% (lexfront); smallest vocabulary 24459 (lexfront); LexFront: OOV 2.45%, fertility 1.195, vocabulary 24459; LexFront throughput is 1.48x NLTK's (tokens/s, this machine). Subword tokenizers (trained on the train split; they split words into vocabulary pieces, so only characters never seen in train (`[UNK]`) and rare pieces can be OOV: the OOV rate is near zero and not comparable with the word-level ones above; LexFront + BPE splits only word-like tokens, so its OOV tokens are structural tokens passed through whole, `[UNK]`, or word pieces unseen in train): bpe: OOV 0.18%, fertility 1.377, vocabulary 7704; lexfront_bpe: OOV 0.23%, fertility 1.311, vocabulary 8236; wordpiece: OOV 0.03%, fertility 1.373, vocabulary 7585; unigram: OOV 0.04%, fertility 1.516, vocabulary 7898.
+- **ag_news**: lowest OOV rate among the word-level tokenizers 0.48% (lexfront); smallest vocabulary 65337 (lexfront); LexFront: OOV 0.48%, fertility 1.207, vocabulary 65337; LexFront throughput is 0.84x NLTK's (tokens/s, this machine). Subword tokenizers (trained on the train split; they split words into vocabulary pieces, so only characters never seen in train (`[UNK]`) and rare pieces can be OOV: the OOV rate is near zero and not comparable with the word-level ones above; LexFront + BPE splits only word-like tokens, so its OOV tokens are structural tokens passed through whole, `[UNK]`, or word pieces unseen in train): bpe: OOV 0.00%, fertility 1.435, vocabulary 7916; lexfront_bpe: OOV 0.00%, fertility 1.408, vocabulary 7989; wordpiece: OOV 0.00%, fertility 1.433, vocabulary 7806; unigram: OOV 0.00%, fertility 1.609, vocabulary 7998.
 <!-- END obs:intrinsic -->
 
 ### DFA state counts
@@ -462,6 +468,61 @@ Vocabulary-size sensitivity (same code and protocol, vocabulary 32000, `results/
 _Subword grid: each BPE (vocabulary size in the last line) is trained on the lowercased train split of its dataset only; LexFront + BPE keeps LexFront's structural tokens whole and splits only word-like tokens. Differences are paired bootstraps over the test examples (same code, B and seed as `ci_table`), against the NLTK+LR and LexFront+LR runs of the main grid. One training run per cell, so training randomness is not covered; no multiplicity correction. These lines say which differences exclude 0 and in which direction, not why; any reason given elsewhere is a hypothesis._
 <!-- END obs:bpe_v32000 -->
 
+### WordPiece and Unigram (P4)
+Two more learned vocabularies, same library, protocol and statistics as BPE (`docs/versions/v6-wordpiece-unigram.md`,
+`python -m experiments.run_subword2`, `results/subword2/`): 8000 pieces per dataset, trained on the lowercased train
+split only, `Whitespace` pre-tokenizer, same TF-IDF (main setting) with NB and LR, no hybrid with LexFront. WordPiece merges
+the pair that most raises the likelihood of the text and encodes by greedy longest match; Unigram prunes a large
+candidate set by EM and encodes by the best-scoring split. Differences are paired bootstraps against the main grid's NLTK+LR
+and the P3 BPE+LR; exact McNemar on accuracy against NLTK+LR.
+
+<!-- BEGIN table:subword_runs -->
+| dataset | vocab | WordPiece+NB acc / F1 | WordPiece+LR acc / F1 | Unigram+NB acc / F1 | Unigram+LR acc / F1 | NLTK+LR acc / F1 | BPE+LR acc / F1 |
+|---|---|---|---|---|---|---|---|
+| tweet_topic | 8000 | 70.84 / 28.07 | 71.61 / 34.88 | 71.52 / 28.46 | 73.05 / 36.49 | 72.32 / 36.95 | 71.90 / 35.09 |
+| go_emotions | 8000 | 38.69 / 5.67 | 55.12 / 33.12 | 38.13 / 5.18 | 55.71 / 35.12 | 55.27 / 33.86 | 55.23 / 33.29 |
+| ag_news | 8000 | 88.95 / 88.89 | 91.47 / 91.46 | 89.16 / 89.12 | 90.97 / 90.96 | 91.88 / 91.87 | 91.13 / 91.12 |
+<!-- END table:subword_runs -->
+
+<!-- BEGIN table:subword_table -->
+| dataset | difference | accuracy pts [95% CI] | macro-F1 pts [95% CI] | CI excludes 0 (acc / F1) | McNemar p (acc) |
+|---|---|---|---|---|---|
+| tweet_topic | WordPiece+LR minus NLTK+LR (tokenizer only) | -0.71 [-1.62, +0.12] | -2.08 [-3.33, -0.87] | no / yes | 0.122 |
+| tweet_topic | Unigram+LR minus NLTK+LR (tokenizer only) | +0.74 [-0.24, +1.68] | -0.46 [-1.93, +0.98] | no / no | 0.143 |
+| tweet_topic | WordPiece+LR minus BPE+LR | -0.29 [-0.91, +0.29] | -0.21 [-1.08, +0.70] | no / no | - |
+| tweet_topic | Unigram+LR minus BPE+LR | +1.15 [+0.24, +2.09] | +1.40 [+0.09, +2.81] | yes / yes | - |
+| tweet_topic | Unigram+LR minus WordPiece+LR | +1.44 [+0.56, +2.41] | +1.62 [+0.62, +2.80] | yes / yes | - |
+| go_emotions | WordPiece+LR minus NLTK+LR (tokenizer only) | -0.15 [-0.78, +0.48] | -0.74 [-1.57, +0.08] | no / no | 0.687 |
+| go_emotions | Unigram+LR minus NLTK+LR (tokenizer only) | +0.44 [-0.28, +1.15] | +1.26 [+0.10, +2.39] | no / yes | 0.266 |
+| go_emotions | WordPiece+LR minus BPE+LR | -0.11 [-0.46, +0.26] | -0.17 [-0.62, +0.30] | no / no | - |
+| go_emotions | Unigram+LR minus BPE+LR | +0.48 [-0.15, +1.11] | +1.83 [+0.78, +2.96] | no / yes | - |
+| go_emotions | Unigram+LR minus WordPiece+LR | +0.59 [-0.04, +1.24] | +2.00 [+0.89, +3.14] | no / yes | - |
+| ag_news | WordPiece+LR minus NLTK+LR (tokenizer only) | -0.41 [-0.82, -0.01] | -0.41 [-0.82, -0.02] | yes / yes | 0.049 |
+| ag_news | Unigram+LR minus NLTK+LR (tokenizer only) | -0.91 [-1.34, -0.50] | -0.91 [-1.34, -0.50] | yes / yes | < 0.001 |
+| ag_news | WordPiece+LR minus BPE+LR | +0.34 [+0.05, +0.66] | +0.34 [+0.05, +0.65] | yes / yes | - |
+| ag_news | Unigram+LR minus BPE+LR | -0.16 [-0.57, +0.22] | -0.16 [-0.56, +0.22] | no / no | - |
+| ag_news | Unigram+LR minus WordPiece+LR | -0.50 [-0.89, -0.13] | -0.50 [-0.89, -0.13] | yes / yes | - |
+<!-- END table:subword_table -->
+
+<!-- BEGIN obs:subword -->
+**DRAFT observations (generated from the JSON files):**
+
+- **tweet_topic**: WordPiece+LR minus NLTK+LR (tokenizer only): accuracy -0.71 (CI includes 0), macro-F1 -2.08 (CI excludes 0, lower); Unigram+LR minus NLTK+LR (tokenizer only): accuracy +0.74 (CI includes 0), macro-F1 -0.46 (CI includes 0); WordPiece+LR minus BPE+LR: accuracy -0.29 (CI includes 0), macro-F1 -0.21 (CI includes 0); Unigram+LR minus BPE+LR: accuracy +1.15 (CI excludes 0, higher), macro-F1 +1.40 (CI excludes 0, higher); Unigram+LR minus WordPiece+LR: accuracy +1.44 (CI excludes 0, higher), macro-F1 +1.62 (CI excludes 0, higher). Exact McNemar p (accuracy): WordPiece+LR vs NLTK+LR = 0.122; Unigram+LR vs NLTK+LR = 0.143.
+- **go_emotions**: WordPiece+LR minus NLTK+LR (tokenizer only): accuracy -0.15 (CI includes 0), macro-F1 -0.74 (CI includes 0); Unigram+LR minus NLTK+LR (tokenizer only): accuracy +0.44 (CI includes 0), macro-F1 +1.26 (CI excludes 0, higher); WordPiece+LR minus BPE+LR: accuracy -0.11 (CI includes 0), macro-F1 -0.17 (CI includes 0); Unigram+LR minus BPE+LR: accuracy +0.48 (CI includes 0), macro-F1 +1.83 (CI excludes 0, higher); Unigram+LR minus WordPiece+LR: accuracy +0.59 (CI includes 0), macro-F1 +2.00 (CI excludes 0, higher). Exact McNemar p (accuracy): WordPiece+LR vs NLTK+LR = 0.687; Unigram+LR vs NLTK+LR = 0.266.
+- **ag_news**: WordPiece+LR minus NLTK+LR (tokenizer only): accuracy -0.41 (CI excludes 0, lower), macro-F1 -0.41 (CI excludes 0, lower); Unigram+LR minus NLTK+LR (tokenizer only): accuracy -0.91 (CI excludes 0, lower), macro-F1 -0.91 (CI excludes 0, lower); WordPiece+LR minus BPE+LR: accuracy +0.34 (CI excludes 0, higher), macro-F1 +0.34 (CI excludes 0, higher); Unigram+LR minus BPE+LR: accuracy -0.16 (CI includes 0), macro-F1 -0.16 (CI includes 0); Unigram+LR minus WordPiece+LR: accuracy -0.50 (CI excludes 0, lower), macro-F1 -0.50 (CI excludes 0, lower). Exact McNemar p (accuracy): WordPiece+LR vs NLTK+LR = 0.049; Unigram+LR vs NLTK+LR < 0.001.
+- In all, 16 of 30 difference CIs exclude 0 (B = 2000, seed 20261016).
+
+_WordPiece and Unigram (vocabulary 8000, `Whitespace` pre-tokenizer) are each trained on the lowercased train split of their dataset only, and feed the same TF-IDF + LR / NB as the other tokenizers. Differences are paired bootstraps over the test examples (same code, B and seed as `ci_table`) against the NLTK+LR run of the main grid and the BPE+LR run of the P3 grid. One training run per cell, so training randomness is not covered; no multiplicity correction. These lines say which differences exclude 0 and in which direction, not why; any reason given elsewhere is a hypothesis._
+<!-- END obs:subword -->
+
+Reading it (hand-written; the numbers restate the table, the reasons are hypotheses): no WordPiece or Unigram run is above
+NLTK+LR in accuracy with a CI that excludes 0, and on ag_news both are below it. Unigram is above WordPiece on tweet_topic
+(accuracy +1.44 [+0.56, +2.41]) and below it on ag_news. Unigram's macro-F1 gain over NLTK+LR on go_emotions
+(+1.26 [+0.10, +2.39]) is the only interval in the subword experiments that puts a subword tokenizer above NLTK+LR; its lower end
+is close to 0 and it is one of 30 intervals without multiplicity correction (about 1.5 would exclude 0 by chance if they
+were independent, which they are not). A possible reason (untested): macro-F1 weighs the many small go_emotions
+classes, where the way Unigram splits rare words could matter.
+
 ### Reproducibility and leakage checks
 Hand-written; every number below is in a file named here or in `docs/DECISIONS.md`.
 
@@ -474,10 +535,23 @@ Hand-written; every number below is in a file named here or in `docs/DECISIONS.m
   of the differences discussed above, which is why the pin matters.
 * **The subword vocabularies are trained on the train split only.** `build_tokenizer(name, train_texts)` is the only
   constructor, the fingerprint carries a hash of the training texts, and `tests/test_bpe.py::test_bpe_is_trained_on_train_texts_only`
-  checks which texts reach the trainer. BPE training itself is deterministic (sorted initial alphabet; the same texts gave
-  different merge orders before that fix, at 1 and at 4 threads alike; see DECISIONS "P3") and independent of
-  `RAYON_NUM_THREADS` (tested). An end-to-end leakage test (replace the test texts with garbage and check the trained
-  tokenizer is bit-identical) is listed in `docs/HANDOFF.md` until it is run.
+  checks which texts reach the trainer. End-to-end check (independent audit, `docs/AUDIT_6.md`, tweet_topic): all 3399
+  test texts replaced by garbage (characters absent from train, 200k-character documents) and the real grid code path
+  run: the serialized WordPiece and Unigram models, their training-text hashes and the TF-IDF vocabularies were
+  bit-identical to the run on the real test texts, while 1666 / 1765 of the 3399 test predictions changed (so the test is
+  not vacuous); 185 characters that occur only in the real test split are in no vocabulary. The same audit covered the
+  other training paths (vectorizer, classifier, intrinsic metrics) by reading the code.
+* **Subword training is deterministic here.** As shipped, the BPE and WordPiece trainers gave different merge orders on
+  the same text (hash-map order of the `##` alphabet; fixed by passing a sorted alphabet, DECISIONS "P3"/"P4") and the
+  Unigram trainer different scores (floating-point order and a hash-set order in the characters it puts back; fixed by
+  `canonical_unigram`, scores rounded to 3 decimals). Checked: 6 trainings each in separate processes (1 and 4 Rayon
+  threads, different `PYTHONHASHSEED`) gave one byte-identical model per tokenizer, and re-running the tweet_topic
+  WordPiece+LR and Unigram+LR cells reproduced the committed metrics, fingerprints and prediction files. Limit: Unigram's
+  rounding boundary is 2e-10 from the nearest score against a measured run-to-run noise of at most 4e-11 (about 5x), so
+  a different CPU or library version could in principle flip one rounded score; none flipped in the runs above.
+* **The confidence intervals were recomputed independently.** A second implementation written from the pseudocode in
+  section 5 (same seed, B and resampling scheme) reproduced every stored interval end of `results/subword2/stats/bootstrap.json`
+  to 5e-13, the McNemar counts and p-values exactly, and the point metrics exactly (`docs/AUDIT_6.md`).
 * **What none of this covers:** training randomness across seeds (one run per cell), other datasets, other vocabulary
   sizes than 8000 and 32000.
 

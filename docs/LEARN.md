@@ -235,7 +235,7 @@ They have their own class; a single emoji with an optional skin-tone/variation s
 Every number comes from a JSON file in `results/`, written by a script (`python -m experiments.run_module1` etc.); the tables are generated from those files by `experiments/report.py`. Each run JSON stores a fingerprint of its configuration and of the code; a saved run is reused only while that fingerprint matches, and `--force` (or `FORCE = True` in the notebook) recomputes it.
 
 **30. What is out of scope for this review?**
-WordPiece, Unigram and transformers. The per-rule normalization ablation (Q33) and BPE + the LexFront + BPE hybrid (Q34) are now in scope.
+Transformers (they need torch), Hinglish and more seeds. The per-rule normalization ablation (Q33), BPE + the LexFront + BPE hybrid (Q34) and WordPiece + Unigram (Q37) are now in scope.
 
 **31. Why are the classifier fits single-threaded, and does that change the numbers?**
 The native thread count changes the floating-point summation order inside the LR solver (lbfgs), so the same seed can give slightly different metrics on a different thread count. `experiments/pipeline.py` wraps vectorize, fit and predict in `threadpoolctl.threadpool_limits(1)`, and each run JSON records `blas_threads = 1`. The committed results were regenerated this way, so some LR numbers moved slightly; the old and new values are listed in `docs/DECISIONS.md`. `tests/test_audit_fixes.py` checks that the pinning is active.
@@ -307,3 +307,30 @@ That, with the classifier held fixed, LexFront is not shown to be better than NL
 
 **36. Why does go_emotions flip to a positive tokenizer effect when case is kept?**
 In the case-sensitive grid (TF-IDF `lowercase=False`) LexFront+LR minus NLTK+LR on go_emotions is +1.15 points [+0.46, +1.85], against +0.09 [-0.35, +0.54] in the main grid (`sensitivity_ci` table in `results/REPORT_NOTES.md`). LexFront lowercases its own WORD tokens, the baselines keep case, so with case kept the baselines lose 0.9 to 1.3 points and LexFront loses 0.02. The ablation separates the cause: removing only the lowercase rule (case kept) costs LexFront -1.07 [-1.72, -0.44] on go_emotions, and no other rule's removal has an accuracy CI that excludes 0 in the main setting. So the +1.15 is lowercasing, which `lowercase=True` gives every tokenizer for free, not a structural advantage of the lexer. Some rules never fire on some datasets (no URL in tweet_topic and go_emotions, no mention in ag_news: those datasets mask URLs and handles), so their ablation is not a test of the rule. Which of these effects would survive other datasets is untested.
+
+**37. What do WordPiece and Unigram add, and do they beat NLTK or BPE?**
+Both learn a vocabulary of 8000 pieces from each dataset's train split (lowercased, `Whitespace` pre-tokenizer, no hybrid). WordPiece grows its vocabulary like BPE but merges the pair that most raises the likelihood of the training text, and encodes a word by greedy longest match (continuing pieces carry `##`; a word with an unseen character becomes `[UNK]`). Unigram works top-down: it starts from many candidate pieces, gives each a probability by EM, prunes the least useful until 8000 remain, and encodes a word by the best-scoring split (Viterbi); it has no `##`. What the data show (generated block below, `results/subword2/stats/bootstrap.json`): neither is above NLTK+LR in accuracy with a CI that excludes 0; on ag_news both are below NLTK+LR (WordPiece -0.41, Unigram -0.91 points, both CIs exclude 0); Unigram is above WordPiece on tweet_topic (+1.44) and below it on ag_news (-0.50). The one interval that puts a subword tokenizer above NLTK+LR is Unigram's macro-F1 on go_emotions (+1.26 [+0.10, +2.39]); it is one of 30 intervals with no multiplicity correction and its lower end is near 0, so we do not claim an advantage. Limits: one training run per cell, one vocabulary size (8000, not tuned), a bag-of-words classifier, two trainers with default settings. Why Unigram differs from WordPiece (for example that its pruning keeps different rare pieces) is a hypothesis we have not tested. Protocol: `docs/versions/v6-wordpiece-unigram.md`.
+
+<!-- BEGIN table:subword_table -->
+| dataset | difference | accuracy pts [95% CI] | macro-F1 pts [95% CI] | CI excludes 0 (acc / F1) | McNemar p (acc) |
+|---|---|---|---|---|---|
+| tweet_topic | WordPiece+LR minus NLTK+LR (tokenizer only) | -0.71 [-1.62, +0.12] | -2.08 [-3.33, -0.87] | no / yes | 0.122 |
+| tweet_topic | Unigram+LR minus NLTK+LR (tokenizer only) | +0.74 [-0.24, +1.68] | -0.46 [-1.93, +0.98] | no / no | 0.143 |
+| tweet_topic | WordPiece+LR minus BPE+LR | -0.29 [-0.91, +0.29] | -0.21 [-1.08, +0.70] | no / no | - |
+| tweet_topic | Unigram+LR minus BPE+LR | +1.15 [+0.24, +2.09] | +1.40 [+0.09, +2.81] | yes / yes | - |
+| tweet_topic | Unigram+LR minus WordPiece+LR | +1.44 [+0.56, +2.41] | +1.62 [+0.62, +2.80] | yes / yes | - |
+| go_emotions | WordPiece+LR minus NLTK+LR (tokenizer only) | -0.15 [-0.78, +0.48] | -0.74 [-1.57, +0.08] | no / no | 0.687 |
+| go_emotions | Unigram+LR minus NLTK+LR (tokenizer only) | +0.44 [-0.28, +1.15] | +1.26 [+0.10, +2.39] | no / yes | 0.266 |
+| go_emotions | WordPiece+LR minus BPE+LR | -0.11 [-0.46, +0.26] | -0.17 [-0.62, +0.30] | no / no | - |
+| go_emotions | Unigram+LR minus BPE+LR | +0.48 [-0.15, +1.11] | +1.83 [+0.78, +2.96] | no / yes | - |
+| go_emotions | Unigram+LR minus WordPiece+LR | +0.59 [-0.04, +1.24] | +2.00 [+0.89, +3.14] | no / yes | - |
+| ag_news | WordPiece+LR minus NLTK+LR (tokenizer only) | -0.41 [-0.82, -0.01] | -0.41 [-0.82, -0.02] | yes / yes | 0.049 |
+| ag_news | Unigram+LR minus NLTK+LR (tokenizer only) | -0.91 [-1.34, -0.50] | -0.91 [-1.34, -0.50] | yes / yes | < 0.001 |
+| ag_news | WordPiece+LR minus BPE+LR | +0.34 [+0.05, +0.66] | +0.34 [+0.05, +0.65] | yes / yes | - |
+| ag_news | Unigram+LR minus BPE+LR | -0.16 [-0.57, +0.22] | -0.16 [-0.56, +0.22] | no / no | - |
+| ag_news | Unigram+LR minus WordPiece+LR | -0.50 [-0.89, -0.13] | -0.50 [-0.89, -0.13] | yes / yes | - |
+<!-- END table:subword_table -->
+
+**38. How do you know the subword tokenizers did not see the test set, and that retraining gives the same vocabulary?**
+Leakage: the factory `build_tokenizer(name, train_texts)` is the only way a trainer is built and it receives the train split only; the vectorizer is fit on the train split; the test split is only transformed and scored. An independent audit (`docs/AUDIT_6.md`) replaced all test texts of tweet_topic by garbage (characters absent from train, 200k-character documents) and ran the real code path: the serialized WordPiece and Unigram models, the training-text hashes and the TF-IDF vocabularies were bit-identical, while 1666 and 1765 of the 3399 test predictions changed, so the check is not vacuous; 185 characters that occur only in the real test split are in no vocabulary. Determinism: as shipped the trainers are not deterministic (hash-map order for BPE and WordPiece, floating-point order and hash-set order for Unigram); we pass a sorted alphabet and canonicalize the Unigram model (scores rounded to 3 decimals). Six trainings per tokenizer in separate processes (1 and 4 Rayon threads, different `PYTHONHASHSEED`) gave one identical model each, and rerunning two committed cells reproduced their metrics and prediction files. Weak point we know: the Unigram rounding boundary is only about 5x away from the measured numerical noise (2e-10 against 4e-11), so another CPU or library version could in principle change one rounded score; it did not here. The same audit recomputed all subword confidence intervals with an independent bootstrap implementation (agreement to 5e-13) and the McNemar p-values exactly.
+

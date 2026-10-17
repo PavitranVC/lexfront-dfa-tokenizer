@@ -400,10 +400,40 @@ these two is near zero because words split into vocabulary pieces, so it is not 
 tokenizers.
 
 <!-- BEGIN table:subword_runs -->
+| dataset | vocab | WordPiece+NB acc / F1 | WordPiece+LR acc / F1 | Unigram+NB acc / F1 | Unigram+LR acc / F1 | NLTK+LR acc / F1 | BPE+LR acc / F1 |
+|---|---|---|---|---|---|---|---|
+| tweet_topic | 8000 | 70.84 / 28.07 | 71.61 / 34.88 | 71.52 / 28.46 | 73.05 / 36.49 | 72.32 / 36.95 | 71.90 / 35.09 |
+| go_emotions | 8000 | 38.69 / 5.67 | 55.12 / 33.12 | 38.13 / 5.18 | 55.71 / 35.12 | 55.27 / 33.86 | 55.23 / 33.29 |
+| ag_news | 8000 | 88.95 / 88.89 | 91.47 / 91.46 | 89.16 / 89.12 | 90.97 / 90.96 | 91.88 / 91.87 | 91.13 / 91.12 |
 <!-- END table:subword_runs -->
 
 <!-- BEGIN table:subword_table -->
+| dataset | difference | accuracy pts [95% CI] | macro-F1 pts [95% CI] | CI excludes 0 (acc / F1) | McNemar p (acc) |
+|---|---|---|---|---|---|
+| tweet_topic | WordPiece+LR minus NLTK+LR (tokenizer only) | -0.71 [-1.62, +0.12] | -2.08 [-3.33, -0.87] | no / yes | 0.122 |
+| tweet_topic | Unigram+LR minus NLTK+LR (tokenizer only) | +0.74 [-0.24, +1.68] | -0.46 [-1.93, +0.98] | no / no | 0.143 |
+| tweet_topic | WordPiece+LR minus BPE+LR | -0.29 [-0.91, +0.29] | -0.21 [-1.08, +0.70] | no / no | - |
+| tweet_topic | Unigram+LR minus BPE+LR | +1.15 [+0.24, +2.09] | +1.40 [+0.09, +2.81] | yes / yes | - |
+| tweet_topic | Unigram+LR minus WordPiece+LR | +1.44 [+0.56, +2.41] | +1.62 [+0.62, +2.80] | yes / yes | - |
+| go_emotions | WordPiece+LR minus NLTK+LR (tokenizer only) | -0.15 [-0.78, +0.48] | -0.74 [-1.57, +0.08] | no / no | 0.687 |
+| go_emotions | Unigram+LR minus NLTK+LR (tokenizer only) | +0.44 [-0.28, +1.15] | +1.26 [+0.10, +2.39] | no / yes | 0.266 |
+| go_emotions | WordPiece+LR minus BPE+LR | -0.11 [-0.46, +0.26] | -0.17 [-0.62, +0.30] | no / no | - |
+| go_emotions | Unigram+LR minus BPE+LR | +0.48 [-0.15, +1.11] | +1.83 [+0.78, +2.96] | no / yes | - |
+| go_emotions | Unigram+LR minus WordPiece+LR | +0.59 [-0.04, +1.24] | +2.00 [+0.89, +3.14] | no / yes | - |
+| ag_news | WordPiece+LR minus NLTK+LR (tokenizer only) | -0.41 [-0.82, -0.01] | -0.41 [-0.82, -0.02] | yes / yes | 0.049 |
+| ag_news | Unigram+LR minus NLTK+LR (tokenizer only) | -0.91 [-1.34, -0.50] | -0.91 [-1.34, -0.50] | yes / yes | < 0.001 |
+| ag_news | WordPiece+LR minus BPE+LR | +0.34 [+0.05, +0.66] | +0.34 [+0.05, +0.65] | yes / yes | - |
+| ag_news | Unigram+LR minus BPE+LR | -0.16 [-0.57, +0.22] | -0.16 [-0.56, +0.22] | no / no | - |
+| ag_news | Unigram+LR minus WordPiece+LR | -0.50 [-0.89, -0.13] | -0.50 [-0.89, -0.13] | yes / yes | - |
 <!-- END table:subword_table -->
 
 <!-- BEGIN obs:subword -->
+**DRAFT observations (generated from the JSON files):**
+
+- **tweet_topic**: WordPiece+LR minus NLTK+LR (tokenizer only): accuracy -0.71 (CI includes 0), macro-F1 -2.08 (CI excludes 0, lower); Unigram+LR minus NLTK+LR (tokenizer only): accuracy +0.74 (CI includes 0), macro-F1 -0.46 (CI includes 0); WordPiece+LR minus BPE+LR: accuracy -0.29 (CI includes 0), macro-F1 -0.21 (CI includes 0); Unigram+LR minus BPE+LR: accuracy +1.15 (CI excludes 0, higher), macro-F1 +1.40 (CI excludes 0, higher); Unigram+LR minus WordPiece+LR: accuracy +1.44 (CI excludes 0, higher), macro-F1 +1.62 (CI excludes 0, higher). Exact McNemar p (accuracy): WordPiece+LR vs NLTK+LR = 0.122; Unigram+LR vs NLTK+LR = 0.143.
+- **go_emotions**: WordPiece+LR minus NLTK+LR (tokenizer only): accuracy -0.15 (CI includes 0), macro-F1 -0.74 (CI includes 0); Unigram+LR minus NLTK+LR (tokenizer only): accuracy +0.44 (CI includes 0), macro-F1 +1.26 (CI excludes 0, higher); WordPiece+LR minus BPE+LR: accuracy -0.11 (CI includes 0), macro-F1 -0.17 (CI includes 0); Unigram+LR minus BPE+LR: accuracy +0.48 (CI includes 0), macro-F1 +1.83 (CI excludes 0, higher); Unigram+LR minus WordPiece+LR: accuracy +0.59 (CI includes 0), macro-F1 +2.00 (CI excludes 0, higher). Exact McNemar p (accuracy): WordPiece+LR vs NLTK+LR = 0.687; Unigram+LR vs NLTK+LR = 0.266.
+- **ag_news**: WordPiece+LR minus NLTK+LR (tokenizer only): accuracy -0.41 (CI excludes 0, lower), macro-F1 -0.41 (CI excludes 0, lower); Unigram+LR minus NLTK+LR (tokenizer only): accuracy -0.91 (CI excludes 0, lower), macro-F1 -0.91 (CI excludes 0, lower); WordPiece+LR minus BPE+LR: accuracy +0.34 (CI excludes 0, higher), macro-F1 +0.34 (CI excludes 0, higher); Unigram+LR minus BPE+LR: accuracy -0.16 (CI includes 0), macro-F1 -0.16 (CI includes 0); Unigram+LR minus WordPiece+LR: accuracy -0.50 (CI excludes 0, lower), macro-F1 -0.50 (CI excludes 0, lower). Exact McNemar p (accuracy): WordPiece+LR vs NLTK+LR = 0.049; Unigram+LR vs NLTK+LR < 0.001.
+- In all, 16 of 30 difference CIs exclude 0 (B = 2000, seed 20261016).
+
+_WordPiece and Unigram (vocabulary 8000, `Whitespace` pre-tokenizer) are each trained on the lowercased train split of their dataset only, and feed the same TF-IDF + LR / NB as the other tokenizers. Differences are paired bootstraps over the test examples (same code, B and seed as `ci_table`) against the NLTK+LR run of the main grid and the BPE+LR run of the P3 grid. One training run per cell, so training randomness is not covered; no multiplicity correction. These lines say which differences exclude 0 and in which direction, not why; any reason given elsewhere is a hypothesis._
 <!-- END obs:subword -->
