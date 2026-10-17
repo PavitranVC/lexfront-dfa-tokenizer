@@ -2,6 +2,12 @@
 
 Newest first. Dates are the day the change was made (IST workday).
 
+## 2026-10-17 (finish 5: NLTK download behind a proxy)
+- Owner's Colab error in setup cell: NLTK refused the `punkt_tab` download because a proxy is configured (its SSRF guard, CWE-918:
+  the proxy, not NLTK, chooses the destination). Reproduced here (fresh HOME, proxy set): `nltk.download` returned False and the
+  data stayed missing. The setup cell now sets `NLTK_ALLOW_PROXIED_URLOPEN=1` only while it downloads that one package and only if a
+  proxy variable is set (previous value restored); without a proxy nothing changes. Tests in `tests/test_notebook_setup.py`.
+
 ## 2026-10-17 (finish 4: completion)
 - Final checks on `main` after PRs 17-19: `pytest -q` (181 passed), `notebooks/make_notebook.py --check`, `render_docs` and the CI
   stats step leave `git diff` clean, and the notebook runs top to bottom from an empty directory (Python 3.12, `requirements.txt`

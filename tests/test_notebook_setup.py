@@ -65,3 +65,43 @@ def test_stale_clone_that_cannot_update_fails_loudly(tmp_path):
     commit_files(origin, {"lexer/token_spec.py": "v = 2\n"}, "v2")
     result = run_setup(colab, origin)
     assert result.returncode != 0 and "could not update the existing clone" in result.stderr
+
+
+NLTK_STUB = """
+import os, sys, types
+class _Data:
+    found = False
+    def find(self, name):
+        if not _Data.found:
+            raise LookupError(name)
+nltk = types.ModuleType("nltk")
+nltk.data = _Data()
+def download(package, quiet=True):
+    # what NLTK's SSRF guard does: refuse when a proxy is configured and the opt-in is absent
+    proxy = any(os.environ.get(v) for v in ("HTTP_PROXY", "HTTPS_PROXY", "http_proxy", "https_proxy"))
+    if proxy and os.environ.get("NLTK_ALLOW_PROXIED_URLOPEN") != "1":
+        raise RuntimeError("refusing to fetch through a proxy (SSRF guard)")
+    _Data.found = True
+    return True
+nltk.download = download
+sys.modules["nltk"] = nltk
+"""
+
+
+def run_nltk_block(env_extra):
+    source = make_notebook.SETUP.split("import nltk\n", 1)[1]
+    code = "import os\n" + NLTK_STUB + "import nltk\n" + source + "\nprint('opt-in left set:', 'NLTK_ALLOW_PROXIED_URLOPEN' in os.environ)\n"
+    env = {k: v for k, v in os.environ.items() if "proxy" not in k.lower() and k != "NLTK_ALLOW_PROXIED_URLOPEN"}
+    return subprocess.run([sys.executable, "-c", code], capture_output=True, text=True, env={**env, **env_extra})
+
+
+def test_nltk_download_works_behind_a_proxy_and_opt_in_is_scoped():
+    result = run_nltk_block({"HTTPS_PROXY": "http://proxy.invalid:3128"})
+    assert result.returncode == 0, result.stderr
+    assert "allowing NLTK to download punkt_tab" in result.stdout and "opt-in left set: False" in result.stdout
+
+
+def test_nltk_download_without_proxy_does_not_set_the_opt_in():
+    result = run_nltk_block({})
+    assert result.returncode == 0, result.stderr
+    assert "allowing NLTK" not in result.stdout and "opt-in left set: False" in result.stdout

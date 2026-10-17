@@ -65,7 +65,20 @@ for package in ["punkt_tab"]:                      # what word_tokenize needs; a
     try:
         nltk.data.find(f"tokenizers/{package}")
     except LookupError:
-        nltk.download(package, quiet=True)
+        # With a proxy configured NLTK refuses to download (its SSRF guard, CWE-918: the proxy, not NLTK, picks the
+        # destination). The opt-in below covers this one download of a data package from the NLTK data repository only.
+        proxied = any(os.environ.get(v) for v in ("HTTP_PROXY", "HTTPS_PROXY", "http_proxy", "https_proxy"))
+        before = os.environ.get("NLTK_ALLOW_PROXIED_URLOPEN")
+        if proxied:
+            os.environ["NLTK_ALLOW_PROXIED_URLOPEN"] = "1"
+            print("a proxy is configured: allowing NLTK to download", package, "through it")
+        try:
+            nltk.download(package, quiet=True)
+        finally:
+            if before is None:
+                os.environ.pop("NLTK_ALLOW_PROXIED_URLOPEN", None)
+            else:
+                os.environ["NLTK_ALLOW_PROXIED_URLOPEN"] = before
         nltk.data.find(f"tokenizers/{package}")    # raises LookupError with the download hint if it is still missing'''
 
 CELLS = [
