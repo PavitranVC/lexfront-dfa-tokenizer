@@ -1,0 +1,92 @@
+{
+  "timestamp_utc": "2026-10-17T00:10:52+00:00",
+  "dataset": {
+    "name": "tweet_topic",
+    "hf_id": "cardiffnlp/tweet_topic_single",
+    "config": null,
+    "n_train": 3598,
+    "n_test": 3399,
+    "n_labels": 6,
+    "label_names": [
+      "arts_&_culture",
+      "business_&_entrepreneurs",
+      "pop_culture",
+      "daily_life",
+      "sports_&_gaming",
+      "science_&_technology"
+    ],
+    "split_info": {
+      "train": "train_coling2022",
+      "test": "test_coling2022",
+      "card_confirms_coling2022": true,
+      "reason": "COLING 2022 temporal split confirmed by the dataset card and present in the repo",
+      "revision": "refs/convert/parquet",
+      "card_quote": "**IMPORTANT NOTE:** To get a result that is comparable with the results of the COLING 2022 Tweet Topic paper, please use `train_coling2022` and `test_coling2022` for temporal-shift, and `train_coling2022_random` and `test_coling2022_random` fir random split (the coling2022 split does not have validation set).",
+      "loading_note": "repo uses a loading script; read from the auto-converted parquet revision",
+      "subsample": {
+        "max_train": null,
+        "max_test": null,
+        "seed": 0
+      }
+    }
+  },
+  "data_hash": "2d3ea347071a7775",
+  "tokenizer": "bpe:v32000",
+  "subword": {
+    "model": "bpe",
+    "vocab_size": 32000,
+    "pre_tokenizer": "whitespace",
+    "continuing_subword_prefix": "##",
+    "unk_token": "[UNK]",
+    "hybrid": false,
+    "pass_through_classes": [],
+    "train_text": "train split, lowercased",
+    "train_text_hash": "60622c6e72cccd4d",
+    "tokenizers": "0.23.3"
+  },
+  "vectorizer": {
+    "type": "TfidfVectorizer",
+    "lowercase": true,
+    "min_df": 2,
+    "ngram_range": [
+      1,
+      1
+    ],
+    "token_pattern": null,
+    "n_features": 5730
+  },
+  "classifier": {
+    "name": "nb",
+    "params": {
+      "alpha": 1.0,
+      "class_prior": null,
+      "fit_prior": true,
+      "force_alpha": true
+    }
+  },
+  "seed": 0,
+  "fingerprint": {
+    "config": "f410cd2da1301377",
+    "code": "16dcea03d83ab451"
+  },
+  "metrics": {
+    "accuracy": 0.7102088849661665,
+    "macro_f1": 0.28757892440555566
+  },
+  "timing_seconds": {
+    "tokenize_and_vectorize": 1.6884194510002999,
+    "classifier_fit": 0.0036497989999588754
+  },
+  "environment": {
+    "python": "3.11.17",
+    "sklearn": "1.9.1",
+    "nltk": "3.10.3",
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "threadpoolctl": "3.7.0",
+    "machine": "x86_64",
+    "platform": "Linux-6.18.44-fc-v139-x86_64-with-glibc2.39",
+    "blas_threads": 1
+  },
+  "predictions_file": "predictions/tweet_topic__bpe-v32000__nb.json.gz"
+}

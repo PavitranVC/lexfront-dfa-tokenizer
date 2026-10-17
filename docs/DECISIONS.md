@@ -3,6 +3,74 @@
 Newest first. One short entry each: decision, reason, source. Gaps filled on 2026-10-16 from the team's notes; items
 already recorded elsewhere are only pointed to. Citations below are from abstracts only and were not re-checked here.
 
+## 2026-10-16 (P3: AUDIT_4 fixes; BPE and the LexFront + BPE hybrid)
+
+### AUDIT_4 fixes (stage A)
+- A4-1: `run_ablation` counts, per setting, dataset and split, how often each removed rule fires: documents whose token
+  list and lexer tokens whose normalized form differ from full LexFront, on the text LexFront sees in that setting
+  (lowercased in main, as stored in case). One lexer scan per document, every configuration normalizes the same
+  tokens. Stored in `<out>/<setting>/firing__<dataset>.json` (stamped with data hash and code fingerprint, recomputed
+  when either changes, so `--stats-only` needs no dataset) and copied into `stats/bootstrap.json` (`rule_fires`);
+  table column "rule fires, docs train / test". The observation lists variants with 0 firing tokens in train and test
+  apart ("rule never fires on this data: not a test of the rule") and leaves them out of the comparison and chance
+  counts. A variant that fires only in train (go_emotions no_mention, 6 train documents) stays a comparison, since
+  the fit differs, and is named as train-only. The P2 proxy "0 changed predictions = never fires" is withdrawn: it is
+  not reliable (no_mention on go_emotions changes test predictions while the rule never fires in the test set).
+  LEARN Q33, `v4-ablation.md` ("What it cannot show") and module2 / REPORT_NOTES prose say the same.
+- A4-2: the chance statement counts only the compared (non-identical) variants and says "roughly, if the intervals
+  were independent" (they are not: all_off contains every single-rule change). "(TF-IDF still lowercases)" is added
+  next to all_off of the main setting in the table, observation, caveat, module2, REPORT_NOTES, notebook and
+  `v4-ablation.md`.
+
+### P3 protocol (decisions by the conductor, logged before coding)
+- Library: Hugging Face `tokenizers` (Rust, CPU, no torch); `requirements.txt` range `>=0.22,<0.24`, lock `0.23.3`.
+  Checked: `tokenizers` installs on Python 3.11 (lock venv) and 3.12 (0.23.3 resolved); `tests/test_bpe.py` also
+  passes with the lowest allowed 0.22.0. Note: 0.22.x requires `huggingface-hub<1.0`, which conflicts with
+  `datasets` 5.x (`huggingface-hub>=1.31`), so with the lock's `datasets` pip resolves 0.23.x.
+- Training data: every BPE is trained only on the train texts of its dataset, lowercased as the vectorizer does;
+  never on test. Fixed vocabulary size 8000 for all datasets in the primary grid (no tuning); sensitivity grid at
+  32000 with the same code in `results/bpe_v32000/`.
+- `bpe`: BPE model with the library's `Whitespace` pre-tokenizer (`\w+|[^\w\s]+`: words and punctuation runs),
+  continuing-subword marker `##`, UNK token `[UNK]`, applied to lowercased text.
+- `lexfront_bpe` (hybrid): LexFront (every rule on) scans and normalizes first. Structural tokens pass through whole
+  and are never split: `<URL>`, `<USER>`, `<NUM>`, HASHTAG, EMOTICON, EMOJI, PUNCT, UNKNOWN. Word-like tokens (WORD,
+  CONTRACTION, ELONGATED, after normalization incl. slang expansion) go through a BPE trained on the word-like tokens
+  of the train split.
+- Grid: 3 datasets x {bpe, lexfront_bpe} x {NB, LR}, main setting (TF-IDF `lowercase=True`), full data, in
+  `results/bpe/` (QUICK: `results/quick/bpe/`). Paired bootstrap (B = 2000, seed 20261016, as P1) on accuracy and
+  macro-F1 for bpe+LR - nltk+LR (plus exact McNemar on accuracy), lexfront_bpe+LR - lexfront+LR, lexfront_bpe+LR -
+  bpe+LR, lexfront_bpe+LR - nltk+LR. Generated table `bpe_table` and observation `bpe` (from the JSON only).
+- Intrinsic metrics for both new tokenizers in the usual `module2/intrinsic__<dataset>.json`. BPE's OOV rate is near
+  zero by construction (any word splits into known pieces), so OOV is not comparable with the word-level tokenizers.
+
+### P3 implementation choices (this session)
+- Hashtags pass through whole (default): a hashtag is a topic marker whose identity matters as one feature, and
+  LexFront already treats it as one structural token; splitting it would mix `#monday` with the word `monday`.
+- UNKNOWN (a character no token class accepts) passes through as its own lexeme. BPE would map a character it never
+  saw to `[UNK]` and lose its identity; TF-IDF's `min_df=2` already drops one-off characters.
+- The hybrid's BPE uses the `WhitespaceSplit` pre-tokenizer, not `Whitespace`: its input is already one word-like token
+  per piece, and `Whitespace` would split the apostrophe out of a CONTRACTION (`don't` -> `don`, `'`, `t`) that the
+  lexer deliberately kept whole. Its training text is, per train document, the word-like normalized forms joined by
+  spaces.
+- Determinism (checked before coding, scratch script, tokenizers 0.23.3): with the `##` marker, two trainings on the
+  same text gave different token ids and merge order, at 1 and at 4 threads alike (in that check the vocabulary and
+  merge *sets* matched; a later unit test showed that ties at the vocabulary cutoff can change even the set). Without
+  the marker the result was identical. Cause: the marked alphabet (`##a`, ...) gets its ids in the
+  order of a Rust hash map, and ties between equally frequent pairs are broken by id. Fix: the alphabet the trainer
+  would build anyway (every character, plus `##` + every character seen inside a pre-token) is passed first, sorted,
+  as the trainer's special tokens, so every id is fixed; afterwards these entries are dropped from the added-token
+  list (they stay ordinary vocabulary entries). With the fix, repeated trainings and RAYON_NUM_THREADS=1 / 2 / 4 gave
+  identical vocab, ids and merges, so the thread count is not pinned; tests check that two trainings serialize
+  identically, that the seeded alphabet equals the alphabet the unseeded trainer builds itself (no extra symbol), and
+  that the result does not depend on RAYON_NUM_THREADS.
+- Tokenizers that need training are built by a factory `build_tokenizer(name, train_texts)`
+  (`experiments/tokenizers.py`); the interface stays `tokenize(text) -> list[str]`. Names: `bpe`, `lexfront_bpe`
+  (8000) and `bpe:v32000`, `lexfront_bpe:v32000`. The run JSON and the config fingerprint carry a `subword` record
+  (model, vocab size, pre-tokenizer, marker, UNK, hybrid pass-through classes, `tokenizers` version and the SHA-256 of
+  the lowercased train texts); untrained tokenizers get no extra key. `subword/*.py` joins the code fingerprint.
+- Stats reuse `experiments/stats.py` and `run_stats.dataset_stats` (now taking the pair list as an argument; the main
+  grid's pairs are unchanged); the nltk+LR and lexfront+LR runs come from the main grid (`module1/`, `module2/`).
+
 ## 2026-10-16 (P2: per-rule normalization ablation; AUDIT_3 minor fixes)
 
 ### P2 protocol (decisions by the conductor)
@@ -22,8 +90,9 @@ already recorded elsewhere are only pointed to. Citations below are from abstrac
 - Decision: the full variants are recomputed inside `results/ablation/` (not copied); `results/ablation/stats/
   bootstrap.json` records per setting and dataset whether their predictions are identical to the full-LexFront+LR run
   of the main or sensitivity grid (`reference_vs_grid`).
-- Decision: the ablation table also shows the TF-IDF vocabulary size and how many test predictions changed, so a rule
-  that never fires on a dataset is visible as 0 changed predictions.
+- Decision: the ablation table also shows the TF-IDF vocabulary size and how many test predictions changed.
+  (Corrected by AUDIT_4 A4-1, see the P3 section: "0 changed predictions" is not a reliable sign that a rule never
+  fires; firing is now counted directly.)
 
 ### Safety check
 - The code fingerprint changed (tokenizers, pipeline, normalize), so all main, QUICK and sensitivity runs were

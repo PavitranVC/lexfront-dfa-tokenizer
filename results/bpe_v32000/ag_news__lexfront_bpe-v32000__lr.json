@@ -1,0 +1,105 @@
+{
+  "timestamp_utc": "2026-10-17T00:12:58+00:00",
+  "dataset": {
+    "name": "ag_news",
+    "hf_id": "fancyzhx/ag_news",
+    "config": null,
+    "n_train": 120000,
+    "n_test": 7600,
+    "n_labels": 4,
+    "label_names": [
+      "World",
+      "Sports",
+      "Business",
+      "Sci/Tech"
+    ],
+    "split_info": {
+      "train": "train",
+      "test": "test",
+      "reason": "official splits",
+      "subsample": {
+        "max_train": null,
+        "max_test": null,
+        "seed": 0
+      }
+    }
+  },
+  "data_hash": "1c9c97934bbc2860",
+  "tokenizer": "lexfront_bpe:v32000",
+  "subword": {
+    "model": "bpe",
+    "vocab_size": 32000,
+    "pre_tokenizer": "whitespace_split",
+    "continuing_subword_prefix": "##",
+    "unk_token": "[UNK]",
+    "hybrid": true,
+    "pass_through_classes": [
+      "URL",
+      "MENTION",
+      "NUMBER",
+      "HASHTAG",
+      "EMOTICON",
+      "EMOJI",
+      "PUNCT",
+      "UNKNOWN"
+    ],
+    "train_text": "train split, lowercased",
+    "train_text_hash": "c225d8ddb289ca8c",
+    "tokenizers": "0.23.3"
+  },
+  "vectorizer": {
+    "type": "TfidfVectorizer",
+    "lowercase": true,
+    "min_df": 2,
+    "ngram_range": [
+      1,
+      1
+    ],
+    "token_pattern": null,
+    "n_features": 29348
+  },
+  "classifier": {
+    "name": "lr",
+    "params": {
+      "C": 1.0,
+      "class_weight": null,
+      "dual": false,
+      "fit_intercept": true,
+      "intercept_scaling": 1,
+      "l1_ratio": 0.0,
+      "max_iter": 1000,
+      "n_jobs": null,
+      "penalty": "deprecated",
+      "random_state": 0,
+      "solver": "lbfgs",
+      "tol": 0.0001,
+      "verbose": 0,
+      "warm_start": false
+    }
+  },
+  "seed": 0,
+  "fingerprint": {
+    "config": "afbc65d86d0ac10e",
+    "code": "16dcea03d83ab451"
+  },
+  "metrics": {
+    "accuracy": 0.9198684210526316,
+    "macro_f1": 0.9196845754061751
+  },
+  "timing_seconds": {
+    "tokenize_and_vectorize": 49.394542234000255,
+    "classifier_fit": 5.032151098999748
+  },
+  "environment": {
+    "python": "3.11.17",
+    "sklearn": "1.9.1",
+    "nltk": "3.10.3",
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "threadpoolctl": "3.7.0",
+    "machine": "x86_64",
+    "platform": "Linux-6.18.44-fc-v139-x86_64-with-glibc2.39",
+    "blas_threads": 1
+  },
+  "predictions_file": "predictions/ag_news__lexfront_bpe-v32000__lr.json.gz"
+}

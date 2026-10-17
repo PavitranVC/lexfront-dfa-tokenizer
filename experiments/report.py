@@ -9,6 +9,7 @@ Layout read here:  <results>/module1/<dataset>__<tokenizer>__<clf>.json
                    <results>/sensitivity_case/stats/bootstrap.json      (python -m experiments.run_stats
                                                                          --results results/sensitivity_case)
                    <results>/ablation/stats/bootstrap.json              (python -m experiments.run_ablation)
+                   <results>/bpe/stats/bootstrap.json                   (python -m experiments.run_bpe)
 """
 import json
 from pathlib import Path
@@ -17,6 +18,7 @@ import pandas as pd
 
 DATASET_ORDER = ["tweet_topic", "go_emotions", "ag_news"]
 TOKENIZER_ORDER = ["whitespace", "nltk", "tweet", "lexfront"]
+SUBWORD_ORDER = ["bpe", "lexfront_bpe"]        # P3; after the four fixed tokenizers in tables (figures show four)
 RUN_COLUMNS = ["module", "dataset", "tokenizer", "classifier", "accuracy", "macro_f1", "n_train", "n_test",
                "n_labels", "hf_id", "config", "split_info"]
 CLASSIFIER_LABEL = {"majority": "Majority", "nb": "Naive Bayes", "lr": "Logistic Reg."}
@@ -70,7 +72,8 @@ def _order(series, order):
 
 
 def _sorted(df):
-    return df.assign(_d=_order(df["dataset"], DATASET_ORDER), _t=_order(df["tokenizer"], TOKENIZER_ORDER)
+    return df.assign(_d=_order(df["dataset"], DATASET_ORDER),
+                     _t=_order(df["tokenizer"], TOKENIZER_ORDER + SUBWORD_ORDER)
                      ).sort_values(["_d", "_t"]).drop(columns=["_d", "_t"])
 
 
@@ -279,12 +282,19 @@ def load_ablation(results_dir) -> dict:
     return load_bootstrap(Path(results_dir) / ABLATION_SUBDIR)
 
 
+def _fires_text(fires: dict | None) -> str:
+    """'12 / 3' documents (train / test) where the removed rule changes a token; '-' if not counted."""
+    return f"{fires['train']['docs']} / {fires['test']['docs']}" if fires else "-"
+
+
 def _ablation_row(ds: str, setting: dict, variant: str, v: dict) -> dict:
     """One table row: the variant's scores and, unless it is the reference, its paired difference to the reference."""
     diff, mc = v.get("minus_reference"), v.get("mcnemar_accuracy")
     excl = (f"{'yes' if diff['accuracy']['ci_excludes_zero'] else 'no'} / "
             f"{'yes' if diff['macro_f1']['ci_excludes_zero'] else 'no'}") if diff else "-"
-    return {"dataset": ds, "setting": setting["label"], "variant": variant + (" (reference)" if not diff else ""),
+    label = variant + (" (TF-IDF still lowercases)" if variant == "all_off" else "")
+    return {"dataset": ds, "setting": setting["label"], "variant": label + (" (reference)" if not diff else ""),
+            "rule fires, docs train / test": _fires_text(v.get("rule_fires")) if diff else "-",
             "TF-IDF features": v["n_features"],
             "acc / F1 %": f"{_pct(v['accuracy']['value'])} / {_pct(v['macro_f1']['value'])}",
             "acc minus full, pts [95% CI]": _ci_text(diff["accuracy"]["diff"], diff["accuracy"]["ci"]) if diff else "-",
@@ -303,11 +313,59 @@ def table_ablation(results_dir) -> str:
     return to_markdown(pd.DataFrame(rows))
 
 
+BPE_SUBDIR = "bpe"
+BPE_SENSITIVITY_SUBDIR = "bpe_v32000"          # same code, vocabulary 32000 (python -m experiments.run_bpe --vocab-size)
+
+
+def load_bpe(results_dir, subdir: str = BPE_SUBDIR) -> dict:
+    """Statistics of the subword grid (python -m experiments.run_bpe): runs, pairs and BPE configs per dataset."""
+    return load_bootstrap(Path(results_dir) / subdir)
+
+
+def _score_text(run: dict | None) -> str:
+    return f"{_pct(run['accuracy']['value'])} / {_pct(run['macro_f1']['value'])}" if run else "-"
+
+
+def table_bpe_runs(results_dir, subdir: str = BPE_SUBDIR) -> str:
+    """Accuracy / macro-F1 (%) of BPE and LexFront + BPE with NB and LR, next to NLTK+LR and LexFront+LR."""
+    boot = load_bpe(results_dir, subdir)
+    rows = []
+    for ds, d in boot["datasets"].items():
+        bpe, hybrid = (k.removesuffix("__lr") for k in (d["pairs"]["hybrid_vs_bpe_lr"]["a"],
+                                                         d["pairs"]["hybrid_vs_bpe_lr"]["b"]))
+        rows.append({"dataset": ds, "BPE vocab": d["subword"][bpe]["vocab_size"],
+                     "BPE+NB acc / F1": _score_text(d["runs"].get(f"{bpe}__nb")),
+                     "BPE+LR acc / F1": _score_text(d["runs"].get(f"{bpe}__lr")),
+                     "LexFront+BPE+NB acc / F1": _score_text(d["runs"].get(f"{hybrid}__nb")),
+                     "LexFront+BPE+LR acc / F1": _score_text(d["runs"].get(f"{hybrid}__lr")),
+                     "NLTK+LR acc / F1": _score_text(d["runs"].get("nltk__lr")),
+                     "LexFront+LR acc / F1": _score_text(d["runs"].get("lexfront__lr"))})
+    return to_markdown(pd.DataFrame(rows))
+
+
+def table_bpe(results_dir, subdir: str = BPE_SUBDIR) -> str:
+    """Paired bootstrap 95% CIs (points) of the four subword differences, McNemar p for BPE+LR vs NLTK+LR."""
+    boot = load_bpe(results_dir, subdir)
+    rows = []
+    for ds, d in boot["datasets"].items():
+        for p in d["pairs"].values():
+            mc = p.get("mcnemar_accuracy")
+            rows.append({"dataset": ds, "difference": p["label"],
+                         "accuracy pts [95% CI]": _ci_text(p["accuracy"]["diff"], p["accuracy"]["ci"]),
+                         "macro-F1 pts [95% CI]": _ci_text(p["macro_f1"]["diff"], p["macro_f1"]["ci"]),
+                         "CI excludes 0 (acc / F1)": (f"{'yes' if p['accuracy']['ci_excludes_zero'] else 'no'} / "
+                                                      f"{'yes' if p['macro_f1']['ci_excludes_zero'] else 'no'}"),
+                         "McNemar p (acc)": p_value_text(mc["p_value"]).lstrip("= ") if mc else "-"})
+    return to_markdown(pd.DataFrame(rows))
+
+
 TABLES = {"datasets": table_datasets, "module1_results": table_module1,
           "existing_vs_proposed": table_existing_vs_proposed, "intrinsic_metrics": table_intrinsic,
           "dfa_states": table_dfa, "ci_table": table_ci, "ci_runs": table_ci_runs,
           "sensitivity_case": table_sensitivity_case, "sensitivity_ci": table_sensitivity_ci,
-          "ablation_table": table_ablation}
+          "ablation_table": table_ablation, "bpe_runs": table_bpe_runs, "bpe_table": table_bpe,
+          "bpe_v32000_runs": lambda r: table_bpe_runs(r, BPE_SENSITIVITY_SUBDIR),
+          "bpe_v32000_table": lambda r: table_bpe(r, BPE_SENSITIVITY_SUBDIR)}
 
 
 def render_all_tables(results_dir) -> dict[str, str]:

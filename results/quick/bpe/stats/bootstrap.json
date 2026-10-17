@@ -1,0 +1,743 @@
+{
+  "config": {
+    "results_dir": "results/quick/bpe",
+    "grid_dir": "results/quick",
+    "vocab_size": 8000,
+    "method": "percentile bootstrap over test examples",
+    "ci_level": 0.95,
+    "n_boot": 2000,
+    "seed": 20261016,
+    "rng": "numpy.random.default_rng(seed), one fresh generator per dataset; all runs of a dataset share its resampled indices (paired)",
+    "difference": "b minus a, in fractions (x100 for points)",
+    "mcnemar": "exact two-sided binomial test on discordant pairs, accuracy, pair bpe_vs_nltk_lr only",
+    "multiplicity": "none: every interval is a separate 95% interval",
+    "not_covered": "training randomness: one training run per cell (seed 0); BPE training is deterministic",
+    "numpy": "2.4.6",
+    "pairs": [
+      {
+        "name": "bpe_vs_nltk_lr",
+        "a": "nltk__lr",
+        "b": "bpe__lr"
+      },
+      {
+        "name": "hybrid_vs_lexfront_lr",
+        "a": "lexfront__lr",
+        "b": "lexfront_bpe__lr"
+      },
+      {
+        "name": "hybrid_vs_bpe_lr",
+        "a": "bpe__lr",
+        "b": "lexfront_bpe__lr"
+      },
+      {
+        "name": "hybrid_vs_nltk_lr",
+        "a": "nltk__lr",
+        "b": "lexfront_bpe__lr"
+      }
+    ]
+  },
+  "datasets": {
+    "tweet_topic": {
+      "n_test": 500,
+      "n_labels": 6,
+      "runs": {
+        "bpe__nb": {
+          "run_json": "results/quick/bpe/tweet_topic__bpe__nb.json",
+          "accuracy": {
+            "value": 0.65,
+            "ci": [
+              0.608,
+              0.69
+            ]
+          },
+          "macro_f1": {
+            "value": 0.25694984290728967,
+            "ci": [
+              0.241083193509,
+              0.273129941783
+            ]
+          }
+        },
+        "bpe__lr": {
+          "run_json": "results/quick/bpe/tweet_topic__bpe__lr.json",
+          "accuracy": {
+            "value": 0.672,
+            "ci": [
+              0.63,
+              0.71
+            ]
+          },
+          "macro_f1": {
+            "value": 0.317900092506938,
+            "ci": [
+              0.292203571434,
+              0.341842391531
+            ]
+          }
+        },
+        "lexfront_bpe__nb": {
+          "run_json": "results/quick/bpe/tweet_topic__lexfront_bpe__nb.json",
+          "accuracy": {
+            "value": 0.646,
+            "ci": [
+              0.604,
+              0.686
+            ]
+          },
+          "macro_f1": {
+            "value": 0.25049183697439514,
+            "ci": [
+              0.238197387021,
+              0.261213868759
+            ]
+          }
+        },
+        "lexfront_bpe__lr": {
+          "run_json": "results/quick/bpe/tweet_topic__lexfront_bpe__lr.json",
+          "accuracy": {
+            "value": 0.66,
+            "ci": [
+              0.618,
+              0.69805
+            ]
+          },
+          "macro_f1": {
+            "value": 0.30645638388827434,
+            "ci": [
+              0.280051614757,
+              0.330934709416
+            ]
+          }
+        },
+        "nltk__lr": {
+          "run_json": "results/quick/module1/tweet_topic__nltk__lr.json",
+          "accuracy": {
+            "value": 0.662,
+            "ci": [
+              0.62,
+              0.7
+            ]
+          },
+          "macro_f1": {
+            "value": 0.317027632125049,
+            "ci": [
+              0.290771557301,
+              0.341383179787
+            ]
+          }
+        },
+        "lexfront__lr": {
+          "run_json": "results/quick/module2/tweet_topic__lexfront__lr.json",
+          "accuracy": {
+            "value": 0.666,
+            "ci": [
+              0.624,
+              0.706
+            ]
+          },
+          "macro_f1": {
+            "value": 0.3130414927613549,
+            "ci": [
+              0.28677550614,
+              0.337801721459
+            ]
+          }
+        }
+      },
+      "pairs": {
+        "bpe_vs_nltk_lr": {
+          "a": "nltk__lr",
+          "b": "bpe__lr",
+          "label": "BPE+LR minus NLTK+LR (tokenizer only)",
+          "accuracy": {
+            "diff": 0.01,
+            "ci": [
+              -0.012,
+              0.032
+            ],
+            "ci_excludes_zero": false
+          },
+          "macro_f1": {
+            "diff": 0.000872460382,
+            "ci": [
+              -0.016142497635,
+              0.018218046523
+            ],
+            "ci_excludes_zero": false
+          },
+          "mcnemar_accuracy": {
+            "a_right_b_wrong": 14,
+            "a_wrong_b_right": 19,
+            "p_value": 0.48685024166479707
+          }
+        },
+        "hybrid_vs_lexfront_lr": {
+          "a": "lexfront__lr",
+          "b": "lexfront_bpe__lr",
+          "label": "LexFront+BPE+LR minus LexFront+LR",
+          "accuracy": {
+            "diff": -0.006,
+            "ci": [
+              -0.022,
+              0.012
+            ],
+            "ci_excludes_zero": false
+          },
+          "macro_f1": {
+            "diff": -0.006585108873,
+            "ci": [
+              -0.021079796693,
+              0.007902571369
+            ],
+            "ci_excludes_zero": false
+          }
+        },
+        "hybrid_vs_bpe_lr": {
+          "a": "bpe__lr",
+          "b": "lexfront_bpe__lr",
+          "label": "LexFront+BPE+LR minus BPE+LR",
+          "accuracy": {
+            "diff": -0.012,
+            "ci": [
+              -0.032,
+              0.008
+            ],
+            "ci_excludes_zero": false
+          },
+          "macro_f1": {
+            "diff": -0.011443708619,
+            "ci": [
+              -0.025976817163,
+              0.000800452009
+            ],
+            "ci_excludes_zero": false
+          }
+        },
+        "hybrid_vs_nltk_lr": {
+          "a": "nltk__lr",
+          "b": "lexfront_bpe__lr",
+          "label": "LexFront+BPE+LR minus NLTK+LR",
+          "accuracy": {
+            "diff": -0.002,
+            "ci": [
+              -0.024,
+              0.02
+            ],
+            "ci_excludes_zero": false
+          },
+          "macro_f1": {
+            "diff": -0.010571248237,
+            "ci": [
+              -0.029271806134,
+              0.007417660431
+            ],
+            "ci_excludes_zero": false
+          }
+        }
+      },
+      "subword": {
+        "bpe": {
+          "model": "bpe",
+          "vocab_size": 8000,
+          "pre_tokenizer": "whitespace",
+          "continuing_subword_prefix": "##",
+          "unk_token": "[UNK]",
+          "hybrid": false,
+          "pass_through_classes": [],
+          "train_text": "train split, lowercased",
+          "train_text_hash": "8b2407331d4d1c7a",
+          "tokenizers": "0.23.3"
+        },
+        "lexfront_bpe": {
+          "model": "bpe",
+          "vocab_size": 8000,
+          "pre_tokenizer": "whitespace_split",
+          "continuing_subword_prefix": "##",
+          "unk_token": "[UNK]",
+          "hybrid": true,
+          "pass_through_classes": [
+            "URL",
+            "MENTION",
+            "NUMBER",
+            "HASHTAG",
+            "EMOTICON",
+            "EMOJI",
+            "PUNCT",
+            "UNKNOWN"
+          ],
+          "train_text": "train split, lowercased",
+          "train_text_hash": "8b2407331d4d1c7a",
+          "tokenizers": "0.23.3"
+        }
+      }
+    },
+    "go_emotions": {
+      "n_test": 500,
+      "n_labels": 28,
+      "runs": {
+        "bpe__nb": {
+          "run_json": "results/quick/bpe/go_emotions__bpe__nb.json",
+          "accuracy": {
+            "value": 0.356,
+            "ci": [
+              0.316,
+              0.398
+            ]
+          },
+          "macro_f1": {
+            "value": 0.029051109022221206,
+            "ci": [
+              0.020937742287,
+              0.039305140145
+            ]
+          }
+        },
+        "bpe__lr": {
+          "run_json": "results/quick/bpe/go_emotions__bpe__lr.json",
+          "accuracy": {
+            "value": 0.436,
+            "ci": [
+              0.392,
+              0.48
+            ]
+          },
+          "macro_f1": {
+            "value": 0.14411864073478714,
+            "ci": [
+              0.112269365522,
+              0.176280134456
+            ]
+          }
+        },
+        "lexfront_bpe__nb": {
+          "run_json": "results/quick/bpe/go_emotions__lexfront_bpe__nb.json",
+          "accuracy": {
+            "value": 0.352,
+            "ci": [
+              0.312,
+              0.394
+            ]
+          },
+          "macro_f1": {
+            "value": 0.024118165784832453,
+            "ci": [
+              0.018794914317,
+              0.032108442676
+            ]
+          }
+        },
+        "lexfront_bpe__lr": {
+          "run_json": "results/quick/bpe/go_emotions__lexfront_bpe__lr.json",
+          "accuracy": {
+            "value": 0.44,
+            "ci": [
+              0.396,
+              0.484
+            ]
+          },
+          "macro_f1": {
+            "value": 0.1437052249899291,
+            "ci": [
+              0.11268771,
+              0.176213015166
+            ]
+          }
+        },
+        "nltk__lr": {
+          "run_json": "results/quick/module1/go_emotions__nltk__lr.json",
+          "accuracy": {
+            "value": 0.43,
+            "ci": [
+              0.386,
+              0.474
+            ]
+          },
+          "macro_f1": {
+            "value": 0.13897908493385214,
+            "ci": [
+              0.107940003239,
+              0.170442318164
+            ]
+          }
+        },
+        "lexfront__lr": {
+          "run_json": "results/quick/module2/go_emotions__lexfront__lr.json",
+          "accuracy": {
+            "value": 0.436,
+            "ci": [
+              0.392,
+              0.48
+            ]
+          },
+          "macro_f1": {
+            "value": 0.1405684735128397,
+            "ci": [
+              0.109726877324,
+              0.172783410212
+            ]
+          }
+        }
+      },
+      "pairs": {
+        "bpe_vs_nltk_lr": {
+          "a": "nltk__lr",
+          "b": "bpe__lr",
+          "label": "BPE+LR minus NLTK+LR (tokenizer only)",
+          "accuracy": {
+            "diff": 0.006,
+            "ci": [
+              -0.006,
+              0.02
+            ],
+            "ci_excludes_zero": false
+          },
+          "macro_f1": {
+            "diff": 0.005139555801,
+            "ci": [
+              -0.001091651216,
+              0.013269887269
+            ],
+            "ci_excludes_zero": false
+          },
+          "mcnemar_accuracy": {
+            "a_right_b_wrong": 5,
+            "a_wrong_b_right": 8,
+            "p_value": 0.5810546875
+          }
+        },
+        "hybrid_vs_lexfront_lr": {
+          "a": "lexfront__lr",
+          "b": "lexfront_bpe__lr",
+          "label": "LexFront+BPE+LR minus LexFront+LR",
+          "accuracy": {
+            "diff": 0.004,
+            "ci": [
+              -0.00405,
+              0.014
+            ],
+            "ci_excludes_zero": false
+          },
+          "macro_f1": {
+            "diff": 0.003136751477,
+            "ci": [
+              -0.001297422362,
+              0.009077329685
+            ],
+            "ci_excludes_zero": false
+          }
+        },
+        "hybrid_vs_bpe_lr": {
+          "a": "bpe__lr",
+          "b": "lexfront_bpe__lr",
+          "label": "LexFront+BPE+LR minus BPE+LR",
+          "accuracy": {
+            "diff": 0.004,
+            "ci": [
+              -0.01,
+              0.018
+            ],
+            "ci_excludes_zero": false
+          },
+          "macro_f1": {
+            "diff": -0.000413415745,
+            "ci": [
+              -0.00792566786,
+              0.006487359213
+            ],
+            "ci_excludes_zero": false
+          }
+        },
+        "hybrid_vs_nltk_lr": {
+          "a": "nltk__lr",
+          "b": "lexfront_bpe__lr",
+          "label": "LexFront+BPE+LR minus NLTK+LR",
+          "accuracy": {
+            "diff": 0.01,
+            "ci": [
+              -0.002,
+              0.024
+            ],
+            "ci_excludes_zero": false
+          },
+          "macro_f1": {
+            "diff": 0.004726140056,
+            "ci": [
+              -0.001953940275,
+              0.012243817571
+            ],
+            "ci_excludes_zero": false
+          }
+        }
+      },
+      "subword": {
+        "bpe": {
+          "model": "bpe",
+          "vocab_size": 8000,
+          "pre_tokenizer": "whitespace",
+          "continuing_subword_prefix": "##",
+          "unk_token": "[UNK]",
+          "hybrid": false,
+          "pass_through_classes": [],
+          "train_text": "train split, lowercased",
+          "train_text_hash": "91856b19d273a405",
+          "tokenizers": "0.23.3"
+        },
+        "lexfront_bpe": {
+          "model": "bpe",
+          "vocab_size": 8000,
+          "pre_tokenizer": "whitespace_split",
+          "continuing_subword_prefix": "##",
+          "unk_token": "[UNK]",
+          "hybrid": true,
+          "pass_through_classes": [
+            "URL",
+            "MENTION",
+            "NUMBER",
+            "HASHTAG",
+            "EMOTICON",
+            "EMOJI",
+            "PUNCT",
+            "UNKNOWN"
+          ],
+          "train_text": "train split, lowercased",
+          "train_text_hash": "91856b19d273a405",
+          "tokenizers": "0.23.3"
+        }
+      }
+    },
+    "ag_news": {
+      "n_test": 500,
+      "n_labels": 4,
+      "runs": {
+        "bpe__nb": {
+          "run_json": "results/quick/bpe/ag_news__bpe__nb.json",
+          "accuracy": {
+            "value": 0.862,
+            "ci": [
+              0.83,
+              0.892
+            ]
+          },
+          "macro_f1": {
+            "value": 0.8610235268752865,
+            "ci": [
+              0.829037417169,
+              0.890229178027
+            ]
+          }
+        },
+        "bpe__lr": {
+          "run_json": "results/quick/bpe/ag_news__bpe__lr.json",
+          "accuracy": {
+            "value": 0.85,
+            "ci": [
+              0.816,
+              0.88
+            ]
+          },
+          "macro_f1": {
+            "value": 0.8497443306993002,
+            "ci": [
+              0.815738653017,
+              0.879717607351
+            ]
+          }
+        },
+        "lexfront_bpe__nb": {
+          "run_json": "results/quick/bpe/ag_news__lexfront_bpe__nb.json",
+          "accuracy": {
+            "value": 0.862,
+            "ci": [
+              0.83,
+              0.892
+            ]
+          },
+          "macro_f1": {
+            "value": 0.8612892944712811,
+            "ci": [
+              0.829080614498,
+              0.890609403656
+            ]
+          }
+        },
+        "lexfront_bpe__lr": {
+          "run_json": "results/quick/bpe/ag_news__lexfront_bpe__lr.json",
+          "accuracy": {
+            "value": 0.846,
+            "ci": [
+              0.812,
+              0.878
+            ]
+          },
+          "macro_f1": {
+            "value": 0.8457018463076867,
+            "ci": [
+              0.811570884443,
+              0.875724087827
+            ]
+          }
+        },
+        "nltk__lr": {
+          "run_json": "results/quick/module1/ag_news__nltk__lr.json",
+          "accuracy": {
+            "value": 0.858,
+            "ci": [
+              0.826,
+              0.886
+            ]
+          },
+          "macro_f1": {
+            "value": 0.8569344276482649,
+            "ci": [
+              0.823063007931,
+              0.885682651888
+            ]
+          }
+        },
+        "lexfront__lr": {
+          "run_json": "results/quick/module2/ag_news__lexfront__lr.json",
+          "accuracy": {
+            "value": 0.852,
+            "ci": [
+              0.81995,
+              0.882
+            ]
+          },
+          "macro_f1": {
+            "value": 0.8514023748368352,
+            "ci": [
+              0.817802201453,
+              0.881811245679
+            ]
+          }
+        }
+      },
+      "pairs": {
+        "bpe_vs_nltk_lr": {
+          "a": "nltk__lr",
+          "b": "bpe__lr",
+          "label": "BPE+LR minus NLTK+LR (tokenizer only)",
+          "accuracy": {
+            "diff": -0.008,
+            "ci": [
+              -0.028,
+              0.01
+            ],
+            "ci_excludes_zero": false
+          },
+          "macro_f1": {
+            "diff": -0.007190096949,
+            "ci": [
+              -0.026262248553,
+              0.011303785319
+            ],
+            "ci_excludes_zero": false
+          },
+          "mcnemar_accuracy": {
+            "a_right_b_wrong": 14,
+            "a_wrong_b_right": 10,
+            "p_value": 0.5412561893463135
+          }
+        },
+        "hybrid_vs_lexfront_lr": {
+          "a": "lexfront__lr",
+          "b": "lexfront_bpe__lr",
+          "label": "LexFront+BPE+LR minus LexFront+LR",
+          "accuracy": {
+            "diff": -0.006,
+            "ci": [
+              -0.02,
+              0.008
+            ],
+            "ci_excludes_zero": false
+          },
+          "macro_f1": {
+            "diff": -0.005700528529,
+            "ci": [
+              -0.019885335829,
+              0.008064853792
+            ],
+            "ci_excludes_zero": false
+          }
+        },
+        "hybrid_vs_bpe_lr": {
+          "a": "bpe__lr",
+          "b": "lexfront_bpe__lr",
+          "label": "LexFront+BPE+LR minus BPE+LR",
+          "accuracy": {
+            "diff": -0.004,
+            "ci": [
+              -0.018,
+              0.01
+            ],
+            "ci_excludes_zero": false
+          },
+          "macro_f1": {
+            "diff": -0.004042484392,
+            "ci": [
+              -0.018181912452,
+              0.010994856749
+            ],
+            "ci_excludes_zero": false
+          }
+        },
+        "hybrid_vs_nltk_lr": {
+          "a": "nltk__lr",
+          "b": "lexfront_bpe__lr",
+          "label": "LexFront+BPE+LR minus NLTK+LR",
+          "accuracy": {
+            "diff": -0.012,
+            "ci": [
+              -0.032,
+              0.008
+            ],
+            "ci_excludes_zero": false
+          },
+          "macro_f1": {
+            "diff": -0.011232581341,
+            "ci": [
+              -0.030541125938,
+              0.00871542949
+            ],
+            "ci_excludes_zero": false
+          }
+        }
+      },
+      "subword": {
+        "bpe": {
+          "model": "bpe",
+          "vocab_size": 8000,
+          "pre_tokenizer": "whitespace",
+          "continuing_subword_prefix": "##",
+          "unk_token": "[UNK]",
+          "hybrid": false,
+          "pass_through_classes": [],
+          "train_text": "train split, lowercased",
+          "train_text_hash": "5600c7a9b2d07a80",
+          "tokenizers": "0.23.3"
+        },
+        "lexfront_bpe": {
+          "model": "bpe",
+          "vocab_size": 8000,
+          "pre_tokenizer": "whitespace_split",
+          "continuing_subword_prefix": "##",
+          "unk_token": "[UNK]",
+          "hybrid": true,
+          "pass_through_classes": [
+            "URL",
+            "MENTION",
+            "NUMBER",
+            "HASHTAG",
+            "EMOTICON",
+            "EMOJI",
+            "PUNCT",
+            "UNKNOWN"
+          ],
+          "train_text": "train split, lowercased",
+          "train_text_hash": "5600c7a9b2d07a80",
+          "tokenizers": "0.23.3"
+        }
+      }
+    }
+  }
+}

@@ -2,6 +2,26 @@
 
 Newest first. Dates are the day the change was made (IST workday).
 
+## 2026-10-17 (P3)
+- AUDIT_4 A4-1: the ablation counts how often each removed rule fires (train / test documents and lexer tokens whose
+  normalized form differs from full LexFront; `<out>/<setting>/firing__<dataset>.json`, `rule_fires` in
+  `results/ablation/stats/bootstrap.json`, table column "rule fires"). Never-firing variants (no_url on tweet_topic and
+  go_emotions, no_mention on ag_news) are listed apart as "not a test of the rule" and left out of the counts; LEARN
+  Q33, `v4-ablation.md` and DECISIONS corrected (the "0 changed predictions" proxy is withdrawn).
+- AUDIT_4 A4-2: the chance statement counts only compared variants (42 CIs, roughly 2.1) and says "if the intervals
+  were independent"; "(TF-IDF still lowercases)" next to all_off of the main setting.
+- P3: BPE and the LexFront + BPE hybrid (`subword/bpe.py`, Hugging Face `tokenizers` 0.23.3, new dependency).
+  Tokenizers that need training are built by `build_tokenizer(name, train_texts)` from the train split only; the run
+  fingerprint carries the BPE config, vocabulary size and training-text hash. Deterministic training (sorted alphabet
+  seeded, see DECISIONS).
+- P3 grid `python -m experiments.run_bpe`: 3 datasets x {bpe, lexfront_bpe} x {NB, LR}, vocabulary 8000
+  (`results/bpe/`), sensitivity at 32000 (`results/bpe_v32000/`), QUICK in `results/quick/bpe/`; paired bootstrap
+  CIs and McNemar against NLTK+LR / LexFront+LR (`stats/bootstrap.json`). Generated tables `bpe_runs`, `bpe_table`
+  (and `_v32000`), observations `bpe`, `bpe_v32000`; intrinsic metrics for both new tokenizers; REPORT_NOTES,
+  module2, LEARN Q34, notebook section 7, CI stats step. Protocol `docs/versions/v5-bpe-hybrid.md`.
+- All main, sensitivity, ablation and QUICK runs regenerated (code fingerprint changed); every metric, CI and stored
+  prediction identical to `main` (script compare).
+
 ## 2026-10-16 (P2)
 - P2: per-rule normalization ablation (`python -m experiments.run_ablation`, `results/ablation/`): LexFront + LR with
   each of url, mention, number, elongated, slang switched off (TF-IDF lowercases, as the main grid), plus no_lowercase

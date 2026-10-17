@@ -21,6 +21,7 @@ from .figures import build_all_figures
 from .observations import observation
 from .pipeline import run_grid
 from .run_ablation import run_ablation, write_stats as write_ablation_stats
+from .run_bpe import run_bpe, write_stats as write_bpe_stats
 from .run_stats import write as write_bootstrap
 from .run_module2 import run_intrinsic
 from .tokenizers import MODULE1_TOKENIZERS, TOKENIZERS
@@ -78,6 +79,23 @@ def run_ablation_section(quick: bool, force: bool = False, log=print):
     out = f"{results_dir(quick)}/ablation"
     run_ablation(out, data.DATASET_NAMES, sizes(quick)["max_train"], sizes(quick)["max_test"], force=force, log=log)
     log("wrote", write_ablation_stats(out))
+
+
+def run_bpe_section(quick: bool, force: bool = False, log=print):
+    """BPE and LexFront + BPE x {NB, LR} (each BPE trained on the train split only) and their paired bootstrap CIs."""
+    out = f"{results_dir(quick)}/bpe"
+    run_bpe(out, max_train=sizes(quick)["max_train"], max_test=sizes(quick)["max_test"], force=force, log=log)
+    log("wrote", write_bpe_stats(out))
+
+
+def bpe_demo(texts=EXAMPLE_TWEETS[:3]) -> pd.DataFrame:
+    """BPE and LexFront + BPE pieces of a few example tweets, both trained here on the eight example tweets only
+    (a toy vocabulary of 150, for illustration; the experiments train on each dataset's train split)."""
+    from subword.bpe import BpeConfig, BpeTokenizer, LexFrontBpe
+    bpe = BpeTokenizer(EXAMPLE_TWEETS, BpeConfig(vocab_size=150))
+    hybrid = LexFrontBpe(EXAMPLE_TWEETS, BpeConfig(vocab_size=150, pre_tokenizer="whitespace_split"))
+    return pd.DataFrame([{"tweet": t, "bpe": " ".join(f"[{p}]" for p in bpe(t.lower())),
+                          "lexfront_bpe": " ".join(f"[{p}]" for p in hybrid(t.lower()))} for t in texts])
 
 
 def build_outputs(quick: bool) -> dict:

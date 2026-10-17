@@ -103,26 +103,32 @@ Generated from `results/module2/*.json`. Minimized DFA: `results/module2/dfa_min
 <!-- BEGIN table:intrinsic_metrics -->
 | dataset | tokenizer | OOV rate % (tokens) | OOV rate % (types) | fertility | vocab size | throughput (tokens/s) |
 |---|---|---|---|---|---|---|
-| tweet_topic | whitespace | 18.45 | 65.83 | 1.000 | 21653 | 11,774,749 |
-| tweet_topic | nltk | 8.74 | 58.23 | 1.431 | 15712 | 106,738 |
-| tweet_topic | tweet | 9.86 | 59.72 | 1.376 | 16524 | 217,245 |
-| tweet_topic | lexfront | 8.25 | 57.13 | 1.391 | 14483 | 162,224 |
-| go_emotions | whitespace | 6.04 | 30.11 | 1.000 | 44476 | 19,737,435 |
-| go_emotions | nltk | 2.57 | 21.55 | 1.220 | 26410 | 137,377 |
-| go_emotions | tweet | 2.56 | 20.84 | 1.195 | 25907 | 122,889 |
-| go_emotions | lexfront | 2.45 | 19.89 | 1.195 | 24459 | 163,800 |
-| ag_news | whitespace | 1.90 | 14.97 | 1.000 | 158733 | 12,746,416 |
-| ag_news | nltk | 0.96 | 11.52 | 1.158 | 98994 | 222,434 |
-| ag_news | tweet | 0.75 | 9.13 | 1.154 | 86096 | 170,507 |
-| ag_news | lexfront | 0.48 | 6.78 | 1.207 | 65337 | 175,741 |
+| tweet_topic | whitespace | 18.45 | 65.83 | 1.000 | 21653 | 25,963,607 |
+| tweet_topic | nltk | 8.74 | 58.23 | 1.431 | 15712 | 299,281 |
+| tweet_topic | tweet | 9.86 | 59.72 | 1.376 | 16524 | 458,680 |
+| tweet_topic | lexfront | 8.25 | 57.13 | 1.391 | 14483 | 343,864 |
+| tweet_topic | bpe | 0.44 | 2.05 | 1.633 | 7413 | 1,024,642 |
+| tweet_topic | lexfront_bpe | 2.20 | 26.89 | 1.578 | 10101 | 316,674 |
+| go_emotions | whitespace | 6.04 | 30.11 | 1.000 | 44476 | 27,530,864 |
+| go_emotions | nltk | 2.57 | 21.55 | 1.220 | 26410 | 247,701 |
+| go_emotions | tweet | 2.56 | 20.84 | 1.195 | 25907 | 311,791 |
+| go_emotions | lexfront | 2.45 | 19.89 | 1.195 | 24459 | 284,025 |
+| go_emotions | bpe | 0.18 | 0.23 | 1.377 | 7704 | 1,003,855 |
+| go_emotions | lexfront_bpe | 0.23 | 1.97 | 1.311 | 8236 | 344,369 |
+| ag_news | whitespace | 1.90 | 14.97 | 1.000 | 158733 | 31,257,097 |
+| ag_news | nltk | 0.96 | 11.52 | 1.158 | 98994 | 353,857 |
+| ag_news | tweet | 0.75 | 9.13 | 1.154 | 86096 | 314,775 |
+| ag_news | lexfront | 0.48 | 6.78 | 1.207 | 65337 | 303,222 |
+| ag_news | bpe | 0.00 | 0.01 | 1.435 | 7916 | 1,059,959 |
+| ag_news | lexfront_bpe | 0.00 | 0.01 | 1.408 | 7989 | 405,243 |
 <!-- END table:intrinsic_metrics -->
 
 <!-- BEGIN obs:intrinsic -->
 **DRAFT observations (generated from the JSON files):**
 
-- **tweet_topic**: lowest OOV rate 8.25% (lexfront); smallest vocabulary 14483 (lexfront); LexFront: OOV 8.25%, fertility 1.391, vocabulary 14483; LexFront throughput is 1.52x NLTK's (tokens/s, this machine).
-- **go_emotions**: lowest OOV rate 2.45% (lexfront); smallest vocabulary 24459 (lexfront); LexFront: OOV 2.45%, fertility 1.195, vocabulary 24459; LexFront throughput is 1.19x NLTK's (tokens/s, this machine).
-- **ag_news**: lowest OOV rate 0.48% (lexfront); smallest vocabulary 65337 (lexfront); LexFront: OOV 0.48%, fertility 1.207, vocabulary 65337; LexFront throughput is 0.79x NLTK's (tokens/s, this machine).
+- **tweet_topic**: lowest OOV rate 8.25% (lexfront); smallest vocabulary 14483 (lexfront); LexFront: OOV 8.25%, fertility 1.391, vocabulary 14483; LexFront throughput is 1.15x NLTK's (tokens/s, this machine). Subword tokenizers (trained on the train split; BPE splits every word into pieces seen in train, so its OOV rate is near zero by construction and not comparable with the word-level ones above; LexFront + BPE splits only word-like tokens, so its OOV tokens are structural tokens passed through whole, or `[UNK]`): bpe: OOV 0.44%, fertility 1.633, vocabulary 7413; lexfront_bpe: OOV 2.20%, fertility 1.578, vocabulary 10101.
+- **go_emotions**: lowest OOV rate 2.45% (lexfront); smallest vocabulary 24459 (lexfront); LexFront: OOV 2.45%, fertility 1.195, vocabulary 24459; LexFront throughput is 1.15x NLTK's (tokens/s, this machine). Subword tokenizers (trained on the train split; BPE splits every word into pieces seen in train, so its OOV rate is near zero by construction and not comparable with the word-level ones above; LexFront + BPE splits only word-like tokens, so its OOV tokens are structural tokens passed through whole, or `[UNK]`): bpe: OOV 0.18%, fertility 1.377, vocabulary 7704; lexfront_bpe: OOV 0.23%, fertility 1.311, vocabulary 8236.
+- **ag_news**: lowest OOV rate 0.48% (lexfront); smallest vocabulary 65337 (lexfront); LexFront: OOV 0.48%, fertility 1.207, vocabulary 65337; LexFront throughput is 0.86x NLTK's (tokens/s, this machine). Subword tokenizers (trained on the train split; BPE splits every word into pieces seen in train, so its OOV rate is near zero by construction and not comparable with the word-level ones above; LexFront + BPE splits only word-like tokens, so its OOV tokens are structural tokens passed through whole, or `[UNK]`): bpe: OOV 0.00%, fertility 1.435, vocabulary 7916; lexfront_bpe: OOV 0.00%, fertility 1.408, vocabulary 7989.
 <!-- END obs:intrinsic -->
 
 <!-- BEGIN table:existing_vs_proposed -->
@@ -237,54 +243,141 @@ _Robustness check, not a like-for-like comparison: with TF-IDF case folding off,
 LexFront + LR with one normalization rule switched off at a time, everything else fixed
 (`python -m experiments.run_ablation`, `results/ablation/`, protocol in `docs/versions/v4-ablation.md`). Main setting
 (TF-IDF lowercases, as the main grid): no_url, no_mention, no_number, no_elongated, no_slang, and all_off (the lexer's
-segmentation only). The lowercase rule cannot have an effect there, because TF-IDF lowercases the text before LexFront
+segmentation only; TF-IDF still lowercases). The lowercase rule cannot have an effect there, because TF-IDF lowercases the text before LexFront
 sees it; it is tested in the case-kept setting (TF-IDF `lowercase=False`, as the sensitivity grid): no_lowercase and
 all_off_cs against full_cs. Differences are variant minus full LexFront of the same setting, paired bootstrap over the
 test examples (same code, B and seed as `ci_table`), with an exact McNemar test on accuracy. The table says which
-removals change the scores; it does not say why.
+removals change the scores; it does not say why. The column "rule fires" counts the train / test documents in which
+the removed rule changes at least one token: a variant whose rule never fires (0 / 0) is the full system itself and is
+not a test of the rule, so the observation lists it apart and leaves it out of the counts.
 
 <!-- BEGIN table:ablation_table -->
-| dataset | setting | variant | TF-IDF features | acc / F1 % | acc minus full, pts [95% CI] | F1 minus full, pts [95% CI] | CI excludes 0 (acc / F1) | predictions changed | McNemar p (acc) |
-|---|---|---|---|---|---|---|---|---|---|
-| tweet_topic | TF-IDF lowercase (main grid) | full (reference) | 5350 | 70.73 / 36.18 | - | - | - | - | - |
-| tweet_topic | TF-IDF lowercase (main grid) | no_url | 5350 | 70.73 / 36.18 | +0.00 [+0.00, +0.00] | +0.00 [+0.00, +0.00] | no / no | 0 | 1.000 |
-| tweet_topic | TF-IDF lowercase (main grid) | no_mention | 5776 | 71.14 / 35.94 | +0.41 [-0.03, +0.82] | -0.24 [-1.07, +0.45] | no / no | 66 | 0.070 |
-| tweet_topic | TF-IDF lowercase (main grid) | no_number | 5461 | 71.23 / 36.16 | +0.50 [-0.03, +1.00] | -0.02 [-0.57, +0.43] | no / no | 130 | 0.068 |
-| tweet_topic | TF-IDF lowercase (main grid) | no_elongated | 5347 | 70.81 / 36.23 | +0.09 [-0.09, +0.26] | +0.05 [-0.09, +0.19] | no / no | 9 | 0.508 |
-| tweet_topic | TF-IDF lowercase (main grid) | no_slang | 5373 | 70.67 / 36.04 | -0.06 [-0.35, +0.24] | -0.14 [-0.75, +0.45] | no / no | 34 | 0.845 |
-| tweet_topic | TF-IDF lowercase (main grid) | all_off | 5907 | 71.82 / 36.37 | +1.09 [+0.50, +1.71] | +0.19 [-0.61, +0.94] | yes / no | 172 | < 0.001 |
-| tweet_topic | case kept (TF-IDF lowercase=False) | full_cs (reference) | 5313 | 70.70 / 36.27 | - | - | - | - | - |
-| tweet_topic | case kept (TF-IDF lowercase=False) | no_lowercase | 6236 | 69.79 / 35.37 | -0.91 [-1.71, -0.09] | -0.90 [-1.93, +0.04] | yes / no | 288 | 0.036 |
-| tweet_topic | case kept (TF-IDF lowercase=False) | all_off_cs | 6791 | 71.11 / 35.65 | +0.41 [-0.44, +1.27] | -0.62 [-1.89, +0.53] | no / no | 340 | 0.387 |
-| go_emotions | TF-IDF lowercase (main grid) | full (reference) | 12035 | 55.36 / 33.97 | - | - | - | - | - |
-| go_emotions | TF-IDF lowercase (main grid) | no_url | 12035 | 55.36 / 33.97 | +0.00 [+0.00, +0.00] | +0.00 [+0.00, +0.00] | no / no | 0 | 1.000 |
-| go_emotions | TF-IDF lowercase (main grid) | no_mention | 12035 | 55.34 / 33.98 | -0.02 [-0.13, +0.07] | +0.01 [-0.05, +0.09] | no / no | 7 | 1.000 |
-| go_emotions | TF-IDF lowercase (main grid) | no_number | 12218 | 55.25 / 33.91 | -0.11 [-0.26, +0.04] | -0.06 [-0.29, +0.18] | no / no | 23 | 0.267 |
-| go_emotions | TF-IDF lowercase (main grid) | no_elongated | 12039 | 55.36 / 34.03 | +0.00 [-0.11, +0.13] | +0.05 [-0.09, +0.22] | no / no | 12 | 1.000 |
-| go_emotions | TF-IDF lowercase (main grid) | no_slang | 12061 | 55.32 / 33.96 | -0.04 [-0.24, +0.15] | -0.02 [-0.27, +0.25] | no / no | 33 | 0.832 |
-| go_emotions | TF-IDF lowercase (main grid) | all_off | 12248 | 55.19 / 33.85 | -0.17 [-0.41, +0.07] | -0.13 [-0.44, +0.19] | no / no | 50 | 0.215 |
-| go_emotions | case kept (TF-IDF lowercase=False) | full_cs (reference) | 12035 | 55.34 / 34.03 | - | - | - | - | - |
-| go_emotions | case kept (TF-IDF lowercase=False) | no_lowercase | 13854 | 54.27 / 32.13 | -1.07 [-1.72, -0.44] | -1.90 [-3.08, -0.79] | yes / yes | 313 | 0.002 |
-| go_emotions | case kept (TF-IDF lowercase=False) | all_off_cs | 14056 | 54.14 / 32.17 | -1.20 [-1.85, -0.54] | -1.86 [-3.07, -0.73] | yes / yes | 322 | < 0.001 |
-| ag_news | TF-IDF lowercase (main grid) | full (reference) | 41853 | 91.88 / 91.86 | - | - | - | - | - |
-| ag_news | TF-IDF lowercase (main grid) | no_url | 42166 | 91.89 / 91.88 | +0.01 [-0.07, +0.09] | +0.01 [-0.07, +0.09] | no / no | 11 | 1.000 |
-| ag_news | TF-IDF lowercase (main grid) | no_mention | 41853 | 91.88 / 91.86 | +0.00 [+0.00, +0.00] | +0.00 [+0.00, +0.00] | no / no | 0 | 1.000 |
-| ag_news | TF-IDF lowercase (main grid) | no_number | 43561 | 91.95 / 91.93 | +0.07 [-0.07, +0.20] | +0.07 [-0.06, +0.20] | no / no | 30 | 0.424 |
-| ag_news | TF-IDF lowercase (main grid) | no_elongated | 41861 | 91.92 / 91.90 | +0.04 [-0.04, +0.12] | +0.04 [-0.04, +0.12] | no / no | 10 | 0.508 |
-| ag_news | TF-IDF lowercase (main grid) | no_slang | 41869 | 91.91 / 91.89 | +0.03 [-0.03, +0.09] | +0.03 [-0.03, +0.09] | no / no | 9 | 0.688 |
-| ag_news | TF-IDF lowercase (main grid) | all_off | 43898 | 91.99 / 91.97 | +0.11 [-0.04, +0.25] | +0.11 [-0.04, +0.25] | no / no | 36 | 0.200 |
-| ag_news | case kept (TF-IDF lowercase=False) | full_cs (reference) | 41855 | 91.92 / 91.90 | - | - | - | - | - |
-| ag_news | case kept (TF-IDF lowercase=False) | no_lowercase | 55452 | 92.07 / 92.05 | +0.14 [-0.17, +0.46] | +0.14 [-0.17, +0.46] | no / no | 165 | 0.406 |
-| ag_news | case kept (TF-IDF lowercase=False) | all_off_cs | 57491 | 92.09 / 92.08 | +0.17 [-0.16, +0.49] | +0.17 [-0.16, +0.49] | no / no | 171 | 0.326 |
+| dataset | setting | variant | rule fires, docs train / test | TF-IDF features | acc / F1 % | acc minus full, pts [95% CI] | F1 minus full, pts [95% CI] | CI excludes 0 (acc / F1) | predictions changed | McNemar p (acc) |
+|---|---|---|---|---|---|---|---|---|---|---|
+| tweet_topic | TF-IDF lowercase (main grid) | full (reference) | - | 5350 | 70.73 / 36.18 | - | - | - | - | - |
+| tweet_topic | TF-IDF lowercase (main grid) | no_url | 0 / 0 | 5350 | 70.73 / 36.18 | +0.00 [+0.00, +0.00] | +0.00 [+0.00, +0.00] | no / no | 0 | 1.000 |
+| tweet_topic | TF-IDF lowercase (main grid) | no_mention | 2414 / 2416 | 5776 | 71.14 / 35.94 | +0.41 [-0.03, +0.82] | -0.24 [-1.07, +0.45] | no / no | 66 | 0.070 |
+| tweet_topic | TF-IDF lowercase (main grid) | no_number | 1165 / 1172 | 5461 | 71.23 / 36.16 | +0.50 [-0.03, +1.00] | -0.02 [-0.57, +0.43] | no / no | 130 | 0.068 |
+| tweet_topic | TF-IDF lowercase (main grid) | no_elongated | 89 / 76 | 5347 | 70.81 / 36.23 | +0.09 [-0.09, +0.26] | +0.05 [-0.09, +0.19] | no / no | 9 | 0.508 |
+| tweet_topic | TF-IDF lowercase (main grid) | no_slang | 247 / 221 | 5373 | 70.67 / 36.04 | -0.06 [-0.35, +0.24] | -0.14 [-0.75, +0.45] | no / no | 34 | 0.845 |
+| tweet_topic | TF-IDF lowercase (main grid) | all_off (TF-IDF still lowercases) | 2856 / 2815 | 5907 | 71.82 / 36.37 | +1.09 [+0.50, +1.71] | +0.19 [-0.61, +0.94] | yes / no | 172 | < 0.001 |
+| tweet_topic | case kept (TF-IDF lowercase=False) | full_cs (reference) | - | 5313 | 70.70 / 36.27 | - | - | - | - | - |
+| tweet_topic | case kept (TF-IDF lowercase=False) | no_lowercase | 3584 / 3381 | 6236 | 69.79 / 35.37 | -0.91 [-1.71, -0.09] | -0.90 [-1.93, +0.04] | yes / no | 288 | 0.036 |
+| tweet_topic | case kept (TF-IDF lowercase=False) | all_off_cs | 3598 / 3399 | 6791 | 71.11 / 35.65 | +0.41 [-0.44, +1.27] | -0.62 [-1.89, +0.53] | no / no | 340 | 0.387 |
+| go_emotions | TF-IDF lowercase (main grid) | full (reference) | - | 12035 | 55.36 / 33.97 | - | - | - | - | - |
+| go_emotions | TF-IDF lowercase (main grid) | no_url | 0 / 0 | 12035 | 55.36 / 33.97 | +0.00 [+0.00, +0.00] | +0.00 [+0.00, +0.00] | no / no | 0 | 1.000 |
+| go_emotions | TF-IDF lowercase (main grid) | no_mention | 6 / 0 | 12035 | 55.34 / 33.98 | -0.02 [-0.13, +0.07] | +0.01 [-0.05, +0.09] | no / no | 7 | 1.000 |
+| go_emotions | TF-IDF lowercase (main grid) | no_number | 2963 / 389 | 12218 | 55.25 / 33.91 | -0.11 [-0.26, +0.04] | -0.06 [-0.29, +0.18] | no / no | 23 | 0.267 |
+| go_emotions | TF-IDF lowercase (main grid) | no_elongated | 524 / 72 | 12039 | 55.36 / 34.03 | +0.00 [-0.11, +0.13] | +0.05 [-0.09, +0.22] | no / no | 12 | 1.000 |
+| go_emotions | TF-IDF lowercase (main grid) | no_slang | 1646 / 190 | 12061 | 55.32 / 33.96 | -0.04 [-0.24, +0.15] | -0.02 [-0.27, +0.25] | no / no | 33 | 0.832 |
+| go_emotions | TF-IDF lowercase (main grid) | all_off (TF-IDF still lowercases) | 4864 / 622 | 12248 | 55.19 / 33.85 | -0.17 [-0.41, +0.07] | -0.13 [-0.44, +0.19] | no / no | 50 | 0.215 |
+| go_emotions | case kept (TF-IDF lowercase=False) | full_cs (reference) | - | 12035 | 55.34 / 34.03 | - | - | - | - | - |
+| go_emotions | case kept (TF-IDF lowercase=False) | no_lowercase | 34555 / 4389 | 13854 | 54.27 / 32.13 | -1.07 [-1.72, -0.44] | -1.90 [-3.08, -0.79] | yes / yes | 313 | 0.002 |
+| go_emotions | case kept (TF-IDF lowercase=False) | all_off_cs | 34839 / 4420 | 14056 | 54.14 / 32.17 | -1.20 [-1.85, -0.54] | -1.86 [-3.07, -0.73] | yes / yes | 322 | < 0.001 |
+| ag_news | TF-IDF lowercase (main grid) | full (reference) | - | 41853 | 91.88 / 91.86 | - | - | - | - | - |
+| ag_news | TF-IDF lowercase (main grid) | no_url | 1833 / 99 | 42166 | 91.89 / 91.88 | +0.01 [-0.07, +0.09] | +0.01 [-0.07, +0.09] | no / no | 11 | 1.000 |
+| ag_news | TF-IDF lowercase (main grid) | no_mention | 0 / 0 | 41853 | 91.88 / 91.86 | +0.00 [+0.00, +0.00] | +0.00 [+0.00, +0.00] | no / no | 0 | 1.000 |
+| ag_news | TF-IDF lowercase (main grid) | no_number | 51541 / 3273 | 43561 | 91.95 / 91.93 | +0.07 [-0.07, +0.20] | +0.07 [-0.06, +0.20] | no / no | 30 | 0.424 |
+| ag_news | TF-IDF lowercase (main grid) | no_elongated | 249 / 13 | 41861 | 91.92 / 91.90 | +0.04 [-0.04, +0.12] | +0.04 [-0.04, +0.12] | no / no | 10 | 0.508 |
+| ag_news | TF-IDF lowercase (main grid) | no_slang | 7174 / 442 | 41869 | 91.91 / 91.89 | +0.03 [-0.03, +0.09] | +0.03 [-0.03, +0.09] | no / no | 9 | 0.688 |
+| ag_news | TF-IDF lowercase (main grid) | all_off (TF-IDF still lowercases) | 56554 / 3576 | 43898 | 91.99 / 91.97 | +0.11 [-0.04, +0.25] | +0.11 [-0.04, +0.25] | no / no | 36 | 0.200 |
+| ag_news | case kept (TF-IDF lowercase=False) | full_cs (reference) | - | 41855 | 91.92 / 91.90 | - | - | - | - | - |
+| ag_news | case kept (TF-IDF lowercase=False) | no_lowercase | 120000 / 7600 | 55452 | 92.07 / 92.05 | +0.14 [-0.17, +0.46] | +0.14 [-0.17, +0.46] | no / no | 165 | 0.406 |
+| ag_news | case kept (TF-IDF lowercase=False) | all_off_cs | 120000 / 7600 | 57491 | 92.09 / 92.08 | +0.17 [-0.16, +0.49] | +0.17 [-0.16, +0.49] | no / no | 171 | 0.326 |
 <!-- END table:ablation_table -->
 
 <!-- BEGIN obs:ablation -->
 **DRAFT observations (generated from the JSON files):**
 
-- **tweet_topic** (8 variants vs full): accuracy CI excludes 0 for all_off +1.09 (higher than full), no_lowercase (case kept) -0.91 (lower than full); macro-F1 CI excludes 0 for none. Every other interval includes 0.
-- **go_emotions** (8 variants vs full): accuracy CI excludes 0 for no_lowercase (case kept) -1.07 (lower than full), all_off_cs (case kept) -1.20 (lower than full); macro-F1 CI excludes 0 for no_lowercase (case kept) -1.90 (lower than full), all_off_cs (case kept) -1.86 (lower than full). Every other interval includes 0.
-- **ag_news** (8 variants vs full): accuracy CI excludes 0 for none; macro-F1 CI excludes 0 for none. Every other interval includes 0.
-- In all, 6 of 48 difference CIs exclude 0. There is no multiplicity correction: with 48 separate 95% intervals, about 2.4 would exclude 0 by chance even if no rule had any effect, so a single interval that excludes 0 is weak evidence on its own.
+- **tweet_topic** (7 variants vs full): accuracy CI excludes 0 for all_off (TF-IDF still lowercases) +1.09 (higher than full), no_lowercase (case kept) -0.91 (lower than full); macro-F1 CI excludes 0 for none. Every other compared interval includes 0. Rule never fires on this data (train and test), so not a test of the rule: no_url (identical to full, left out of the counts).
+- **go_emotions** (7 variants vs full): accuracy CI excludes 0 for no_lowercase (case kept) -1.07 (lower than full), all_off_cs (case kept) -1.20 (lower than full); macro-F1 CI excludes 0 for no_lowercase (case kept) -1.90 (lower than full), all_off_cs (case kept) -1.86 (lower than full). Every other compared interval includes 0. Rule never fires on this data (train and test), so not a test of the rule: no_url (identical to full, left out of the counts). Fires in train only, never in test: no_mention (6 train documents).
+- **ag_news** (7 variants vs full): accuracy CI excludes 0 for none; macro-F1 CI excludes 0 for none. Every other compared interval includes 0. Rule never fires on this data (train and test), so not a test of the rule: no_mention (identical to full, left out of the counts).
+- In all, 6 of 42 difference CIs of the compared variants exclude 0 (3 never-firing variants left out). There is no multiplicity correction: with 42 separate 95% intervals, roughly 2.1 would exclude 0 by chance even if no rule had any effect, if the intervals were independent (they are not: all_off contains every single-rule change), so a single interval that excludes 0 is weak evidence on its own.
 
-_Ablation: each variant is LexFront + LR with the named rule (all_off: every rule) switched off, everything else fixed; differences are variant minus full LexFront of the same setting, paired bootstrap over the test examples (same code, B and seed as `ci_table`). One training run per variant, so training randomness is not covered. The lowercase rule is tested only with case kept: in the main setting TF-IDF lowercases the text before LexFront sees it, so switching the rule off cannot change anything there. These numbers say which removals change the scores, not why; any reason given elsewhere is a hypothesis._
+_Ablation: each variant is LexFront + LR with the named rule (all_off: every rule) switched off, everything else fixed; in the main setting all_off still has TF-IDF's lowercasing (TF-IDF still lowercases). Differences are variant minus full LexFront of the same setting, paired bootstrap over the test examples (same code, B and seed as `ci_table`). One training run per variant, so training randomness is not covered. The lowercase rule is tested only with case kept: in the main setting TF-IDF lowercases the text before LexFront sees it, so switching the rule off cannot change anything there. A variant whose rule never fires on a dataset (train and test) is the full system itself, so it is listed apart and not counted as a comparison; 0 changed predictions alone does not show that (a rule firing only in train still changes the fit). These numbers say which removals change the scores, not why; any reason given elsewhere is a hypothesis._
 <!-- END obs:ablation -->
+
+### BPE and the LexFront + BPE hybrid (P3)
+BPE (Hugging Face `tokenizers`, vocabulary 8000, `##` continuation marker, `[UNK]`) trained on each dataset's
+lowercased train split only; LexFront + BPE keeps LexFront's structural tokens (`<URL>`, `<USER>`, `<NUM>`, hashtags,
+emoticons, emoji, punctuation, UNKNOWN) whole and splits only word-like tokens with a BPE trained on the word-like
+tokens of the train split (`python -m experiments.run_bpe`, `results/bpe/`, protocol in `docs/versions/v5-bpe-hybrid.md`).
+Same TF-IDF (main setting, TF-IDF lowercases), NB and LR as the main grid. Differences are paired bootstraps over the
+test examples (same code, B and seed as `ci_table`) against the main grid's NLTK+LR and LexFront+LR, with an exact
+McNemar test for BPE+LR vs NLTK+LR. A vocabulary-size sensitivity run at 32000 is in `results/bpe_v32000/`. In the
+intrinsic table BPE's OOV rate is near zero by construction (every word splits into known pieces), so OOV is not
+comparable with the word-level tokenizers.
+
+<!-- BEGIN table:bpe_runs -->
+| dataset | BPE vocab | BPE+NB acc / F1 | BPE+LR acc / F1 | LexFront+BPE+NB acc / F1 | LexFront+BPE+LR acc / F1 | NLTK+LR acc / F1 | LexFront+LR acc / F1 |
+|---|---|---|---|---|---|---|---|
+| tweet_topic | 8000 | 70.52 / 27.88 | 71.90 / 35.09 | 70.02 / 27.12 | 69.90 / 33.56 | 72.32 / 36.95 | 70.73 / 36.18 |
+| go_emotions | 8000 | 38.74 / 5.67 | 55.23 / 33.29 | 38.63 / 5.63 | 54.64 / 32.59 | 55.27 / 33.86 | 55.36 / 33.97 |
+| ag_news | 8000 | 89.21 / 89.16 | 91.13 / 91.12 | 89.37 / 89.32 | 91.03 / 91.01 | 91.88 / 91.87 | 91.88 / 91.86 |
+<!-- END table:bpe_runs -->
+
+<!-- BEGIN table:bpe_table -->
+| dataset | difference | accuracy pts [95% CI] | macro-F1 pts [95% CI] | CI excludes 0 (acc / F1) | McNemar p (acc) |
+|---|---|---|---|---|---|
+| tweet_topic | BPE+LR minus NLTK+LR (tokenizer only) | -0.41 [-1.27, +0.44] | -1.86 [-3.28, -0.40] | no / yes | 0.397 |
+| tweet_topic | LexFront+BPE+LR minus LexFront+LR | -0.82 [-1.56, -0.06] | -2.62 [-3.90, -1.46] | yes / yes | - |
+| tweet_topic | LexFront+BPE+LR minus BPE+LR | -2.00 [-2.91, -1.09] | -1.53 [-2.72, -0.32] | yes / yes | - |
+| tweet_topic | LexFront+BPE+LR minus NLTK+LR | -2.41 [-3.35, -1.50] | -3.39 [-4.66, -2.16] | yes / yes | - |
+| go_emotions | BPE+LR minus NLTK+LR (tokenizer only) | -0.04 [-0.68, +0.59] | -0.57 [-1.37, +0.19] | no / no | 0.946 |
+| go_emotions | LexFront+BPE+LR minus LexFront+LR | -0.72 [-1.31, -0.15] | -1.39 [-2.16, -0.68] | yes / yes | - |
+| go_emotions | LexFront+BPE+LR minus BPE+LR | -0.59 [-1.09, -0.09] | -0.71 [-1.42, +0.00] | yes / no | - |
+| go_emotions | LexFront+BPE+LR minus NLTK+LR | -0.63 [-1.24, +0.00] | -1.27 [-2.11, -0.46] | no / yes | - |
+| ag_news | BPE+LR minus NLTK+LR (tokenizer only) | -0.75 [-1.13, -0.37] | -0.75 [-1.14, -0.37] | yes / yes | < 0.001 |
+| ag_news | LexFront+BPE+LR minus LexFront+LR | -0.86 [-1.25, -0.49] | -0.86 [-1.25, -0.48] | yes / yes | - |
+| ag_news | LexFront+BPE+LR minus BPE+LR | -0.11 [-0.38, +0.18] | -0.11 [-0.39, +0.17] | no / no | - |
+| ag_news | LexFront+BPE+LR minus NLTK+LR | -0.86 [-1.28, -0.43] | -0.86 [-1.29, -0.44] | yes / yes | - |
+<!-- END table:bpe_table -->
+
+<!-- BEGIN obs:bpe -->
+**DRAFT observations (generated from the JSON files):**
+
+- **tweet_topic**: BPE+LR minus NLTK+LR (tokenizer only): accuracy -0.41 (CI includes 0), macro-F1 -1.86 (CI excludes 0, lower); LexFront+BPE+LR minus LexFront+LR: accuracy -0.82 (CI excludes 0, lower), macro-F1 -2.62 (CI excludes 0, lower); LexFront+BPE+LR minus BPE+LR: accuracy -2.00 (CI excludes 0, lower), macro-F1 -1.53 (CI excludes 0, lower); LexFront+BPE+LR minus NLTK+LR: accuracy -2.41 (CI excludes 0, lower), macro-F1 -3.39 (CI excludes 0, lower). Exact McNemar p (BPE+LR vs NLTK+LR, accuracy) = 0.397.
+- **go_emotions**: BPE+LR minus NLTK+LR (tokenizer only): accuracy -0.04 (CI includes 0), macro-F1 -0.57 (CI includes 0); LexFront+BPE+LR minus LexFront+LR: accuracy -0.72 (CI excludes 0, lower), macro-F1 -1.39 (CI excludes 0, lower); LexFront+BPE+LR minus BPE+LR: accuracy -0.59 (CI excludes 0, lower), macro-F1 -0.71 (CI includes 0); LexFront+BPE+LR minus NLTK+LR: accuracy -0.63 (CI includes 0), macro-F1 -1.27 (CI excludes 0, lower). Exact McNemar p (BPE+LR vs NLTK+LR, accuracy) = 0.946.
+- **ag_news**: BPE+LR minus NLTK+LR (tokenizer only): accuracy -0.75 (CI excludes 0, lower), macro-F1 -0.75 (CI excludes 0, lower); LexFront+BPE+LR minus LexFront+LR: accuracy -0.86 (CI excludes 0, lower), macro-F1 -0.86 (CI excludes 0, lower); LexFront+BPE+LR minus BPE+LR: accuracy -0.11 (CI includes 0), macro-F1 -0.11 (CI includes 0); LexFront+BPE+LR minus NLTK+LR: accuracy -0.86 (CI excludes 0, lower), macro-F1 -0.86 (CI excludes 0, lower). Exact McNemar p (BPE+LR vs NLTK+LR, accuracy) < 0.001.
+- In all, 17 of 24 difference CIs exclude 0 (vocabulary 8000, B = 2000, seed 20261016).
+
+_Subword grid: each BPE (vocabulary size in the last line) is trained on the lowercased train split of its dataset only; LexFront + BPE keeps LexFront's structural tokens whole and splits only word-like tokens. Differences are paired bootstraps over the test examples (same code, B and seed as `ci_table`), against the NLTK+LR and LexFront+LR runs of the main grid. One training run per cell, so training randomness is not covered; no multiplicity correction. These lines say which differences exclude 0 and in which direction, not why; any reason given elsewhere is a hypothesis._
+<!-- END obs:bpe -->
+
+Vocabulary-size sensitivity (same code and protocol, vocabulary 32000, `results/bpe_v32000/`):
+
+<!-- BEGIN table:bpe_v32000_runs -->
+| dataset | BPE vocab | BPE+NB acc / F1 | BPE+LR acc / F1 | LexFront+BPE+NB acc / F1 | LexFront+BPE+LR acc / F1 | NLTK+LR acc / F1 | LexFront+LR acc / F1 |
+|---|---|---|---|---|---|---|---|
+| tweet_topic | 32000 | 71.02 / 28.76 | 72.43 / 36.02 | 70.02 / 27.46 | 70.93 / 35.57 | 72.32 / 36.95 | 70.73 / 36.18 |
+| go_emotions | 32000 | 37.56 / 4.56 | 54.71 / 32.71 | 37.65 / 4.62 | 54.86 / 33.15 | 55.27 / 33.86 | 55.36 / 33.97 |
+| ag_news | 32000 | 90.16 / 90.13 | 92.11 / 92.09 | 90.16 / 90.13 | 91.99 / 91.97 | 91.88 / 91.87 | 91.88 / 91.86 |
+<!-- END table:bpe_v32000_runs -->
+
+<!-- BEGIN table:bpe_v32000_table -->
+| dataset | difference | accuracy pts [95% CI] | macro-F1 pts [95% CI] | CI excludes 0 (acc / F1) | McNemar p (acc) |
+|---|---|---|---|---|---|
+| tweet_topic | BPE+LR minus NLTK+LR (tokenizer only) | +0.12 [-0.53, +0.74] | -0.94 [-1.95, -0.00] | no / yes | 0.788 |
+| tweet_topic | LexFront+BPE+LR minus LexFront+LR | +0.21 [-0.26, +0.68] | -0.61 [-1.39, +0.02] | no / no | - |
+| tweet_topic | LexFront+BPE+LR minus BPE+LR | -1.50 [-2.27, -0.74] | -0.44 [-1.18, +0.38] | yes / no | - |
+| tweet_topic | LexFront+BPE+LR minus NLTK+LR | -1.38 [-2.21, -0.59] | -1.38 [-2.43, -0.40] | yes / yes | - |
+| go_emotions | BPE+LR minus NLTK+LR (tokenizer only) | -0.57 [-1.11, -0.02] | -1.15 [-2.09, -0.31] | yes / yes | 0.045 |
+| go_emotions | LexFront+BPE+LR minus LexFront+LR | -0.50 [-0.89, -0.15] | -0.83 [-1.29, -0.42] | yes / yes | - |
+| go_emotions | LexFront+BPE+LR minus BPE+LR | +0.15 [-0.35, +0.65] | +0.44 [-0.44, +1.41] | no / no | - |
+| go_emotions | LexFront+BPE+LR minus NLTK+LR | -0.41 [-0.92, +0.15] | -0.71 [-1.45, +0.04] | no / no | - |
+| ag_news | BPE+LR minus NLTK+LR (tokenizer only) | +0.22 [-0.08, +0.53] | +0.22 [-0.08, +0.52] | no / no | 0.168 |
+| ag_news | LexFront+BPE+LR minus LexFront+LR | +0.11 [-0.08, +0.30] | +0.11 [-0.08, +0.31] | no / no | - |
+| ag_news | LexFront+BPE+LR minus BPE+LR | -0.12 [-0.37, +0.14] | -0.12 [-0.38, +0.14] | no / no | - |
+| ag_news | LexFront+BPE+LR minus NLTK+LR | +0.11 [-0.22, +0.43] | +0.10 [-0.22, +0.43] | no / no | - |
+<!-- END table:bpe_v32000_table -->
+
+<!-- BEGIN obs:bpe_v32000 -->
+**DRAFT observations (generated from the JSON files):**
+
+- **tweet_topic**: BPE+LR minus NLTK+LR (tokenizer only): accuracy +0.12 (CI includes 0), macro-F1 -0.94 (CI excludes 0, lower); LexFront+BPE+LR minus LexFront+LR: accuracy +0.21 (CI includes 0), macro-F1 -0.61 (CI includes 0); LexFront+BPE+LR minus BPE+LR: accuracy -1.50 (CI excludes 0, lower), macro-F1 -0.44 (CI includes 0); LexFront+BPE+LR minus NLTK+LR: accuracy -1.38 (CI excludes 0, lower), macro-F1 -1.38 (CI excludes 0, lower). Exact McNemar p (BPE+LR vs NLTK+LR, accuracy) = 0.788.
+- **go_emotions**: BPE+LR minus NLTK+LR (tokenizer only): accuracy -0.57 (CI excludes 0, lower), macro-F1 -1.15 (CI excludes 0, lower); LexFront+BPE+LR minus LexFront+LR: accuracy -0.50 (CI excludes 0, lower), macro-F1 -0.83 (CI excludes 0, lower); LexFront+BPE+LR minus BPE+LR: accuracy +0.15 (CI includes 0), macro-F1 +0.44 (CI includes 0); LexFront+BPE+LR minus NLTK+LR: accuracy -0.41 (CI includes 0), macro-F1 -0.71 (CI includes 0). Exact McNemar p (BPE+LR vs NLTK+LR, accuracy) = 0.045.
+- **ag_news**: BPE+LR minus NLTK+LR (tokenizer only): accuracy +0.22 (CI includes 0), macro-F1 +0.22 (CI includes 0); LexFront+BPE+LR minus LexFront+LR: accuracy +0.11 (CI includes 0), macro-F1 +0.11 (CI includes 0); LexFront+BPE+LR minus BPE+LR: accuracy -0.12 (CI includes 0), macro-F1 -0.12 (CI includes 0); LexFront+BPE+LR minus NLTK+LR: accuracy +0.11 (CI includes 0), macro-F1 +0.10 (CI includes 0). Exact McNemar p (BPE+LR vs NLTK+LR, accuracy) = 0.168.
+- In all, 8 of 24 difference CIs exclude 0 (vocabulary 32000, B = 2000, seed 20261016).
+
+_Subword grid: each BPE (vocabulary size in the last line) is trained on the lowercased train split of its dataset only; LexFront + BPE keeps LexFront's structural tokens whole and splits only word-like tokens. Differences are paired bootstraps over the test examples (same code, B and seed as `ci_table`), against the NLTK+LR and LexFront+LR runs of the main grid. One training run per cell, so training randomness is not covered; no multiplicity correction. These lines say which differences exclude 0 and in which direction, not why; any reason given elsewhere is a hypothesis._
+<!-- END obs:bpe_v32000 -->

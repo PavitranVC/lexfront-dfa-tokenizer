@@ -16,6 +16,8 @@ matplotlib>=3.8,<4
 # NLP / datasets (nltk exact: its tokenizers are what Module 1 compares; pure Python, cheap to install)
 nltk==3.10.3
 datasets>=3.0,<6
+# Subword tokenizers (P3: BPE), Rust core, CPU only
+tokenizers>=0.22,<0.24
 
 # Compiler-design tooling (3.11 is the final PLY release)
 ply==3.11

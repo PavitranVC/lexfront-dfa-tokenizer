@@ -70,8 +70,9 @@ FORCE = QUICK_MODE     # recompute every run even if a cached JSON matches (chea
 # Files each mode rewrites:
 #   True : everything under results/quick/ (the committed results/ is untouched).
 #   False: in the committed results/: datasets.json, module2/dfa_states.json + dfa_min.dot/.png, module2/intrinsic__*.json
-#          (always, new timestamps and throughput), stats/bootstrap.json, ablation/stats/bootstrap.json, tables/ and
-#          figures/ (rebuilt from the JSON); module1/, module2/ and ablation/ run JSONs and their predictions/
+#          (always, new timestamps and throughput), stats/bootstrap.json, ablation/stats/bootstrap.json,
+#          bpe/stats/bootstrap.json, tables/ and figures/ (rebuilt from the JSON); module1/, module2/, ablation/ and
+#          bpe/ run JSONs and their predictions/
 #          sidecars only where the fingerprint no longer matches (FORCE is False). `git checkout results/` undoes it.
 
 import pandas as pd
@@ -189,27 +190,47 @@ LexFront's normalizer has six switchable rules (URL, MENTION, NUMBER, ELONGATED,
 below is LexFront + Logistic Regression with one rule switched off, everything else fixed, compared with full
 LexFront on the same resampled test examples (paired bootstrap, as in section 5; McNemar on accuracy).
 *Main setting* (TF-IDF lowercases, as the main grid): no_url, no_mention, no_number, no_elongated, no_slang and
-all_off (lexer segmentation only). The lowercase rule cannot show an effect there, because TF-IDF lowercases the text
+all_off (lexer segmentation only; TF-IDF still lowercases). The lowercase rule cannot show an effect there, because TF-IDF lowercases the text
 before LexFront sees it, so it is tested in the *case-kept* setting (TF-IDF `lowercase=False`): no_lowercase and
 all_off_cs against full_cs. On the QUICK subsample (500 test examples) these intervals are wide; the full-data
-ablation is in `results/ablation/` (appendix). With 8 comparisons per dataset and no multiplicity correction, an
-interval can exclude 0 by chance."""),
+ablation is in `results/ablation/` (appendix). With up to 8 comparisons per dataset and no multiplicity correction,
+an interval can exclude 0 by chance. The column "rule fires" counts the train / test documents in which the removed
+rule changes a token; a rule that never fires on the subsample (0 / 0) gives the full system, not a test of the rule."""),
     code('''review1.run_ablation_section(QUICK_MODE, force=FORCE)
 out = review1.build_outputs(QUICK_MODE)
 display(Markdown(out["tables"]["ablation_table"]))'''),
     md("### Observations — ablation"),
     code('''display(Markdown(observation("ablation", RES)))'''),
 
+    md("""## 7. Subword tokenizers: BPE and LexFront + BPE
+
+**BPE** (byte-pair encoding, Hugging Face `tokenizers`) learns a vocabulary of 8000 subword pieces from each dataset's
+*train* split (lowercased, never the test split) and splits every word into known pieces; a piece that continues a
+word carries `##`. **LexFront + BPE** keeps LexFront's scanner and normalizer: structural tokens (`<URL>`, `<USER>`,
+`<NUM>`, hashtags, emoticons, emoji, punctuation, UNKNOWN) pass through whole, and only word-like tokens are split by
+a BPE trained on the word-like tokens of the train split. Both feed the same TF-IDF + NB / LR as before. The first
+cell shows the pieces on three example tweets with a toy BPE trained on the eight example tweets (illustration only).
+The second runs the grid on the QUICK subsample and the paired bootstrap against NLTK+LR and LexFront+LR (same code
+as section 5); the full-data results are in `results/bpe/` (appendix). BPE's OOV rate in the intrinsic table is near
+zero by construction, so it is not comparable with the word-level tokenizers."""),
+    code('''display(review1.bpe_demo())'''),
+    code('''review1.run_bpe_section(QUICK_MODE, force=FORCE)
+out = review1.build_outputs(QUICK_MODE)
+display(Markdown(out["tables"]["bpe_runs"]))
+display(Markdown(out["tables"]["bpe_table"]))'''),
+    md("### Observations — BPE and the hybrid"),
+    code('''display(Markdown(observation("bpe", RES)))'''),
+
     md("""## Appendix — committed full-data results
 The tables below are built from the JSON files in `results/` (full datasets, produced by
 `python -m experiments.run_module1`, `python -m experiments.run_module2`, `python -m experiments.run_stats` and
-`python -m experiments.run_sensitivity`, `python -m experiments.run_ablation`). `sensitivity_case` is the grid with TF-IDF `lowercase=False`: LexFront's
+`python -m experiments.run_sensitivity`, `python -m experiments.run_ablation`, `python -m experiments.run_bpe`). `sensitivity_case` is the grid with TF-IDF `lowercase=False`: LexFront's
 lowercase rule is active there while the baselines keep case, so it is a robustness check, not a like-for-like."""),
     code('''import os
 if os.path.exists("results/datasets.json") and os.path.isdir("results/module1"):
     full = report.render_all_tables("results")      # read only: does not rewrite results/tables
     for name in ["module1_results", "existing_vs_proposed", "intrinsic_metrics", "ci_table", "sensitivity_case",
-                 "sensitivity_ci", "ablation_table"]:
+                 "sensitivity_ci", "ablation_table", "bpe_runs", "bpe_table"]:
         print(name); display(Markdown(full[name]))
 else:
     print("full-data results are not in this checkout")'''),

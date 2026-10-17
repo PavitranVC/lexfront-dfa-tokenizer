@@ -1,5 +1,5 @@
 {
-  "timestamp_utc": "2026-10-16T21:26:16+00:00",
+  "timestamp_utc": "2026-10-17T00:15:40+00:00",
   "dataset": {
     "name": "ag_news",
     "hf_id": "fancyzhx/ag_news",
@@ -43,8 +43,8 @@
       "vocab_size": 15922,
       "n_test_tokens": 18742,
       "n_test_whitespace_words": 18742,
-      "throughput_tokens_per_s": 24127964.98104361,
-      "throughput_docs_per_s": 643687.0392979301,
+      "throughput_tokens_per_s": 27215013.40401109,
+      "throughput_docs_per_s": 726043.4693205392,
       "throughput_docs": 500
     },
     "nltk": {
@@ -54,8 +54,8 @@
       "vocab_size": 12748,
       "n_test_tokens": 21931,
       "n_test_whitespace_words": 18742,
-      "throughput_tokens_per_s": 235552.2687862463,
-      "throughput_docs_per_s": 5370.303880038446,
+      "throughput_tokens_per_s": 330350.5977718492,
+      "throughput_docs_per_s": 7531.589935977594,
       "throughput_docs": 500
     },
     "tweet": {
@@ -65,8 +65,8 @@
       "vocab_size": 12570,
       "n_test_tokens": 21822,
       "n_test_whitespace_words": 18742,
-      "throughput_tokens_per_s": 241754.80620851583,
-      "throughput_docs_per_s": 5539.244941080466,
+      "throughput_tokens_per_s": 293816.99418377905,
+      "throughput_docs_per_s": 6732.127994312599,
       "throughput_docs": 500
     },
     "lexfront": {
@@ -76,9 +76,68 @@
       "vocab_size": 11456,
       "n_test_tokens": 22980,
       "n_test_whitespace_words": 18742,
-      "throughput_tokens_per_s": 245137.231512825,
-      "throughput_docs_per_s": 5333.708257459204,
+      "throughput_tokens_per_s": 308158.41767134843,
+      "throughput_docs_per_s": 6704.926407122463,
       "throughput_docs": 500
+    },
+    "bpe": {
+      "oov_rate_tokens": 0.0034227039361095267,
+      "oov_rate_types": 0.01521593197583352,
+      "fertility": 1.4965318535908654,
+      "vocab_size": 7129,
+      "n_test_tokens": 28048,
+      "n_test_whitespace_words": 18742,
+      "throughput_tokens_per_s": 1066702.9333484638,
+      "throughput_docs_per_s": 19015.66837828836,
+      "throughput_docs": 500,
+      "trained_vocab_size": 8000
+    },
+    "lexfront_bpe": {
+      "oov_rate_tokens": 0.003656574520988738,
+      "oov_rate_types": 0.017123287671232876,
+      "fertility": 1.4591825845694162,
+      "vocab_size": 7143,
+      "n_test_tokens": 27348,
+      "n_test_whitespace_words": 18742,
+      "throughput_tokens_per_s": 329053.9158460088,
+      "throughput_docs_per_s": 6016.05082357044,
+      "throughput_docs": 500,
+      "trained_vocab_size": 8000
+    }
+  },
+  "subword": {
+    "bpe": {
+      "model": "bpe",
+      "vocab_size": 8000,
+      "pre_tokenizer": "whitespace",
+      "continuing_subword_prefix": "##",
+      "unk_token": "[UNK]",
+      "hybrid": false,
+      "pass_through_classes": [],
+      "train_text": "train split, lowercased",
+      "train_text_hash": "5600c7a9b2d07a80",
+      "tokenizers": "0.23.3"
+    },
+    "lexfront_bpe": {
+      "model": "bpe",
+      "vocab_size": 8000,
+      "pre_tokenizer": "whitespace_split",
+      "continuing_subword_prefix": "##",
+      "unk_token": "[UNK]",
+      "hybrid": true,
+      "pass_through_classes": [
+        "URL",
+        "MENTION",
+        "NUMBER",
+        "HASHTAG",
+        "EMOTICON",
+        "EMOJI",
+        "PUNCT",
+        "UNKNOWN"
+      ],
+      "train_text": "train split, lowercased",
+      "train_text_hash": "5600c7a9b2d07a80",
+      "tokenizers": "0.23.3"
     }
   }
 }

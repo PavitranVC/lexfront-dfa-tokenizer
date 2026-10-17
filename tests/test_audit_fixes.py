@@ -208,7 +208,7 @@ def test_fit_predict_and_vectorize_run_single_threaded(tmp_path, monkeypatch):
         return text.split()
 
     monkeypatch.setattr(pipeline.clf_mod, "make_classifier", lambda name, seed=0: probe)
-    monkeypatch.setattr(pipeline, "get_tokenizer", lambda name: probing_tokenizer)
+    monkeypatch.setattr(pipeline, "build_tokenizer", lambda name, train_texts: probing_tokenizer)
     with threadpool_limits(limits=2):
         assert set(_pool_sizes()) == {2}                          # the control: unpinned code would see 2
         rec = run_cell(toy_dataset(), "whitespace", ["nb"], tmp_path, **QUIET)[0]

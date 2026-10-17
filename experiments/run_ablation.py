@@ -12,7 +12,10 @@ held fixed (lexer, TF-IDF settings, classifier, seed, data). Two settings (proto
 
 Runs go to <out>/<setting>/ in the usual layout (run JSON + predictions/ sidecar). The statistics (same bootstrap code,
 B and seed as `run_stats`) go to <out>/stats/bootstrap.json: every variant minus the full variant of its setting,
-paired over the same resampled test indices, plus an exact McNemar test on accuracy.
+paired over the same resampled test indices, plus an exact McNemar test on accuracy. How often each removed rule
+*fires* (train and test documents and lexer tokens whose normalized form differs from full LexFront) is counted once
+per setting and dataset into <out>/<setting>/firing__<dataset>.json and copied into the stats: a variant whose rule
+never fires is the full system itself, so its "comparison" is not a test of the rule.
 """
 import argparse
 import json
@@ -21,11 +24,13 @@ from pathlib import Path
 
 import numpy as np
 
-from lexer.normalize import RULES
+from lexer.lexfront import LexFront
+from lexer.normalize import RULES, normalize_token
 
 from . import data, stats
 from .classifiers import CASE_SENSITIVE_OVERRIDES, vectorizer_params
-from .pipeline import load_predictions, result_path, run_cell
+from .pipeline import code_fingerprint, load_predictions, result_path, run_cell
+from .tokenizers import normalize_config
 from .report import DATASET_ORDER, SENSITIVITY_SUBDIR
 from .run_stats import N_BOOT, SEED, check_point_estimates, load_dataset_predictions
 
@@ -54,6 +59,63 @@ SETTINGS = (
 )
 
 
+def setting_texts(setting: Setting, texts) -> list[str]:
+    """The text LexFront sees in this setting: TF-IDF lowercases it first unless the setting keeps case."""
+    return list(texts) if setting.vec_overrides.get("lowercase") is False else [t.lower() for t in texts]
+
+
+def count_firing(texts, configs: dict) -> dict:
+    """{variant: {"docs", "tokens", "n_docs"}}: documents whose token list, and lexer tokens whose normalized form,
+    differ from full LexFront when the variant's rules are switched off.
+
+    Compiler concept: the semantic action of a token class only runs when the scanner emits that class; counting
+    where the action's output changes tells whether a switched-off rule is exercised by the input at all. One scan per
+    document (the lexer does not depend on the rules), then every configuration normalizes the same tokens.
+    """
+    scanner = LexFront()
+    full = normalize_config("lexfront")
+    counts = {v: {"docs": 0, "tokens": 0, "n_docs": 0} for v in configs}
+    for text in texts:
+        lexed = [(cls, lexeme) for cls, lexeme, _ in scanner.analyze(text)]
+        reference = [normalize_token(cls, lexeme, full) for cls, lexeme in lexed]
+        for variant, config in configs.items():
+            forms = [normalize_token(cls, lexeme, config) for cls, lexeme in lexed]
+            c = counts[variant]
+            c["n_docs"] += 1
+            c["tokens"] += sum(a != b for a, b in zip(forms, reference))
+            c["docs"] += sum(forms, []) != sum(reference, [])
+    return counts
+
+
+def firing_path(out_dir, setting: Setting, dataset: str) -> Path:
+    return Path(out_dir) / setting.name / f"firing__{dataset}.json"
+
+
+def write_firing(out_dir, setting: Setting, ds, force: bool = False) -> Path:
+    """Rule-firing counts per split for every non-reference variant; reused while data and code are unchanged."""
+    path = firing_path(out_dir, setting, ds.name)
+    stamp = {"data_hash": ds.content_hash(), "code": code_fingerprint()}
+    if not force and path.exists() and all(json.loads(path.read_text()).get(k) == v for k, v in stamp.items()):
+        return path
+    configs = {v: normalize_config(tok) for v, tok in setting.variants.items() if v != setting.reference}
+    record = {**stamp, "text": "lowercased (as TF-IDF does)" if setting.vec_overrides.get("lowercase") is not False
+              else "as stored (case kept)",
+              "splits": {split: count_firing(setting_texts(setting, texts), configs)
+                         for split, texts in (("train", ds.train_texts), ("test", ds.test_texts))}}
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(record, indent=2) + "\n")
+    return path
+
+
+def variant_firing(out_dir, setting: Setting, dataset: str, variant: str) -> dict | None:
+    """{"train": {...}, "test": {...}} firing counts of one variant; None if they were not counted here."""
+    path = firing_path(out_dir, setting, dataset)
+    if not path.exists():
+        return None
+    splits = json.loads(path.read_text())["splits"]
+    return {split: counts[variant] for split, counts in splits.items()}
+
+
 def run_ablation(out_dir=ABLATION_DIR, dataset_names=data.DATASET_NAMES, max_train=None, max_test=None,
                  seed: int = 0, force: bool = False, log=print) -> list[dict]:
     """Every variant of every setting, LR only; each dataset is loaded once."""
@@ -66,6 +128,7 @@ def run_ablation(out_dir=ABLATION_DIR, dataset_names=data.DATASET_NAMES, max_tra
             for tokenizer in setting.variants.values():
                 records += run_cell(ds, tokenizer, [CLASSIFIER], Path(out_dir) / setting.name, seed, force, log,
                                     params)
+            log("wrote", write_firing(out_dir, setting, ds, force))
     return records
 
 
@@ -103,6 +166,7 @@ def setting_stats(out_dir, setting: Setting, dataset: str, n_boot: int, seed: in
             variants[v]["minus_reference"] = stats.paired_difference(y_true, ref, preds[v], idx, k)
             variants[v]["mcnemar_accuracy"] = stats.mcnemar_exact(y_true, ref, preds[v])
             variants[v]["n_predictions_changed"] = int(np.sum(preds[v] != ref))
+            variants[v]["rule_fires"] = variant_firing(out_dir, setting, dataset, v)
     return {"label": setting.label, "reference": setting.reference, "n_test": int(len(y_true)), "n_labels": k,
             "reference_vs_grid": grid_check(out_dir, setting, dataset, y_true, ref), "variants": variants}
 
@@ -116,6 +180,9 @@ def compute(out_dir=ABLATION_DIR, n_boot: int = N_BOOT, seed: int = SEED) -> dic
               "difference": "variant minus the setting's reference (full LexFront), in fractions (x100 for points)",
               "mcnemar": "exact two-sided binomial test on discordant pairs, accuracy, every variant vs reference",
               "multiplicity": "none: every interval is a separate 95% interval",
+              "rule_fires": "per split: documents whose token list (docs) and lexer tokens whose normalized form "
+                            "(tokens) differ from full LexFront, on the text LexFront sees in the setting; 0 in train "
+                            "and test means the variant is the full system (not a test of the rule)",
               "not_covered": "training randomness: one training run per cell (seed 0)", "numpy": np.__version__,
               "settings": {s.name: {"label": s.label, "vectorizer_overrides": s.vec_overrides,
                                     "reference": s.reference, "variants": s.variants} for s in SETTINGS}}

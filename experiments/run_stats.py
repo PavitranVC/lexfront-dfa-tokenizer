@@ -60,8 +60,9 @@ def check_point_estimates(summary: dict, path: Path) -> None:
             raise ValueError(f"{path}: recomputed {name} {summary[name]['value']} != stored {stored[name]}")
 
 
-def dataset_stats(paths: dict[str, Path], n_boot: int, seed: int) -> dict:
-    """Per-run CIs, paired differences and McNemar for one dataset."""
+def dataset_stats(paths: dict[str, Path], n_boot: int, seed: int, pairs_spec=None, labels=None) -> dict:
+    """Per-run CIs, paired differences and McNemar for one dataset (`pairs_spec`/`labels`: default PAIRS)."""
+    pairs_spec, labels = pairs_spec or PAIRS, labels or PAIR_LABELS
     y_true, preds, k = load_dataset_predictions(paths)
     idx = stats.bootstrap_indices(len(y_true), n_boot, np.random.default_rng(seed))
     runs = {}
@@ -69,9 +70,9 @@ def dataset_stats(paths: dict[str, Path], n_boot: int, seed: int) -> dict:
         runs[run] = {"run_json": path.as_posix(), **stats.run_summary(y_true, preds[run], idx, k)}
         check_point_estimates(runs[run], path)
     pairs = {}
-    for name, a, b, with_mcnemar in PAIRS:
+    for name, a, b, with_mcnemar in pairs_spec:
         if a in preds and b in preds:
-            pairs[name] = {"a": a, "b": b, "label": PAIR_LABELS[name],
+            pairs[name] = {"a": a, "b": b, "label": labels[name],
                            **stats.paired_difference(y_true, preds[a], preds[b], idx, k)}
             if with_mcnemar:
                 pairs[name]["mcnemar_accuracy"] = stats.mcnemar_exact(y_true, preds[a], preds[b])
