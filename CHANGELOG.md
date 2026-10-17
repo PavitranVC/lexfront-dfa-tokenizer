@@ -2,6 +2,12 @@
 
 Newest first. Dates are the day the change was made (IST workday).
 
+## 2026-10-17 (finish 4: completion)
+- Final checks on `main` after PRs 17-19: `pytest -q` (181 passed), `notebooks/make_notebook.py --check`, `render_docs` and the CI
+  stats step leave `git diff` clean, and the notebook runs top to bottom from an empty directory (Python 3.12, `requirements.txt`
+  ranges, first cell clones the repo) in about 2 minutes (QUICK_MODE).
+- `docs/FINAL_SUMMARY.md`: one honest page for the review; README links it. `FIRST_PROMPT.md` deleted (stale, mentioned Docker).
+
 ## 2026-10-17 (P4)
 - AUDIT_5 A5-1: `build_tokenizer` lists its training texts first (an iterator was consumed by the hash); test added.
 - AUDIT_5 A5-2/A5-3: OOV wording corrected in the generated intrinsic lines, LEARN, module2 / REPORT_NOTES text, the

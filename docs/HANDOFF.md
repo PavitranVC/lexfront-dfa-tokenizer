@@ -1,8 +1,11 @@
-# HANDOFF (written by the finish session, 2026-10-17, status: P4 in review)
-DONE: PR #17 notebook setup fix (stale Colab clone with local changes no longer runs old code; CI job colab-simulation), PR #18 claims pass
-(stale prose, LEARN Q35-Q36), P4 branch claude/finish-3-p4: WordPiece + Unigram full-data runs, stats, tables, LEARN Q37-Q38, notebook, AUDIT_6.
-NUMBERS: results/subword2/stats/bootstrap.json: 16 of 30 diff CIs exclude 0; no subword run is above NLTK+LR in accuracy with CI excl. 0;
-Unigram macro-F1 vs NLTK+LR on go_emotions +1.26 [+0.10,+2.39] is the only one above (1 of 30, no multiplicity correction).
-SAFETY: compare_results (python -m experiments.compare_results --additive <main>/results results ...) = 0 differences for all pre-existing results.
-OPEN: one training run per cell; Unigram rounding margin ~5x (AUDIT_6); why differences appear is hypothesis; no transformers/Hinglish/more seeds.
-CHECK: `pytest -q`, `python notebooks/make_notebook.py --check`, `python -m experiments.render_docs && git diff --exit-code`, CI stats step, Colab simulation.
+# HANDOFF (written by the finish session, 2026-10-17, status: complete)
+DONE: PR #17 notebook setup fix (a Colab runtime that kept an older clone with local changes ran OLD code under the new notebook; now stashes + pulls,
+fails loudly; CI job colab-simulation), PR #18 claims pass, PR #19 P4 (WordPiece + Unigram, train-only, deterministic, AUDIT_6), final PR (summary, cleanup).
+NUMBERS: results/stats: NLTK->LexFront+LR -1.59 acc pts on tweet_topic [-2.38,-0.82], +0.09 / +0.00 (CIs include 0) on go_emotions / ag_news; NB->LR is the
+whole "proposed over existing" gain. results/sensitivity_case + ablation: go_emotions +1.15 [+0.46,+1.85] with case kept = lowercasing alone.
+results/bpe: hybrid below LexFront alone on all 3 datasets (17/24 CIs exclude 0, all down). results/subword2: no accuracy gain over NLTK+LR; 16/30 CIs exclude 0.
+OPEN: one training run per cell, no multiplicity correction; Unigram rounding margin ~5x noise (AUDIT_6); why differences appear = hypotheses only.
+OUT OF SCOPE (not done): transformers/DistilBERT (needs torch), Hinglish, more seeds.
+NOT VERIFIED: the owner's Colab traceback was never supplied; the notebook failure fixed is the one reproduced by simulation (stale dirty clone). Other
+simulations (3.12, newest and Colab-era older libraries, empty dir) ran clean.
+CHECK: `pytest -q`, `python notebooks/make_notebook.py --check`, `python -m experiments.render_docs && git diff --exit-code`, CI stats step, `python -m experiments.compare_results`.
