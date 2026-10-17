@@ -42,6 +42,10 @@ Blocks between `BEGIN`/`END` markers are regenerated; the text around them is ha
   (`predictions/<run>.json.gz` next to the run JSON); `python -m experiments.run_stats` resamples the test examples to
   get 95% percentile CIs and paired CIs for differences (`results/stats/bootstrap.json`). Training randomness is not
   covered (one run per cell; the NB and LR fits are deterministic and the full grid uses no subsampling).
+* **Every fit runs on one BLAS thread** (`threadpoolctl.threadpool_limits(1)`; recorded as `blas_threads = 1` in each
+  run JSON and part of its fingerprint). Without it the same seed gave slightly different metrics on a different
+  thread count (see "Reproducibility and leakage checks" below). The determinism claim above holds for this pinned
+  setting, with the library versions of the fingerprint.
 
 ## 3. Fallbacks used
 
@@ -174,8 +178,9 @@ _One training run per cell (seed 0). The 95% confidence intervals (table `ci_tab
 - ELONGATED is written with a back-reference (`[A-Za-z]*([A-Za-z])\1{2,}[A-Za-z]*`) and is not accepted by our regex parser, so it is not in the DFA engine. Spelled out as 26 alternatives (lowercase only) it compiles to 221 NFA / 157 DFA / 54 minimized states.
 <!-- END obs:dfa -->
 
-Reading the tables together (hand-written, still DRAFT): LexFront has the lowest OOV rate and the smallest vocabulary on
-all three datasets, but part of that is by construction (placeholders such as `<URL>`/`<NUM>`, elongation collapsing and slang
+Reading the tables together (hand-written, still DRAFT): among the word-level tokenizers (whitespace, NLTK,
+TweetTokenizer, LexFront) LexFront has the lowest OOV rate and the smallest vocabulary on all three datasets (the BPE rows
+have an even smaller vocabulary and near-zero OOV by construction, so they are not comparable), but part of that is by construction (placeholders such as `<URL>`/`<NUM>`, elongation collapsing and slang
 expansion merge strings), so it is not by itself evidence of better classification. Where the proposed-vs-existing
 accuracy change comes from differs per dataset (generated below from the JSON; whether each difference is larger than
 test-set noise is in the confidence-interval section that follows):
@@ -456,6 +461,25 @@ Vocabulary-size sensitivity (same code and protocol, vocabulary 32000, `results/
 
 _Subword grid: each BPE (vocabulary size in the last line) is trained on the lowercased train split of its dataset only; LexFront + BPE keeps LexFront's structural tokens whole and splits only word-like tokens. Differences are paired bootstraps over the test examples (same code, B and seed as `ci_table`), against the NLTK+LR and LexFront+LR runs of the main grid. One training run per cell, so training randomness is not covered; no multiplicity correction. These lines say which differences exclude 0 and in which direction, not why; any reason given elsewhere is a hypothesis._
 <!-- END obs:bpe_v32000 -->
+
+### Reproducibility and leakage checks
+Hand-written; every number below is in a file named here or in `docs/DECISIONS.md`.
+
+* **Thread nondeterminism and its fix.** Rerunning go_emotions NLTK + LR with 1 / 2 / 4 BLAS threads gave accuracy
+  0.552723 / 0.552941 / 0.553159 and macro-F1 0.338600 / 0.338894 / 0.338969: the same seed, a different float summation
+  order inside lbfgs. The first committed numbers were the 2-thread ones. Since the fix every vectorize / fit / predict
+  call is wrapped in `threadpool_limits(1)`; all run JSONs were regenerated, 12 metric values moved (at most 0.07 points in accuracy, 0.18 in macro-F1;
+  old and new values: `docs/DECISIONS.md`, "BLAS threads"), and a rerun with 4 threads reproduced the committed
+  go_emotions and ag_news LR cells. These shifts are much smaller than the test-set CIs, but they are the size of some
+  of the differences discussed above, which is why the pin matters.
+* **The subword vocabularies are trained on the train split only.** `build_tokenizer(name, train_texts)` is the only
+  constructor, the fingerprint carries a hash of the training texts, and `tests/test_bpe.py::test_bpe_is_trained_on_train_texts_only`
+  checks which texts reach the trainer. BPE training itself is deterministic (sorted initial alphabet; the same texts gave
+  different merge orders before that fix, at 1 and at 4 threads alike; see DECISIONS "P3") and independent of
+  `RAYON_NUM_THREADS` (tested). An end-to-end leakage test (replace the test texts with garbage and check the trained
+  tokenizer is bit-identical) is listed in `docs/HANDOFF.md` until it is run.
+* **What none of this covers:** training randomness across seeds (one run per cell), other datasets, other vocabulary
+  sizes than 8000 and 32000.
 
 ## 5. Pseudocode
 
