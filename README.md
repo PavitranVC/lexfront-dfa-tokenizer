@@ -8,6 +8,7 @@ existing tokenizers with the classifier held fixed. Compiler Design course proje
 
 * Notebook (Colab, CPU): `notebooks/LexFront_Review1.ipynb`
 * Study guide for the viva: `docs/LEARN.md`
+* One-page honest summary of the results: `docs/FINAL_SUMMARY.md`
 * Module write-ups: `docs/modules/module1.md`, `docs/modules/module2.md`
 * Design versions: `docs/versions/`  · Changelog: `CHANGELOG.md`
 * Results (JSON), tables, figures and notes: `results/` (`results/REPORT_NOTES.md`)
