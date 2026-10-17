@@ -10,3 +10,4 @@ Format: `date | id | status | one-line summary | commit`
 2026-10-16 | P2 | ready | per-rule ablation (LR, 3 datasets, CIs+McNemar), sensitivity CIs, AUDIT_3 fixes; all metrics identical | claude/p2-1
 2026-10-17 | P3 | ready | AUDIT_4 fixes (rule firing counts); BPE + LexFront+BPE hybrid grid (8000, 32000), stats, docs, notebook; pre-existing metrics identical | 58e125d
 2026-10-17 | COLLECTION | ready | cleaned 8-dataset collection (tweet_eval x5 added), fair validation-tuned NB/LR, generated report; pre-existing metrics identical | claude/fix-lexfront-notebook-setup-brk26t
+2026-10-17 | LARGE | pipeline ready, awaiting owner's Colab run | Sentiment140 ladder + noise test + Colab notebook + CI dry run; results/large not yet produced | claude/fix-lexfront-notebook-setup-brk26t

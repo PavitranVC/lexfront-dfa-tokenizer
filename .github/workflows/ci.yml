@@ -38,13 +38,16 @@ jobs:
           python -m experiments.run_subword2 --stats-only --out results/subword2
           python -m experiments.run_subword2 --stats-only --out results/quick/subword2
           python -m experiments.run_collection --stats-only --out results/collection
+          if [ -f results/large/runs.json ]; then python -m experiments.run_large --stats-only --out results/large; fi
           git diff --exit-code results
       - name: Generated doc blocks match the committed JSON
         run: |
           python -m experiments.render_docs
           git diff --exit-code
-      - name: Notebook matches its generator
-        run: python notebooks/make_notebook.py --check
+      - name: Notebooks match their generators
+        run: |
+          python notebooks/make_notebook.py --check
+          python notebooks/make_large_notebook.py --check
 
   notebook:
     # Runs the Colab notebook top to bottom in QUICK_MODE with FORCE (every run recomputed; needs Hugging Face).
@@ -82,3 +85,25 @@ jobs:
           mkdir "$RUNNER_TEMP/empty" && cp notebooks/LexFront_Review1.ipynb "$RUNNER_TEMP/empty/"
           cd "$RUNNER_TEMP/empty"
           jupyter nbconvert --to notebook --execute --ExecutePreprocessor.timeout=1200 --output out.ipynb LexFront_Review1.ipynb
+
+  large-dry-run:
+    # The Colab notebook for the Sentiment140 test, run as a small dry run (LEXFRONT_LARGE_QUICK=1) from an empty directory with
+    # Colab-like settings (Python 3.12, requirements.txt ranges): the same cells the real run uses, so a bug shows here and not hours in.
+    needs: tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: Run LexFront_Large.ipynb in quick mode from an empty directory
+        env:
+          LEXFRONT_REPO_URL: file://${{ github.workspace }}
+          LEXFRONT_LARGE_QUICK: "1"
+        run: |
+          mkdir "$RUNNER_TEMP/empty" && cp notebooks/LexFront_Large.ipynb "$RUNNER_TEMP/empty/"
+          cd "$RUNNER_TEMP/empty"
+          jupyter nbconvert --to notebook --execute --ExecutePreprocessor.timeout=1500 --output out.ipynb LexFront_Large.ipynb

@@ -7,6 +7,7 @@ symbol table and error recovery) used as a **pre-tokenizer for noisy English tex
 existing tokenizers with the classifier held fixed. Compiler Design course project, Review 1 (Modules 1 and 2).
 
 * Notebook (Colab, CPU): `notebooks/LexFront_Review1.ipynb`
+* Large-scale test on Sentiment140 (1.6 M tweets, Colab, CPU, resumable): [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/PavitranVC/lexfront-dfa-tokenizer/blob/main/notebooks/LexFront_Large.ipynb)  protocol: `docs/LARGE_PROTOCOL.md`
 * Study guide for the viva: `docs/LEARN.md`
 * One-page honest summary of the results: `docs/FINAL_SUMMARY.md`
 * Module write-ups: `docs/modules/module1.md`, `docs/modules/module2.md`
@@ -37,6 +38,7 @@ python -m experiments.run_module2
 python -m experiments.run_bpe              # BPE + hybrid grid and its stats (P3)
 python -m experiments.run_subword2         # WordPiece + Unigram grid and its stats (P4)
 python -m experiments.render_docs
+python -m experiments.run_large           # Sentiment140 large-scale test (--quick for a dry run; see the Colab notebook)
 python -m experiments.run_collection      # 8 cleaned datasets, default vs tuned classifiers (about 1.5 h; --stats-only rebuilds the report)
 ```
 
@@ -49,7 +51,7 @@ If the Colab runtime kept a clone from an earlier session, the first cell sets t
 ```
 lexer/        token spec, PLY lexer, normalizer, symbol table, LexFront, dfa/ (own regex->DFA engine)
 subword/      BPE, the LexFront + BPE hybrid, WordPiece and Unigram (Hugging Face `tokenizers`, trained on the train split only)
-experiments/  data, tokenizers, classifiers, metrics, evaluation loop, reports, figures; clean / data_extra / tuning / run_collection (dataset collection)
+experiments/  data, tokenizers, classifiers, metrics, evaluation loop, reports, figures; clean / data_extra / tuning / run_collection (dataset collection); large / run_large (Sentiment140)
 tests/        fast pytest suite
 results/      JSON results, tables/, figures/, module2/dfa_min.{dot,png}, REPORT_NOTES.md, collection/REPORT.md
 notebooks/    LexFront_Review1.ipynb (+ make_notebook.py)

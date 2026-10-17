@@ -2,6 +2,16 @@
 
 Newest first. Dates are the day the change was made (IST workday).
 
+## 2026-10-17 (large-scale Sentiment140 test: pipeline and Colab notebook; no results yet)
+- Owner asked for one huge dataset, run on Colab only, finished in a day. Added `experiments/large.py` and `experiments/run_large.py`
+  (user-grouped split, audit, seeded test-time noise, size ladder, resumable per-fit JSON, chunked paired bootstrap, practical-margin
+  verdicts, generated `results/large/REPORT.md`, zip and push-to-new-branch helpers), the generated notebook
+  `notebooks/LexFront_Large.ipynb` (`notebooks/make_large_notebook.py --check` runs in CI) and `docs/LARGE_PROTOCOL.md` (protocol and
+  hypotheses, written before the run). 20 tests in `tests/test_large.py`; two mutations (row-level split, fingerprint ignoring the data)
+  were confirmed to be caught. CI gets a `large-dry-run` job that executes the notebook in quick mode from an empty directory.
+- No existing run, fingerprint or metric changed (`compare_results` 0 differences). `results/large/` does not exist yet: it is written by
+  the owner's Colab run, and CI checks it with `run_large --stats-only` once it is committed.
+
 ## 2026-10-17 (dataset collection, cleaning and fair tuning)
 - Owner asked for a proper collection of datasets, cleaning, and better accuracy where easy. Scope chosen with the owner: add English
   noisy-text sets, keep it additive, tune the classifier equally for every tokenizer.
