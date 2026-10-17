@@ -1,5 +1,5 @@
 {
-  "timestamp_utc": "2026-10-17T09:53:38+00:00",
+  "timestamp_utc": "2026-10-17T10:07:09+00:00",
   "dataset": {
     "name": "tweet_topic",
     "hf_id": "cardiffnlp/tweet_topic_single",
@@ -80,8 +80,8 @@
     "macro_f1": 0.31464701144375407
   },
   "timing_seconds": {
-    "tokenize_and_vectorize": 0.414885637999987,
-    "classifier_fit": 0.10635703400004104
+    "tokenize_and_vectorize": 0.41465470100001767,
+    "classifier_fit": 0.11011722599999985
   },
   "environment": {
     "python": "3.11.17",

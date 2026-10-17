@@ -2,6 +2,13 @@
 
 Newest first. Dates are the day the change was made (IST workday).
 
+## 2026-10-17 (finish 6: NLTK proxy opt-in made robust)
+- The first fix (finish 5) decided whether to opt in by looking at four proxy variables, but NLTK's guard uses
+  `urllib.request.getproxies()` (any `*_proxy` variable, system settings), so a runtime with e.g. only `ALL_PROXY` was still refused.
+  Now the cell tries a normal download, and only if `punkt_tab` is still missing retries once with NLTK's documented opt-in
+  (`NLTK_ALLOW_PROXIED_URLOPEN=1` and `nltk.pathsec.ALLOW_PROXIED_FETCH=True`, both restored afterwards). Verified with real NLTK
+  (fresh HOME) for `HTTPS_PROXY` only and `ALL_PROXY` only; tests cover both and the no-proxy path.
+
 ## 2026-10-17 (finish 5: NLTK download behind a proxy)
 - Owner's Colab error in setup cell: NLTK refused the `punkt_tab` download because a proxy is configured (its SSRF guard, CWE-918:
   the proxy, not NLTK, chooses the destination). Reproduced here (fresh HOME, proxy set): `nltk.download` returned False and the

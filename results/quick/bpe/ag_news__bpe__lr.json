@@ -1,5 +1,5 @@
 {
-  "timestamp_utc": "2026-10-17T09:54:16+00:00",
+  "timestamp_utc": "2026-10-17T10:07:47+00:00",
   "dataset": {
     "name": "ag_news",
     "hf_id": "fancyzhx/ag_news",
@@ -78,8 +78,8 @@
     "macro_f1": 0.8497443306993002
   },
   "timing_seconds": {
-    "tokenize_and_vectorize": 0.8677984759999617,
-    "classifier_fit": 0.10815587400003324
+    "tokenize_and_vectorize": 0.8232209980000107,
+    "classifier_fit": 0.11422286900000245
   },
   "environment": {
     "python": "3.11.17",

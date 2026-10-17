@@ -1,5 +1,5 @@
 {
-  "timestamp_utc": "2026-10-17T09:53:08+00:00",
+  "timestamp_utc": "2026-10-17T10:06:41+00:00",
   "dataset": {
     "name": "go_emotions",
     "hf_id": "google-research-datasets/go_emotions",
@@ -69,8 +69,8 @@
       "vocab_size": 6320,
       "n_test_tokens": 6420,
       "n_test_whitespace_words": 6420,
-      "throughput_tokens_per_s": 25169067.91996238,
-      "throughput_docs_per_s": 1960207.7819285344,
+      "throughput_tokens_per_s": 24267899.465838317,
+      "throughput_docs_per_s": 1890023.322884604,
       "throughput_docs": 500
     },
     "nltk": {
@@ -80,8 +80,8 @@
       "vocab_size": 4789,
       "n_test_tokens": 7847,
       "n_test_whitespace_words": 6420,
-      "throughput_tokens_per_s": 172767.78930286624,
-      "throughput_docs_per_s": 11008.524869559466,
+      "throughput_tokens_per_s": 175267.00857767134,
+      "throughput_docs_per_s": 11167.77166927943,
       "throughput_docs": 500
     },
     "tweet": {
@@ -91,8 +91,8 @@
       "vocab_size": 4809,
       "n_test_tokens": 7676,
       "n_test_whitespace_words": 6420,
-      "throughput_tokens_per_s": 239962.33129100336,
-      "throughput_docs_per_s": 15630.688593733934,
+      "throughput_tokens_per_s": 247554.7917348523,
+      "throughput_docs_per_s": 16125.246986376518,
       "throughput_docs": 500
     },
     "lexfront": {
@@ -102,8 +102,8 @@
       "vocab_size": 4707,
       "n_test_tokens": 7669,
       "n_test_whitespace_words": 6420,
-      "throughput_tokens_per_s": 225217.30136409155,
-      "throughput_docs_per_s": 14683.615944979238,
+      "throughput_tokens_per_s": 258850.87560225956,
+      "throughput_docs_per_s": 16876.442535028007,
       "throughput_docs": 500
     },
     "bpe": {
@@ -113,8 +113,8 @@
       "vocab_size": 4802,
       "n_test_tokens": 9197,
       "n_test_whitespace_words": 6420,
-      "throughput_tokens_per_s": 584481.021588606,
-      "throughput_docs_per_s": 31775.634532380445,
+      "throughput_tokens_per_s": 1034780.4132277558,
+      "throughput_docs_per_s": 56256.410417949104,
       "throughput_docs": 500,
       "trained_vocab_size": 7986
     },
@@ -125,8 +125,8 @@
       "vocab_size": 4707,
       "n_test_tokens": 8837,
       "n_test_whitespace_words": 6420,
-      "throughput_tokens_per_s": 210071.17388238938,
-      "throughput_docs_per_s": 11885.887398573575,
+      "throughput_tokens_per_s": 218693.717209372,
+      "throughput_docs_per_s": 12373.75337837343,
       "throughput_docs": 500,
       "trained_vocab_size": 7711
     },
@@ -137,8 +137,8 @@
       "vocab_size": 4802,
       "n_test_tokens": 9156,
       "n_test_whitespace_words": 6420,
-      "throughput_tokens_per_s": 997033.1838034743,
-      "throughput_docs_per_s": 54446.984698748056,
+      "throughput_tokens_per_s": 979666.7784795238,
+      "throughput_docs_per_s": 53498.62267799934,
       "throughput_docs": 500,
       "trained_vocab_size": 7986
     },
@@ -149,8 +149,8 @@
       "vocab_size": 2299,
       "n_test_tokens": 11266,
       "n_test_whitespace_words": 6420,
-      "throughput_tokens_per_s": 901369.6321960074,
-      "throughput_docs_per_s": 40003.9779955622,
+      "throughput_tokens_per_s": 861823.7770038043,
+      "throughput_docs_per_s": 38248.880570025045,
       "throughput_docs": 500,
       "trained_vocab_size": 2668
     }

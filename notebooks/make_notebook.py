@@ -65,20 +65,26 @@ for package in ["punkt_tab"]:                      # what word_tokenize needs; a
     try:
         nltk.data.find(f"tokenizers/{package}")
     except LookupError:
-        # With a proxy configured NLTK refuses to download (its SSRF guard, CWE-918: the proxy, not NLTK, picks the
-        # destination). The opt-in below covers this one download of a data package from the NLTK data repository only.
-        proxied = any(os.environ.get(v) for v in ("HTTP_PROXY", "HTTPS_PROXY", "http_proxy", "https_proxy"))
-        before = os.environ.get("NLTK_ALLOW_PROXIED_URLOPEN")
-        if proxied:
-            os.environ["NLTK_ALLOW_PROXIED_URLOPEN"] = "1"
-            print("a proxy is configured: allowing NLTK to download", package, "through it")
+        nltk.download(package, quiet=True)
         try:
-            nltk.download(package, quiet=True)
-        finally:
-            if before is None:
-                os.environ.pop("NLTK_ALLOW_PROXIED_URLOPEN", None)
-            else:
-                os.environ["NLTK_ALLOW_PROXIED_URLOPEN"] = before
+            nltk.data.find(f"tokenizers/{package}")
+        except LookupError:
+            # Still missing. With a proxy configured NLTK refuses to download (its SSRF guard, CWE-918: the proxy, not
+            # NLTK, picks the destination); it detects proxies through urllib (any *_proxy variable, the system settings),
+            # so instead of guessing which one is set, retry once with the opt-in, for this one download only.
+            import nltk.pathsec as pathsec
+            before = os.environ.get("NLTK_ALLOW_PROXIED_URLOPEN"), getattr(pathsec, "ALLOW_PROXIED_FETCH", None)
+            print("download of", package, "failed or was refused; retrying once with NLTK's proxy opt-in")
+            os.environ["NLTK_ALLOW_PROXIED_URLOPEN"] = "1"
+            pathsec.ALLOW_PROXIED_FETCH = True
+            try:
+                nltk.download(package, quiet=True)
+            finally:
+                pathsec.ALLOW_PROXIED_FETCH = before[1]
+                if before[0] is None:
+                    os.environ.pop("NLTK_ALLOW_PROXIED_URLOPEN", None)
+                else:
+                    os.environ["NLTK_ALLOW_PROXIED_URLOPEN"] = before[0]
         nltk.data.find(f"tokenizers/{package}")    # raises LookupError with the download hint if it is still missing'''
 
 CELLS = [

@@ -5,6 +5,8 @@ import subprocess
 import sys
 from pathlib import Path
 
+import pytest
+
 ROOT = Path(__file__).resolve().parents[1]
 spec = importlib.util.spec_from_file_location("make_notebook", ROOT / "notebooks" / "make_notebook.py")
 make_notebook = importlib.util.module_from_spec(spec)
@@ -76,32 +78,40 @@ class _Data:
             raise LookupError(name)
 nltk = types.ModuleType("nltk")
 nltk.data = _Data()
+pathsec = types.ModuleType("nltk.pathsec")
+pathsec.ALLOW_PROXIED_FETCH = False
 def download(package, quiet=True):
-    # what NLTK's SSRF guard does: refuse when a proxy is configured and the opt-in is absent
-    proxy = any(os.environ.get(v) for v in ("HTTP_PROXY", "HTTPS_PROXY", "http_proxy", "https_proxy"))
-    if proxy and os.environ.get("NLTK_ALLOW_PROXIED_URLOPEN") != "1":
-        raise RuntimeError("refusing to fetch through a proxy (SSRF guard)")
+    # what NLTK's SSRF guard does: it sees any *_proxy variable (urllib.request.getproxies) and refuses without the opt-in;
+    # nltk.download prints the refusal and returns False
+    proxy = any(k.lower().endswith("_proxy") and v for k, v in os.environ.items())
+    optin = pathsec.ALLOW_PROXIED_FETCH or os.environ.get("NLTK_ALLOW_PROXIED_URLOPEN") == "1"
+    if proxy and not optin:
+        return False
     _Data.found = True
     return True
 nltk.download = download
+nltk.pathsec = pathsec
 sys.modules["nltk"] = nltk
+sys.modules["nltk.pathsec"] = pathsec
 """
 
 
 def run_nltk_block(env_extra):
     source = make_notebook.SETUP.split("import nltk\n", 1)[1]
-    code = "import os\n" + NLTK_STUB + "import nltk\n" + source + "\nprint('opt-in left set:', 'NLTK_ALLOW_PROXIED_URLOPEN' in os.environ)\n"
-    env = {k: v for k, v in os.environ.items() if "proxy" not in k.lower() and k != "NLTK_ALLOW_PROXIED_URLOPEN"}
+    code = ("import os\n" + NLTK_STUB + "import nltk\n" + source +
+            "\nprint('opt-in left set:', 'NLTK_ALLOW_PROXIED_URLOPEN' in os.environ or nltk.pathsec.ALLOW_PROXIED_FETCH)\n")
+    env = {k: v for k, v in os.environ.items() if not k.lower().endswith("_proxy") and k != "NLTK_ALLOW_PROXIED_URLOPEN"}
     return subprocess.run([sys.executable, "-c", code], capture_output=True, text=True, env={**env, **env_extra})
 
 
-def test_nltk_download_works_behind_a_proxy_and_opt_in_is_scoped():
-    result = run_nltk_block({"HTTPS_PROXY": "http://proxy.invalid:3128"})
+@pytest.mark.parametrize("variable", ["HTTPS_PROXY", "http_proxy", "ALL_PROXY"])
+def test_nltk_download_works_behind_a_proxy_and_opt_in_is_scoped(variable):
+    result = run_nltk_block({variable: "http://proxy.invalid:3128"})
     assert result.returncode == 0, result.stderr
-    assert "allowing NLTK to download punkt_tab" in result.stdout and "opt-in left set: False" in result.stdout
+    assert "retrying once" in result.stdout and "opt-in left set: False" in result.stdout
 
 
-def test_nltk_download_without_proxy_does_not_set_the_opt_in():
+def test_nltk_download_without_proxy_does_not_use_the_opt_in():
     result = run_nltk_block({})
     assert result.returncode == 0, result.stderr
-    assert "allowing NLTK" not in result.stdout and "opt-in left set: False" in result.stdout
+    assert "retrying" not in result.stdout and "opt-in left set: False" in result.stdout
