@@ -2,6 +2,11 @@
 
 Newest first. Dates are the day the change was made (IST workday).
 
+## 2026-10-17 (wording fix: NB alpha grid)
+- Docs said the NB `alpha` grid was "probably too narrow" and the NB gains "understated". A spot check with `alpha` down to 0.003 on four of the
+  eight datasets (not saved, so not a result) changed the selection on one dataset only, so the claim was stronger than the evidence. Reworded in
+  DECISIONS, HANDOFF and FINAL_SUMMARY to "edge values were often chosen; a wider grid was not run in the committed results". No code or result changed.
+
 ## 2026-10-17 (large-scale Sentiment140 test: pipeline and Colab notebook; no results yet)
 - Owner asked for one huge dataset, run on Colab only, finished in a day. Added `experiments/large.py` and `experiments/run_large.py`
   (user-grouped split, audit, seeded test-time noise, size ladder, resumable per-fit JSON, chunked paired bootstrap, practical-margin

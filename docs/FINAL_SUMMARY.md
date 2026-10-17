@@ -34,7 +34,7 @@ largest cut is tweet_eval_hate, test 2970 -> 2731) and rerun with the default se
 the same search for every tokenizer. Tuning raised accuracy in 44 of 64 cells and lowered it in 16 (mean +1.63 points). It qualifies two
 statements above: with tuned Naive Bayes the NLTK+NB to NLTK+LR gap on go_emotions shrinks (17.45 -> 10.49 points), and LexFront+LR minus
 NLTK+LR has no CI excluding 0 on any of the eight datasets (default settings: 4 of 8, two up and two down; tweet_topic -1.59 -> -0.32
-[-1.15, +0.47]). One run per cell, one validation split, an NB grid that is probably too narrow; reasons are hypotheses.
+[-1.15, +0.47]). One run per cell, one validation split, an NB `alpha` grid whose edge values were often chosen (a wider grid was not run); reasons are hypotheses.
 
 ## What we do not claim
 Better, first or novel. That LexFront is worse in general (three datasets, one classifier family, one run per cell). Why any
