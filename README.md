@@ -37,6 +37,7 @@ python -m experiments.run_module2
 python -m experiments.run_bpe              # BPE + hybrid grid and its stats (P3)
 python -m experiments.run_subword2         # WordPiece + Unigram grid and its stats (P4)
 python -m experiments.render_docs
+python -m experiments.run_collection      # 8 cleaned datasets, default vs tuned classifiers (about 1.5 h; --stats-only rebuilds the report)
 ```
 
 The notebook runs top to bottom on a fresh Colab runtime; `QUICK_MODE = True` (default) uses a fixed-seed subsample.
@@ -48,13 +49,14 @@ If the Colab runtime kept a clone from an earlier session, the first cell sets t
 ```
 lexer/        token spec, PLY lexer, normalizer, symbol table, LexFront, dfa/ (own regex->DFA engine)
 subword/      BPE, the LexFront + BPE hybrid, WordPiece and Unigram (Hugging Face `tokenizers`, trained on the train split only)
-experiments/  data, tokenizers, classifiers, metrics, evaluation loop, reports, figures
+experiments/  data, tokenizers, classifiers, metrics, evaluation loop, reports, figures; clean / data_extra / tuning / run_collection (dataset collection)
 tests/        fast pytest suite
-results/      JSON results, tables/, figures/, module2/dfa_min.{dot,png}, REPORT_NOTES.md
+results/      JSON results, tables/, figures/, module2/dfa_min.{dot,png}, REPORT_NOTES.md, collection/REPORT.md
 notebooks/    LexFront_Review1.ipynb (+ make_notebook.py)
 docs/         versions/, modules/, LEARN.md
 ```
 
 Out of scope: transformers (they need torch), Hinglish, more seeds. Added since review 1: the per-rule normalization ablation
 (`docs/versions/v4-ablation.md`) BPE + the LexFront + BPE hybrid (`docs/versions/v5-bpe-hybrid.md`), and WordPiece and Unigram
-(`docs/versions/v6-wordpiece-unigram.md`).
+(`docs/versions/v6-wordpiece-unigram.md`), and a cleaned eight-dataset collection with fair classifier tuning
+(`results/collection/REPORT.md`, `docs/DECISIONS.md`).

@@ -1,0 +1,99 @@
+{
+  "timestamp_utc": "2026-10-17T11:10:04+00:00",
+  "dataset": {
+    "name": "tweet_eval_emotion",
+    "hf_id": "cardiffnlp/tweet_eval",
+    "config": "emotion",
+    "n_train": 3232,
+    "n_test": 1421,
+    "n_labels": 4,
+    "label_names": [
+      "anger",
+      "joy",
+      "optimism",
+      "sadness"
+    ],
+    "split_info": {
+      "train": "train",
+      "test": "test",
+      "reason": "official splits (the validation split is not used)",
+      "cleaning": {
+        "n_before": {
+          "train": 3257,
+          "test": 1421
+        },
+        "n_after": {
+          "train": 3232,
+          "test": 1421
+        },
+        "removed": {
+          "empty": {
+            "train": 0,
+            "test": 0
+          },
+          "conflicting": {
+            "train": 0,
+            "test": 0
+          },
+          "duplicate": {
+            "train": 25,
+            "test": 0
+          },
+          "test_in_train": 0
+        }
+      },
+      "subsample": {
+        "max_train": null,
+        "max_test": null,
+        "seed": 0
+      }
+    }
+  },
+  "data_hash": "ad88ba4499fb4cbe",
+  "tokenizer": "tweet",
+  "vectorizer": {
+    "type": "TfidfVectorizer",
+    "lowercase": true,
+    "min_df": 2,
+    "ngram_range": [
+      1,
+      1
+    ],
+    "token_pattern": null,
+    "n_features": 3888
+  },
+  "classifier": {
+    "name": "nb",
+    "params": {
+      "alpha": 1.0,
+      "class_prior": null,
+      "fit_prior": true,
+      "force_alpha": true
+    }
+  },
+  "seed": 0,
+  "fingerprint": {
+    "config": "88b9c34968b08cd3",
+    "code": "b1abb9579a754350"
+  },
+  "metrics": {
+    "accuracy": 0.5489092188599578,
+    "macro_f1": 0.38875619802973116
+  },
+  "timing_seconds": {
+    "tokenize_and_vectorize": 0.4328324099999463,
+    "classifier_fit": 0.0029142240000510355
+  },
+  "environment": {
+    "python": "3.11.17",
+    "sklearn": "1.9.1",
+    "nltk": "3.10.3",
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "threadpoolctl": "3.7.0",
+    "machine": "x86_64",
+    "platform": "Linux-6.18.44-fc-v139-x86_64-with-glibc2.39",
+    "blas_threads": 1
+  },
+  "predictions_file": "predictions/tweet_eval_emotion__tweet__nb.json.gz"
+}

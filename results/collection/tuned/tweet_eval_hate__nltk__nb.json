@@ -1,0 +1,142 @@
+{
+  "timestamp_utc": "2026-10-17T11:10:28+00:00",
+  "setting": "tuned",
+  "dataset": {
+    "name": "tweet_eval_hate",
+    "hf_id": "cardiffnlp/tweet_eval",
+    "config": "hate",
+    "n_train": 8983,
+    "n_test": 2731,
+    "n_labels": 2,
+    "label_names": [
+      "non-hate",
+      "hate"
+    ],
+    "split_info": {
+      "train": "train",
+      "test": "test",
+      "reason": "official splits (the validation split is not used)",
+      "cleaning": {
+        "n_before": {
+          "train": 9000,
+          "test": 2970
+        },
+        "n_after": {
+          "train": 8983,
+          "test": 2731
+        },
+        "removed": {
+          "empty": {
+            "train": 7,
+            "test": 0
+          },
+          "conflicting": {
+            "train": 5,
+            "test": 0
+          },
+          "duplicate": {
+            "train": 5,
+            "test": 4
+          },
+          "test_in_train": 235
+        }
+      },
+      "subsample": {
+        "max_train": null,
+        "max_test": null,
+        "seed": 0
+      }
+    }
+  },
+  "data_hash": "e6977bf90ba5f4ef",
+  "tokenizer": "nltk",
+  "vectorizer": {
+    "type": "TfidfVectorizer",
+    "lowercase": true,
+    "min_df": 2,
+    "ngram_range": [
+      1,
+      2
+    ],
+    "token_pattern": null,
+    "sublinear_tf": true,
+    "name": "bigram_sublinear",
+    "n_features": 30285
+  },
+  "classifier": {
+    "name": "nb",
+    "params": {
+      "alpha": 0.3,
+      "class_prior": null,
+      "fit_prior": true,
+      "force_alpha": true
+    }
+  },
+  "tuning": {
+    "n_fit": 8085,
+    "n_val": 898,
+    "scores": [
+      {
+        "vectorizer": "unigram",
+        "value": 0.1,
+        "val_accuracy": 0.7739420935412027
+      },
+      {
+        "vectorizer": "unigram",
+        "value": 0.3,
+        "val_accuracy": 0.7739420935412027
+      },
+      {
+        "vectorizer": "unigram",
+        "value": 1.0,
+        "val_accuracy": 0.7728285077951003
+      },
+      {
+        "vectorizer": "bigram_sublinear",
+        "value": 0.1,
+        "val_accuracy": 0.7828507795100222
+      },
+      {
+        "vectorizer": "bigram_sublinear",
+        "value": 0.3,
+        "val_accuracy": 0.7951002227171492
+      },
+      {
+        "vectorizer": "bigram_sublinear",
+        "value": 1.0,
+        "val_accuracy": 0.7895322939866369
+      }
+    ],
+    "selected": {
+      "vectorizer": "bigram_sublinear",
+      "value": 0.3,
+      "val_accuracy": 0.7951002227171492
+    }
+  },
+  "seed": 0,
+  "fingerprint": {
+    "config": "c95eab636fc5d8f4",
+    "code": "c10c5a86aa23e245"
+  },
+  "metrics": {
+    "accuracy": 0.5148297326986452,
+    "macro_f1": 0.4866367294904736
+  },
+  "timing_seconds": {
+    "tokenize_and_vectorize": 0.9223731179999959,
+    "classifier_fit": 0.004956588999903033,
+    "search_and_fit_total": 2.7312263750000056
+  },
+  "environment": {
+    "python": "3.11.17",
+    "sklearn": "1.9.1",
+    "nltk": "3.10.3",
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "threadpoolctl": "3.7.0",
+    "machine": "x86_64",
+    "platform": "Linux-6.18.44-fc-v139-x86_64-with-glibc2.39",
+    "blas_threads": 1
+  },
+  "predictions_file": "predictions/tweet_eval_hate__nltk__nb.json.gz"
+}

@@ -1,0 +1,97 @@
+{
+  "timestamp_utc": "2026-10-17T11:10:45+00:00",
+  "dataset": {
+    "name": "tweet_eval_offensive",
+    "hf_id": "cardiffnlp/tweet_eval",
+    "config": "offensive",
+    "n_train": 11861,
+    "n_test": 842,
+    "n_labels": 2,
+    "label_names": [
+      "non-offensive",
+      "offensive"
+    ],
+    "split_info": {
+      "train": "train",
+      "test": "test",
+      "reason": "official splits (the validation split is not used)",
+      "cleaning": {
+        "n_before": {
+          "train": 11916,
+          "test": 860
+        },
+        "n_after": {
+          "train": 11861,
+          "test": 842
+        },
+        "removed": {
+          "empty": {
+            "train": 0,
+            "test": 0
+          },
+          "conflicting": {
+            "train": 17,
+            "test": 2
+          },
+          "duplicate": {
+            "train": 38,
+            "test": 11
+          },
+          "test_in_train": 5
+        }
+      },
+      "subsample": {
+        "max_train": null,
+        "max_test": null,
+        "seed": 0
+      }
+    }
+  },
+  "data_hash": "419368a7af8c067f",
+  "tokenizer": "whitespace",
+  "vectorizer": {
+    "type": "TfidfVectorizer",
+    "lowercase": true,
+    "min_df": 2,
+    "ngram_range": [
+      1,
+      1
+    ],
+    "token_pattern": null,
+    "n_features": 10410
+  },
+  "classifier": {
+    "name": "nb",
+    "params": {
+      "alpha": 1.0,
+      "class_prior": null,
+      "fit_prior": true,
+      "force_alpha": true
+    }
+  },
+  "seed": 0,
+  "fingerprint": {
+    "config": "229d67eff5e3af3c",
+    "code": "b1abb9579a754350"
+  },
+  "metrics": {
+    "accuracy": 0.7624703087885986,
+    "macro_f1": 0.5666584321475625
+  },
+  "timing_seconds": {
+    "tokenize_and_vectorize": 0.1792933310000535,
+    "classifier_fit": 0.005198632000201542
+  },
+  "environment": {
+    "python": "3.11.17",
+    "sklearn": "1.9.1",
+    "nltk": "3.10.3",
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "threadpoolctl": "3.7.0",
+    "machine": "x86_64",
+    "platform": "Linux-6.18.44-fc-v139-x86_64-with-glibc2.39",
+    "blas_threads": 1
+  },
+  "predictions_file": "predictions/tweet_eval_offensive__whitespace__nb.json.gz"
+}

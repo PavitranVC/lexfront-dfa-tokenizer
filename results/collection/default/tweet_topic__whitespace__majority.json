@@ -1,0 +1,104 @@
+{
+  "timestamp_utc": "2026-10-17T10:48:32+00:00",
+  "dataset": {
+    "name": "tweet_topic",
+    "hf_id": "cardiffnlp/tweet_topic_single",
+    "config": null,
+    "n_train": 3598,
+    "n_test": 3398,
+    "n_labels": 6,
+    "label_names": [
+      "arts_&_culture",
+      "business_&_entrepreneurs",
+      "pop_culture",
+      "daily_life",
+      "sports_&_gaming",
+      "science_&_technology"
+    ],
+    "split_info": {
+      "train": "train_coling2022",
+      "test": "test_coling2022",
+      "card_confirms_coling2022": true,
+      "reason": "COLING 2022 temporal split confirmed by the dataset card and present in the repo",
+      "revision": "refs/convert/parquet",
+      "card_quote": "**IMPORTANT NOTE:** To get a result that is comparable with the results of the COLING 2022 Tweet Topic paper, please use `train_coling2022` and `test_coling2022` for temporal-shift, and `train_coling2022_random` and `test_coling2022_random` fir random split (the coling2022 split does not have validation set).",
+      "loading_note": "repo uses a loading script; read from the auto-converted parquet revision",
+      "cleaning": {
+        "n_before": {
+          "train": 3598,
+          "test": 3399
+        },
+        "n_after": {
+          "train": 3598,
+          "test": 3398
+        },
+        "removed": {
+          "empty": {
+            "train": 0,
+            "test": 0
+          },
+          "conflicting": {
+            "train": 0,
+            "test": 0
+          },
+          "duplicate": {
+            "train": 0,
+            "test": 1
+          },
+          "test_in_train": 0
+        }
+      },
+      "subsample": {
+        "max_train": null,
+        "max_test": null,
+        "seed": 0
+      }
+    }
+  },
+  "data_hash": "ba7f70e838ecaaec",
+  "tokenizer": "whitespace",
+  "vectorizer": {
+    "type": "TfidfVectorizer",
+    "lowercase": true,
+    "min_df": 2,
+    "ngram_range": [
+      1,
+      1
+    ],
+    "token_pattern": null,
+    "n_features": 6330
+  },
+  "classifier": {
+    "name": "majority",
+    "params": {
+      "constant": null,
+      "random_state": null,
+      "strategy": "most_frequent"
+    }
+  },
+  "seed": 0,
+  "fingerprint": {
+    "config": "c7d5841303e2c6c8",
+    "code": "b1abb9579a754350"
+  },
+  "metrics": {
+    "accuracy": 0.4002354326074161,
+    "macro_f1": 0.0952781280650133
+  },
+  "timing_seconds": {
+    "tokenize_and_vectorize": 0.28433015500002057,
+    "classifier_fit": 0.002619541000001391
+  },
+  "environment": {
+    "python": "3.11.17",
+    "sklearn": "1.9.1",
+    "nltk": "3.10.3",
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "threadpoolctl": "3.7.0",
+    "machine": "x86_64",
+    "platform": "Linux-6.18.44-fc-v139-x86_64-with-glibc2.39",
+    "blas_threads": 1
+  },
+  "predictions_file": "predictions/tweet_topic__whitespace__majority.json.gz"
+}

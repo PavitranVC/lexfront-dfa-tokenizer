@@ -1,0 +1,56 @@
+{
+  "dataset": "tweet_eval_sentiment",
+  "rules": "empty -> conflicting -> duplicate -> test_in_train (see experiments/clean.py)",
+  "text_key": "lower-cased, whitespace collapsed; kept texts are the original strings",
+  "n_before": {
+    "train": 45615,
+    "test": 12284
+  },
+  "n_after": {
+    "train": 45582,
+    "test": 12277
+  },
+  "removed": {
+    "empty": {
+      "train": 0,
+      "test": 0
+    },
+    "conflicting": {
+      "train": 6,
+      "test": 7
+    },
+    "duplicate": {
+      "train": 27,
+      "test": 0
+    },
+    "test_in_train": 0
+  },
+  "class_counts_before": {
+    "train": {
+      "0": 7093,
+      "1": 20673,
+      "2": 17849
+    },
+    "test": {
+      "0": 3972,
+      "1": 5937,
+      "2": 2375
+    }
+  },
+  "class_counts_after": {
+    "train": {
+      "0": 7091,
+      "1": 20653,
+      "2": 17838
+    },
+    "test": {
+      "0": 3968,
+      "1": 5934,
+      "2": 2375
+    }
+  },
+  "classes_missing_after": {
+    "train": [],
+    "test": []
+  }
+}

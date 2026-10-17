@@ -1,0 +1,99 @@
+{
+  "timestamp_utc": "2026-10-17T10:57:53+00:00",
+  "dataset": {
+    "name": "ag_news",
+    "hf_id": "fancyzhx/ag_news",
+    "config": null,
+    "n_train": 119827,
+    "n_test": 7590,
+    "n_labels": 4,
+    "label_names": [
+      "World",
+      "Sports",
+      "Business",
+      "Sci/Tech"
+    ],
+    "split_info": {
+      "train": "train",
+      "test": "test",
+      "reason": "official splits",
+      "cleaning": {
+        "n_before": {
+          "train": 120000,
+          "test": 7600
+        },
+        "n_after": {
+          "train": 119827,
+          "test": 7590
+        },
+        "removed": {
+          "empty": {
+            "train": 0,
+            "test": 0
+          },
+          "conflicting": {
+            "train": 44,
+            "test": 0
+          },
+          "duplicate": {
+            "train": 129,
+            "test": 0
+          },
+          "test_in_train": 10
+        }
+      },
+      "subsample": {
+        "max_train": null,
+        "max_test": null,
+        "seed": 0
+      }
+    }
+  },
+  "data_hash": "176cc788513c6f6f",
+  "tokenizer": "whitespace",
+  "vectorizer": {
+    "type": "TfidfVectorizer",
+    "lowercase": true,
+    "min_df": 2,
+    "ngram_range": [
+      1,
+      1
+    ],
+    "token_pattern": null,
+    "n_features": 75544
+  },
+  "classifier": {
+    "name": "nb",
+    "params": {
+      "alpha": 1.0,
+      "class_prior": null,
+      "fit_prior": true,
+      "force_alpha": true
+    }
+  },
+  "seed": 0,
+  "fingerprint": {
+    "config": "3dac7ca2cd317d52",
+    "code": "b1abb9579a754350"
+  },
+  "metrics": {
+    "accuracy": 0.9015810276679842,
+    "macro_f1": 0.9012912563664067
+  },
+  "timing_seconds": {
+    "tokenize_and_vectorize": 2.8353063130000464,
+    "classifier_fit": 0.05038784399994256
+  },
+  "environment": {
+    "python": "3.11.17",
+    "sklearn": "1.9.1",
+    "nltk": "3.10.3",
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "threadpoolctl": "3.7.0",
+    "machine": "x86_64",
+    "platform": "Linux-6.18.44-fc-v139-x86_64-with-glibc2.39",
+    "blas_threads": 1
+  },
+  "predictions_file": "predictions/ag_news__whitespace__nb.json.gz"
+}

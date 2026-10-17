@@ -1,0 +1,2096 @@
+{
+  "config": {
+    "setting": "default",
+    "method": "percentile bootstrap over test examples",
+    "n_boot": 2000,
+    "seed": 20261016,
+    "pairs": [
+      {
+        "name": "tokenizer_only_lr",
+        "a": "nltk__lr",
+        "b": "lexfront__lr"
+      },
+      {
+        "name": "tweet_vs_lexfront_lr",
+        "a": "tweet__lr",
+        "b": "lexfront__lr"
+      }
+    ],
+    "difference": "b minus a, in fractions (x100 for points)",
+    "not_covered": "training randomness (one training run per cell, seed 0) and the validation-split randomness of the tuned setting"
+  },
+  "datasets": {
+    "tweet_topic": {
+      "n_test": 3398,
+      "n_labels": 6,
+      "runs": {
+        "lexfront__lr": {
+          "run_json": "results/collection/default/tweet_topic__lexfront__lr.json",
+          "accuracy": {
+            "value": 0.7071806945261919,
+            "ci": [
+              0.692171865803,
+              0.722491171277
+            ]
+          },
+          "macro_f1": {
+            "value": 0.36179680512216184,
+            "ci": [
+              0.346058021108,
+              0.379843633985
+            ]
+          }
+        },
+        "lexfront__majority": {
+          "run_json": "results/collection/default/tweet_topic__lexfront__majority.json",
+          "accuracy": {
+            "value": 0.4002354326074161,
+            "ci": [
+              0.384049440848,
+              0.416127133608
+            ]
+          },
+          "macro_f1": {
+            "value": 0.0952781280650133,
+            "ci": [
+              0.092494152669,
+              0.097949570518
+            ]
+          }
+        },
+        "lexfront__nb": {
+          "run_json": "results/collection/default/tweet_topic__lexfront__nb.json",
+          "accuracy": {
+            "value": 0.7042377869334903,
+            "ci": [
+              0.688927310182,
+              0.719246615656
+            ]
+          },
+          "macro_f1": {
+            "value": 0.278407078048335,
+            "ci": [
+              0.271128674119,
+              0.285916232081
+            ]
+          }
+        },
+        "nltk__lr": {
+          "run_json": "results/collection/default/tweet_topic__nltk__lr.json",
+          "accuracy": {
+            "value": 0.7230723955267805,
+            "ci": [
+              0.708063566804,
+              0.73778693349
+            ]
+          },
+          "macro_f1": {
+            "value": 0.36952562783519105,
+            "ci": [
+              0.353937365094,
+              0.38699975403
+            ]
+          }
+        },
+        "nltk__majority": {
+          "run_json": "results/collection/default/tweet_topic__nltk__majority.json",
+          "accuracy": {
+            "value": 0.4002354326074161,
+            "ci": [
+              0.384049440848,
+              0.416127133608
+            ]
+          },
+          "macro_f1": {
+            "value": 0.0952781280650133,
+            "ci": [
+              0.092494152669,
+              0.097949570518
+            ]
+          }
+        },
+        "nltk__nb": {
+          "run_json": "results/collection/default/tweet_topic__nltk__nb.json",
+          "accuracy": {
+            "value": 0.7098293113596233,
+            "ci": [
+              0.694526191878,
+              0.724543849323
+            ]
+          },
+          "macro_f1": {
+            "value": 0.2855717249253558,
+            "ci": [
+              0.277458810096,
+              0.293780891267
+            ]
+          }
+        },
+        "tweet__lr": {
+          "run_json": "results/collection/default/tweet_topic__tweet__lr.json",
+          "accuracy": {
+            "value": 0.7201294879340788,
+            "ci": [
+              0.70570924073,
+              0.735138316657
+            ]
+          },
+          "macro_f1": {
+            "value": 0.3669639273521074,
+            "ci": [
+              0.350782843251,
+              0.384096367689
+            ]
+          }
+        },
+        "tweet__majority": {
+          "run_json": "results/collection/default/tweet_topic__tweet__majority.json",
+          "accuracy": {
+            "value": 0.4002354326074161,
+            "ci": [
+              0.384049440848,
+              0.416127133608
+            ]
+          },
+          "macro_f1": {
+            "value": 0.0952781280650133,
+            "ci": [
+              0.092494152669,
+              0.097949570518
+            ]
+          }
+        },
+        "tweet__nb": {
+          "run_json": "results/collection/default/tweet_topic__tweet__nb.json",
+          "accuracy": {
+            "value": 0.7077692760447322,
+            "ci": [
+              0.692753090053,
+              0.722483814008
+            ]
+          },
+          "macro_f1": {
+            "value": 0.28303892444429957,
+            "ci": [
+              0.275248892461,
+              0.291406944167
+            ]
+          }
+        },
+        "whitespace__lr": {
+          "run_json": "results/collection/default/tweet_topic__whitespace__lr.json",
+          "accuracy": {
+            "value": 0.7048263684520306,
+            "ci": [
+              0.689817539729,
+              0.720129487934
+            ]
+          },
+          "macro_f1": {
+            "value": 0.35756633632979257,
+            "ci": [
+              0.342649768664,
+              0.373215907072
+            ]
+          }
+        },
+        "whitespace__majority": {
+          "run_json": "results/collection/default/tweet_topic__whitespace__majority.json",
+          "accuracy": {
+            "value": 0.4002354326074161,
+            "ci": [
+              0.384049440848,
+              0.416127133608
+            ]
+          },
+          "macro_f1": {
+            "value": 0.0952781280650133,
+            "ci": [
+              0.092494152669,
+              0.097949570518
+            ]
+          }
+        },
+        "whitespace__nb": {
+          "run_json": "results/collection/default/tweet_topic__whitespace__nb.json",
+          "accuracy": {
+            "value": 0.7024720423778693,
+            "ci": [
+              0.687455856386,
+              0.717186580341
+            ]
+          },
+          "macro_f1": {
+            "value": 0.2882362339855291,
+            "ci": [
+              0.279276603662,
+              0.296918865192
+            ]
+          }
+        }
+      },
+      "pairs": {
+        "tokenizer_only_lr": {
+          "a": "nltk__lr",
+          "b": "lexfront__lr",
+          "label": "LexFront+LR minus NLTK+LR (tokenizer only)",
+          "accuracy": {
+            "diff": -0.015891701001,
+            "ci": [
+              -0.024426133019,
+              -0.007938493231
+            ],
+            "ci_excludes_zero": true
+          },
+          "macro_f1": {
+            "diff": -0.007728822713,
+            "ci": [
+              -0.019306315356,
+              0.003747682977
+            ],
+            "ci_excludes_zero": false
+          },
+          "mcnemar_accuracy": {
+            "a_right_b_wrong": 124,
+            "a_wrong_b_right": 70,
+            "p_value": 0.0001292798164731033
+          }
+        },
+        "tweet_vs_lexfront_lr": {
+          "a": "tweet__lr",
+          "b": "lexfront__lr",
+          "label": "LexFront+LR minus TweetTokenizer+LR (tokenizer only)",
+          "accuracy": {
+            "diff": -0.012948793408,
+            "ci": [
+              -0.02030606239,
+              -0.005885815185
+            ],
+            "ci_excludes_zero": true
+          },
+          "macro_f1": {
+            "diff": -0.00516712223,
+            "ci": [
+              -0.015974477126,
+              0.005698375816
+            ],
+            "ci_excludes_zero": false
+          }
+        }
+      }
+    },
+    "go_emotions": {
+      "n_test": 4550,
+      "n_labels": 28,
+      "runs": {
+        "lexfront__lr": {
+          "run_json": "results/collection/default/go_emotions__lexfront__lr.json",
+          "accuracy": {
+            "value": 0.5514285714285714,
+            "ci": [
+              0.537571428571,
+              0.566813186813
+            ]
+          },
+          "macro_f1": {
+            "value": 0.3380231306367566,
+            "ci": [
+              0.319580009319,
+              0.358337615866
+            ]
+          }
+        },
+        "lexfront__majority": {
+          "run_json": "results/collection/default/go_emotions__lexfront__majority.json",
+          "accuracy": {
+            "value": 0.3507692307692308,
+            "ci": [
+              0.337576923077,
+              0.365054945055
+            ]
+          },
+          "macro_f1": {
+            "value": 0.01854864952814839,
+            "ci": [
+              0.018044646525,
+              0.019502014968
+            ]
+          }
+        },
+        "lexfront__nb": {
+          "run_json": "results/collection/default/go_emotions__lexfront__nb.json",
+          "accuracy": {
+            "value": 0.37538461538461537,
+            "ci": [
+              0.361978021978,
+              0.389675824176
+            ]
+          },
+          "macro_f1": {
+            "value": 0.04495577112448611,
+            "ci": [
+              0.040929086836,
+              0.049556833867
+            ]
+          }
+        },
+        "nltk__lr": {
+          "run_json": "results/collection/default/go_emotions__nltk__lr.json",
+          "accuracy": {
+            "value": 0.5496703296703297,
+            "ci": [
+              0.535384615385,
+              0.564615384615
+            ]
+          },
+          "macro_f1": {
+            "value": 0.336232745398555,
+            "ci": [
+              0.318584789707,
+              0.3570114737
+            ]
+          }
+        },
+        "nltk__majority": {
+          "run_json": "results/collection/default/go_emotions__nltk__majority.json",
+          "accuracy": {
+            "value": 0.3507692307692308,
+            "ci": [
+              0.337576923077,
+              0.365054945055
+            ]
+          },
+          "macro_f1": {
+            "value": 0.01854864952814839,
+            "ci": [
+              0.018044646525,
+              0.019502014968
+            ]
+          }
+        },
+        "nltk__nb": {
+          "run_json": "results/collection/default/go_emotions__nltk__nb.json",
+          "accuracy": {
+            "value": 0.3751648351648352,
+            "ci": [
+              0.361538461538,
+              0.389675824176
+            ]
+          },
+          "macro_f1": {
+            "value": 0.045221050101225395,
+            "ci": [
+              0.041069528922,
+              0.04999393048
+            ]
+          }
+        },
+        "tweet__lr": {
+          "run_json": "results/collection/default/go_emotions__tweet__lr.json",
+          "accuracy": {
+            "value": 0.5523076923076923,
+            "ci": [
+              0.538461538462,
+              0.567472527473
+            ]
+          },
+          "macro_f1": {
+            "value": 0.339103374421366,
+            "ci": [
+              0.320967719752,
+              0.359633817055
+            ]
+          }
+        },
+        "tweet__majority": {
+          "run_json": "results/collection/default/go_emotions__tweet__majority.json",
+          "accuracy": {
+            "value": 0.3507692307692308,
+            "ci": [
+              0.337576923077,
+              0.365054945055
+            ]
+          },
+          "macro_f1": {
+            "value": 0.01854864952814839,
+            "ci": [
+              0.018044646525,
+              0.019502014968
+            ]
+          }
+        },
+        "tweet__nb": {
+          "run_json": "results/collection/default/go_emotions__tweet__nb.json",
+          "accuracy": {
+            "value": 0.3756043956043956,
+            "ci": [
+              0.361978021978,
+              0.389895604396
+            ]
+          },
+          "macro_f1": {
+            "value": 0.04517925300863134,
+            "ci": [
+              0.041041955574,
+              0.04971434246
+            ]
+          }
+        },
+        "whitespace__lr": {
+          "run_json": "results/collection/default/go_emotions__whitespace__lr.json",
+          "accuracy": {
+            "value": 0.5314285714285715,
+            "ci": [
+              0.516483516484,
+              0.546598901099
+            ]
+          },
+          "macro_f1": {
+            "value": 0.31007363082479705,
+            "ci": [
+              0.292738349763,
+              0.329935027914
+            ]
+          }
+        },
+        "whitespace__majority": {
+          "run_json": "results/collection/default/go_emotions__whitespace__majority.json",
+          "accuracy": {
+            "value": 0.3507692307692308,
+            "ci": [
+              0.337576923077,
+              0.365054945055
+            ]
+          },
+          "macro_f1": {
+            "value": 0.01854864952814839,
+            "ci": [
+              0.018044646525,
+              0.019502014968
+            ]
+          }
+        },
+        "whitespace__nb": {
+          "run_json": "results/collection/default/go_emotions__whitespace__nb.json",
+          "accuracy": {
+            "value": 0.37538461538461537,
+            "ci": [
+              0.361538461538,
+              0.38989010989
+            ]
+          },
+          "macro_f1": {
+            "value": 0.045529787961931675,
+            "ci": [
+              0.041416683565,
+              0.050388621563
+            ]
+          }
+        }
+      },
+      "pairs": {
+        "tokenizer_only_lr": {
+          "a": "nltk__lr",
+          "b": "lexfront__lr",
+          "label": "LexFront+LR minus NLTK+LR (tokenizer only)",
+          "accuracy": {
+            "diff": 0.001758241758,
+            "ci": [
+              -0.002857142857,
+              0.006159340659
+            ],
+            "ci_excludes_zero": false
+          },
+          "macro_f1": {
+            "diff": 0.001790385238,
+            "ci": [
+              -0.004580052292,
+              0.007643050302
+            ],
+            "ci_excludes_zero": false
+          },
+          "mcnemar_accuracy": {
+            "a_right_b_wrong": 50,
+            "a_wrong_b_right": 58,
+            "p_value": 0.5007663934164358
+          }
+        },
+        "tweet_vs_lexfront_lr": {
+          "a": "tweet__lr",
+          "b": "lexfront__lr",
+          "label": "LexFront+LR minus TweetTokenizer+LR (tokenizer only)",
+          "accuracy": {
+            "diff": -0.000879120879,
+            "ci": [
+              -0.004395604396,
+              0.002637362637
+            ],
+            "ci_excludes_zero": false
+          },
+          "macro_f1": {
+            "diff": -0.001080243785,
+            "ci": [
+              -0.005915239658,
+              0.003448856565
+            ],
+            "ci_excludes_zero": false
+          }
+        }
+      }
+    },
+    "ag_news": {
+      "n_test": 7590,
+      "n_labels": 4,
+      "runs": {
+        "lexfront__lr": {
+          "run_json": "results/collection/default/ag_news__lexfront__lr.json",
+          "accuracy": {
+            "value": 0.9192358366271409,
+            "ci": [
+              0.913043478261,
+              0.925296442688
+            ]
+          },
+          "macro_f1": {
+            "value": 0.9190502375698282,
+            "ci": [
+              0.912984555955,
+              0.924916042399
+            ]
+          }
+        },
+        "lexfront__majority": {
+          "run_json": "results/collection/default/ag_news__lexfront__majority.json",
+          "accuracy": {
+            "value": 0.250197628458498,
+            "ci": [
+              0.240579710145,
+              0.260079051383
+            ]
+          },
+          "macro_f1": {
+            "value": 0.10006323110970597,
+            "ci": [
+              0.096962616822,
+              0.103199498118
+            ]
+          }
+        },
+        "lexfront__nb": {
+          "run_json": "results/collection/default/ag_news__lexfront__nb.json",
+          "accuracy": {
+            "value": 0.9007905138339921,
+            "ci": [
+              0.894071146245,
+              0.907509881423
+            ]
+          },
+          "macro_f1": {
+            "value": 0.9005273912978478,
+            "ci": [
+              0.893926638841,
+              0.9071019315
+            ]
+          }
+        },
+        "nltk__lr": {
+          "run_json": "results/collection/default/ag_news__nltk__lr.json",
+          "accuracy": {
+            "value": 0.9198945981554677,
+            "ci": [
+              0.913570487484,
+              0.926086956522
+            ]
+          },
+          "macro_f1": {
+            "value": 0.9197911122324033,
+            "ci": [
+              0.913397204194,
+              0.925849390526
+            ]
+          }
+        },
+        "nltk__majority": {
+          "run_json": "results/collection/default/ag_news__nltk__majority.json",
+          "accuracy": {
+            "value": 0.250197628458498,
+            "ci": [
+              0.240579710145,
+              0.260079051383
+            ]
+          },
+          "macro_f1": {
+            "value": 0.10006323110970597,
+            "ci": [
+              0.096962616822,
+              0.103199498118
+            ]
+          }
+        },
+        "nltk__nb": {
+          "run_json": "results/collection/default/ag_news__nltk__nb.json",
+          "accuracy": {
+            "value": 0.9039525691699605,
+            "ci": [
+              0.897233201581,
+              0.910408432148
+            ]
+          },
+          "macro_f1": {
+            "value": 0.9036447525136793,
+            "ci": [
+              0.897010569556,
+              0.909917098909
+            ]
+          }
+        },
+        "tweet__lr": {
+          "run_json": "results/collection/default/ag_news__tweet__lr.json",
+          "accuracy": {
+            "value": 0.9191040843214756,
+            "ci": [
+              0.912648221344,
+              0.925296442688
+            ]
+          },
+          "macro_f1": {
+            "value": 0.9189611410447543,
+            "ci": [
+              0.912569514514,
+              0.924920774419
+            ]
+          }
+        },
+        "tweet__majority": {
+          "run_json": "results/collection/default/ag_news__tweet__majority.json",
+          "accuracy": {
+            "value": 0.250197628458498,
+            "ci": [
+              0.240579710145,
+              0.260079051383
+            ]
+          },
+          "macro_f1": {
+            "value": 0.10006323110970597,
+            "ci": [
+              0.096962616822,
+              0.103199498118
+            ]
+          }
+        },
+        "tweet__nb": {
+          "run_json": "results/collection/default/ag_news__tweet__nb.json",
+          "accuracy": {
+            "value": 0.9023715415019763,
+            "ci": [
+              0.895780632411,
+              0.908959156785
+            ]
+          },
+          "macro_f1": {
+            "value": 0.9020952350070685,
+            "ci": [
+              0.895395680782,
+              0.908595382409
+            ]
+          }
+        },
+        "whitespace__lr": {
+          "run_json": "results/collection/default/ag_news__whitespace__lr.json",
+          "accuracy": {
+            "value": 0.9143610013175231,
+            "ci": [
+              0.908036890646,
+              0.920553359684
+            ]
+          },
+          "macro_f1": {
+            "value": 0.9142125055830831,
+            "ci": [
+              0.908000016418,
+              0.920338448845
+            ]
+          }
+        },
+        "whitespace__majority": {
+          "run_json": "results/collection/default/ag_news__whitespace__majority.json",
+          "accuracy": {
+            "value": 0.250197628458498,
+            "ci": [
+              0.240579710145,
+              0.260079051383
+            ]
+          },
+          "macro_f1": {
+            "value": 0.10006323110970597,
+            "ci": [
+              0.096962616822,
+              0.103199498118
+            ]
+          }
+        },
+        "whitespace__nb": {
+          "run_json": "results/collection/default/ag_news__whitespace__nb.json",
+          "accuracy": {
+            "value": 0.9015810276679842,
+            "ci": [
+              0.894861660079,
+              0.908171936759
+            ]
+          },
+          "macro_f1": {
+            "value": 0.9012912563664067,
+            "ci": [
+              0.894567617429,
+              0.907891727555
+            ]
+          }
+        }
+      },
+      "pairs": {
+        "tokenizer_only_lr": {
+          "a": "nltk__lr",
+          "b": "lexfront__lr",
+          "label": "LexFront+LR minus NLTK+LR (tokenizer only)",
+          "accuracy": {
+            "diff": -0.000658761528,
+            "ci": [
+              -0.004084321476,
+              0.002766798419
+            ],
+            "ci_excludes_zero": false
+          },
+          "macro_f1": {
+            "diff": -0.000740874663,
+            "ci": [
+              -0.004192807379,
+              0.002728282531
+            ],
+            "ci_excludes_zero": false
+          },
+          "mcnemar_accuracy": {
+            "a_right_b_wrong": 84,
+            "a_wrong_b_right": 79,
+            "p_value": 0.7541603898054382
+          }
+        },
+        "tweet_vs_lexfront_lr": {
+          "a": "tweet__lr",
+          "b": "lexfront__lr",
+          "label": "LexFront+LR minus TweetTokenizer+LR (tokenizer only)",
+          "accuracy": {
+            "diff": 0.000131752306,
+            "ci": [
+              -0.002503293808,
+              0.002766798419
+            ],
+            "ci_excludes_zero": false
+          },
+          "macro_f1": {
+            "diff": 8.9096525e-05,
+            "ci": [
+              -0.002535773164,
+              0.002729625377
+            ],
+            "ci_excludes_zero": false
+          }
+        }
+      }
+    },
+    "tweet_eval_sentiment": {
+      "n_test": 12277,
+      "n_labels": 3,
+      "runs": {
+        "lexfront__lr": {
+          "run_json": "results/collection/default/tweet_eval_sentiment__lexfront__lr.json",
+          "accuracy": {
+            "value": 0.6071515842632565,
+            "ci": [
+              0.598599006272,
+              0.61602997475
+            ]
+          },
+          "macro_f1": {
+            "value": 0.578534746264587,
+            "ci": [
+              0.569092278817,
+              0.587843593576
+            ]
+          }
+        },
+        "lexfront__majority": {
+          "run_json": "results/collection/default/tweet_eval_sentiment__lexfront__majority.json",
+          "accuracy": {
+            "value": 0.4833428361977682,
+            "ci": [
+              0.474545898835,
+              0.492384132931
+            ]
+          },
+          "macro_f1": {
+            "value": 0.21723134369337213,
+            "ci": [
+              0.214550074573,
+              0.219954153477
+            ]
+          }
+        },
+        "lexfront__nb": {
+          "run_json": "results/collection/default/tweet_eval_sentiment__lexfront__nb.json",
+          "accuracy": {
+            "value": 0.543781054003421,
+            "ci": [
+              0.535470799055,
+              0.553313105808
+            ]
+          },
+          "macro_f1": {
+            "value": 0.46360348200356866,
+            "ci": [
+              0.455023110478,
+              0.472495911853
+            ]
+          }
+        },
+        "nltk__lr": {
+          "run_json": "results/collection/default/tweet_eval_sentiment__nltk__lr.json",
+          "accuracy": {
+            "value": 0.601205506231164,
+            "ci": [
+              0.592650891912,
+              0.610246802965
+            ]
+          },
+          "macro_f1": {
+            "value": 0.5688860063575852,
+            "ci": [
+              0.559318036699,
+              0.578242230326
+            ]
+          }
+        },
+        "nltk__majority": {
+          "run_json": "results/collection/default/tweet_eval_sentiment__nltk__majority.json",
+          "accuracy": {
+            "value": 0.4833428361977682,
+            "ci": [
+              0.474545898835,
+              0.492384132931
+            ]
+          },
+          "macro_f1": {
+            "value": 0.21723134369337213,
+            "ci": [
+              0.214550074573,
+              0.219954153477
+            ]
+          }
+        },
+        "nltk__nb": {
+          "run_json": "results/collection/default/tweet_eval_sentiment__nltk__nb.json",
+          "accuracy": {
+            "value": 0.5379164290950558,
+            "ci": [
+              0.529445304227,
+              0.546957725829
+            ]
+          },
+          "macro_f1": {
+            "value": 0.4481593269142159,
+            "ci": [
+              0.439724725441,
+              0.457063846346
+            ]
+          }
+        },
+        "tweet__lr": {
+          "run_json": "results/collection/default/tweet_eval_sentiment__tweet__lr.json",
+          "accuracy": {
+            "value": 0.6023458499633461,
+            "ci": [
+              0.593711818848,
+              0.611305693573
+            ]
+          },
+          "macro_f1": {
+            "value": 0.5724878412062865,
+            "ci": [
+              0.563229893111,
+              0.581815289311
+            ]
+          }
+        },
+        "tweet__majority": {
+          "run_json": "results/collection/default/tweet_eval_sentiment__tweet__majority.json",
+          "accuracy": {
+            "value": 0.4833428361977682,
+            "ci": [
+              0.474545898835,
+              0.492384132931
+            ]
+          },
+          "macro_f1": {
+            "value": 0.21723134369337213,
+            "ci": [
+              0.214550074573,
+              0.219954153477
+            ]
+          }
+        },
+        "tweet__nb": {
+          "run_json": "results/collection/default/tweet_eval_sentiment__tweet__nb.json",
+          "accuracy": {
+            "value": 0.5423148977763297,
+            "ci": [
+              0.533923189704,
+              0.551358230838
+            ]
+          },
+          "macro_f1": {
+            "value": 0.4608289655697733,
+            "ci": [
+              0.452559447442,
+              0.469603656887
+            ]
+          }
+        },
+        "whitespace__lr": {
+          "run_json": "results/collection/default/tweet_eval_sentiment__whitespace__lr.json",
+          "accuracy": {
+            "value": 0.5761993972468844,
+            "ci": [
+              0.567809725503,
+              0.584589068991
+            ]
+          },
+          "macro_f1": {
+            "value": 0.537886490566679,
+            "ci": [
+              0.528763082846,
+              0.546919113967
+            ]
+          }
+        },
+        "whitespace__majority": {
+          "run_json": "results/collection/default/tweet_eval_sentiment__whitespace__majority.json",
+          "accuracy": {
+            "value": 0.4833428361977682,
+            "ci": [
+              0.474545898835,
+              0.492384132931
+            ]
+          },
+          "macro_f1": {
+            "value": 0.21723134369337213,
+            "ci": [
+              0.214550074573,
+              0.219954153477
+            ]
+          }
+        },
+        "whitespace__nb": {
+          "run_json": "results/collection/default/tweet_eval_sentiment__whitespace__nb.json",
+          "accuracy": {
+            "value": 0.5220330699682333,
+            "ci": [
+              0.512910320111,
+              0.530834079987
+            ]
+          },
+          "macro_f1": {
+            "value": 0.4188750554640861,
+            "ci": [
+              0.410458926962,
+              0.426777567071
+            ]
+          }
+        }
+      },
+      "pairs": {
+        "tokenizer_only_lr": {
+          "a": "nltk__lr",
+          "b": "lexfront__lr",
+          "label": "LexFront+LR minus NLTK+LR (tokenizer only)",
+          "accuracy": {
+            "diff": 0.005946078032,
+            "ci": [
+              0.000814531237,
+              0.011407509978
+            ],
+            "ci_excludes_zero": true
+          },
+          "macro_f1": {
+            "diff": 0.009648739907,
+            "ci": [
+              0.004041858175,
+              0.015677501612
+            ],
+            "ci_excludes_zero": true
+          },
+          "mcnemar_accuracy": {
+            "a_right_b_wrong": 493,
+            "a_wrong_b_right": 566,
+            "p_value": 0.02688486223168741
+          }
+        },
+        "tweet_vs_lexfront_lr": {
+          "a": "tweet__lr",
+          "b": "lexfront__lr",
+          "label": "LexFront+LR minus TweetTokenizer+LR (tokenizer only)",
+          "accuracy": {
+            "diff": 0.0048057343,
+            "ci": [
+              0.000977437485,
+              0.008798973691
+            ],
+            "ci_excludes_zero": true
+          },
+          "macro_f1": {
+            "diff": 0.006046905058,
+            "ci": [
+              0.001753143336,
+              0.010360866197
+            ],
+            "ci_excludes_zero": true
+          }
+        }
+      }
+    },
+    "tweet_eval_emotion": {
+      "n_test": 1421,
+      "n_labels": 4,
+      "runs": {
+        "lexfront__lr": {
+          "run_json": "results/collection/default/tweet_eval_emotion__lexfront__lr.json",
+          "accuracy": {
+            "value": 0.6460239268121042,
+            "ci": [
+              0.622097114708,
+              0.670654468684
+            ]
+          },
+          "macro_f1": {
+            "value": 0.5369839751082021,
+            "ci": [
+              0.508523808501,
+              0.566445250477
+            ]
+          }
+        },
+        "lexfront__majority": {
+          "run_json": "results/collection/default/tweet_eval_emotion__lexfront__majority.json",
+          "accuracy": {
+            "value": 0.39268121041520054,
+            "ci": [
+              0.368050668543,
+              0.418015482055
+            ]
+          },
+          "macro_f1": {
+            "value": 0.14098029307731177,
+            "ci": [
+              0.134516460905,
+              0.147394540943
+            ]
+          }
+        },
+        "lexfront__nb": {
+          "run_json": "results/collection/default/tweet_eval_emotion__lexfront__nb.json",
+          "accuracy": {
+            "value": 0.546094299788881,
+            "ci": [
+              0.520760028149,
+              0.570724841661
+            ]
+          },
+          "macro_f1": {
+            "value": 0.38644661434736216,
+            "ci": [
+              0.363184260682,
+              0.408940541528
+            ]
+          }
+        },
+        "nltk__lr": {
+          "run_json": "results/collection/default/tweet_eval_emotion__nltk__lr.json",
+          "accuracy": {
+            "value": 0.6650246305418719,
+            "ci": [
+              0.64039408867,
+              0.689655172414
+            ]
+          },
+          "macro_f1": {
+            "value": 0.5714407864830103,
+            "ci": [
+              0.539827027689,
+              0.601626919053
+            ]
+          }
+        },
+        "nltk__majority": {
+          "run_json": "results/collection/default/tweet_eval_emotion__nltk__majority.json",
+          "accuracy": {
+            "value": 0.39268121041520054,
+            "ci": [
+              0.368050668543,
+              0.418015482055
+            ]
+          },
+          "macro_f1": {
+            "value": 0.14098029307731177,
+            "ci": [
+              0.134516460905,
+              0.147394540943
+            ]
+          }
+        },
+        "nltk__nb": {
+          "run_json": "results/collection/default/tweet_eval_emotion__nltk__nb.json",
+          "accuracy": {
+            "value": 0.558057705840957,
+            "ci": [
+              0.533409570725,
+              0.583391977481
+            ]
+          },
+          "macro_f1": {
+            "value": 0.39587892442461897,
+            "ci": [
+              0.373374736391,
+              0.418178648466
+            ]
+          }
+        },
+        "tweet__lr": {
+          "run_json": "results/collection/default/tweet_eval_emotion__tweet__lr.json",
+          "accuracy": {
+            "value": 0.6460239268121042,
+            "ci": [
+              0.622097114708,
+              0.670654468684
+            ]
+          },
+          "macro_f1": {
+            "value": 0.5388170271349642,
+            "ci": [
+              0.509254059867,
+              0.568531658694
+            ]
+          }
+        },
+        "tweet__majority": {
+          "run_json": "results/collection/default/tweet_eval_emotion__tweet__majority.json",
+          "accuracy": {
+            "value": 0.39268121041520054,
+            "ci": [
+              0.368050668543,
+              0.418015482055
+            ]
+          },
+          "macro_f1": {
+            "value": 0.14098029307731177,
+            "ci": [
+              0.134516460905,
+              0.147394540943
+            ]
+          }
+        },
+        "tweet__nb": {
+          "run_json": "results/collection/default/tweet_eval_emotion__tweet__nb.json",
+          "accuracy": {
+            "value": 0.5489092188599578,
+            "ci": [
+              0.524278676988,
+              0.5742434905
+            ]
+          },
+          "macro_f1": {
+            "value": 0.38875619802973116,
+            "ci": [
+              0.365367856741,
+              0.41115445542
+            ]
+          }
+        },
+        "whitespace__lr": {
+          "run_json": "results/collection/default/tweet_eval_emotion__whitespace__lr.json",
+          "accuracy": {
+            "value": 0.6066150598170302,
+            "ci": [
+              0.581984517945,
+              0.632653061224
+            ]
+          },
+          "macro_f1": {
+            "value": 0.48963472801343233,
+            "ci": [
+              0.46089532553,
+              0.518959219819
+            ]
+          }
+        },
+        "whitespace__majority": {
+          "run_json": "results/collection/default/tweet_eval_emotion__whitespace__majority.json",
+          "accuracy": {
+            "value": 0.39268121041520054,
+            "ci": [
+              0.368050668543,
+              0.418015482055
+            ]
+          },
+          "macro_f1": {
+            "value": 0.14098029307731177,
+            "ci": [
+              0.134516460905,
+              0.147394540943
+            ]
+          }
+        },
+        "whitespace__nb": {
+          "run_json": "results/collection/default/tweet_eval_emotion__whitespace__nb.json",
+          "accuracy": {
+            "value": 0.5348346235045742,
+            "ci": [
+              0.5109078114,
+              0.560872624912
+            ]
+          },
+          "macro_f1": {
+            "value": 0.37235904823003096,
+            "ci": [
+              0.346883995248,
+              0.396716458404
+            ]
+          }
+        }
+      },
+      "pairs": {
+        "tokenizer_only_lr": {
+          "a": "nltk__lr",
+          "b": "lexfront__lr",
+          "label": "LexFront+LR minus NLTK+LR (tokenizer only)",
+          "accuracy": {
+            "diff": -0.01900070373,
+            "ci": [
+              -0.035186488388,
+              -0.003518648839
+            ],
+            "ci_excludes_zero": true
+          },
+          "macro_f1": {
+            "diff": -0.034456811375,
+            "ci": [
+              -0.057049668411,
+              -0.012266129034
+            ],
+            "ci_excludes_zero": true
+          },
+          "mcnemar_accuracy": {
+            "a_right_b_wrong": 83,
+            "a_wrong_b_right": 56,
+            "p_value": 0.02707352909398986
+          }
+        },
+        "tweet_vs_lexfront_lr": {
+          "a": "tweet__lr",
+          "b": "lexfront__lr",
+          "label": "LexFront+LR minus TweetTokenizer+LR (tokenizer only)",
+          "accuracy": {
+            "diff": 0.0,
+            "ci": [
+              -0.009148486981,
+              0.009166080225
+            ],
+            "ci_excludes_zero": false
+          },
+          "macro_f1": {
+            "diff": -0.001833052027,
+            "ci": [
+              -0.012695650804,
+              0.008625724906
+            ],
+            "ci_excludes_zero": false
+          }
+        }
+      }
+    },
+    "tweet_eval_irony": {
+      "n_test": 784,
+      "n_labels": 2,
+      "runs": {
+        "lexfront__lr": {
+          "run_json": "results/collection/default/tweet_eval_irony__lexfront__lr.json",
+          "accuracy": {
+            "value": 0.6619897959183674,
+            "ci": [
+              0.628826530612,
+              0.695153061224
+            ]
+          },
+          "macro_f1": {
+            "value": 0.6567351841479594,
+            "ci": [
+              0.623209197563,
+              0.690324866036
+            ]
+          }
+        },
+        "lexfront__majority": {
+          "run_json": "results/collection/default/tweet_eval_irony__lexfront__majority.json",
+          "accuracy": {
+            "value": 0.39668367346938777,
+            "ci": [
+              0.363520408163,
+              0.433673469388
+            ]
+          },
+          "macro_f1": {
+            "value": 0.28401826484018267,
+            "ci": [
+              0.266604303087,
+              0.302491103203
+            ]
+          }
+        },
+        "lexfront__nb": {
+          "run_json": "results/collection/default/tweet_eval_irony__lexfront__nb.json",
+          "accuracy": {
+            "value": 0.6403061224489796,
+            "ci": [
+              0.608418367347,
+              0.674744897959
+            ]
+          },
+          "macro_f1": {
+            "value": 0.6388371591555093,
+            "ci": [
+              0.606619087933,
+              0.672854115729
+            ]
+          }
+        },
+        "nltk__lr": {
+          "run_json": "results/collection/default/tweet_eval_irony__nltk__lr.json",
+          "accuracy": {
+            "value": 0.6211734693877551,
+            "ci": [
+              0.586734693878,
+              0.654336734694
+            ]
+          },
+          "macro_f1": {
+            "value": 0.5977994075327973,
+            "ci": [
+              0.561538945444,
+              0.630722773692
+            ]
+          }
+        },
+        "nltk__majority": {
+          "run_json": "results/collection/default/tweet_eval_irony__nltk__majority.json",
+          "accuracy": {
+            "value": 0.39668367346938777,
+            "ci": [
+              0.363520408163,
+              0.433673469388
+            ]
+          },
+          "macro_f1": {
+            "value": 0.28401826484018267,
+            "ci": [
+              0.266604303087,
+              0.302491103203
+            ]
+          }
+        },
+        "nltk__nb": {
+          "run_json": "results/collection/default/tweet_eval_irony__nltk__nb.json",
+          "accuracy": {
+            "value": 0.6683673469387755,
+            "ci": [
+              0.635204081633,
+              0.702806122449
+            ]
+          },
+          "macro_f1": {
+            "value": 0.6612040022604129,
+            "ci": [
+              0.627315475003,
+              0.695140635549
+            ]
+          }
+        },
+        "tweet__lr": {
+          "run_json": "results/collection/default/tweet_eval_irony__tweet__lr.json",
+          "accuracy": {
+            "value": 0.6543367346938775,
+            "ci": [
+              0.619897959184,
+              0.688775510204
+            ]
+          },
+          "macro_f1": {
+            "value": 0.6500270966105353,
+            "ci": [
+              0.615680837134,
+              0.684460027331
+            ]
+          }
+        },
+        "tweet__majority": {
+          "run_json": "results/collection/default/tweet_eval_irony__tweet__majority.json",
+          "accuracy": {
+            "value": 0.39668367346938777,
+            "ci": [
+              0.363520408163,
+              0.433673469388
+            ]
+          },
+          "macro_f1": {
+            "value": 0.28401826484018267,
+            "ci": [
+              0.266604303087,
+              0.302491103203
+            ]
+          }
+        },
+        "tweet__nb": {
+          "run_json": "results/collection/default/tweet_eval_irony__tweet__nb.json",
+          "accuracy": {
+            "value": 0.6313775510204082,
+            "ci": [
+              0.599457908163,
+              0.66712372449
+            ]
+          },
+          "macro_f1": {
+            "value": 0.6304631117127549,
+            "ci": [
+              0.596969280237,
+              0.666272902278
+            ]
+          }
+        },
+        "whitespace__lr": {
+          "run_json": "results/collection/default/tweet_eval_irony__whitespace__lr.json",
+          "accuracy": {
+            "value": 0.6313775510204082,
+            "ci": [
+              0.598214285714,
+              0.665816326531
+            ]
+          },
+          "macro_f1": {
+            "value": 0.6254044357738632,
+            "ci": [
+              0.59148830521,
+              0.659934427741
+            ]
+          }
+        },
+        "whitespace__majority": {
+          "run_json": "results/collection/default/tweet_eval_irony__whitespace__majority.json",
+          "accuracy": {
+            "value": 0.39668367346938777,
+            "ci": [
+              0.363520408163,
+              0.433673469388
+            ]
+          },
+          "macro_f1": {
+            "value": 0.28401826484018267,
+            "ci": [
+              0.266604303087,
+              0.302491103203
+            ]
+          }
+        },
+        "whitespace__nb": {
+          "run_json": "results/collection/default/tweet_eval_irony__whitespace__nb.json",
+          "accuracy": {
+            "value": 0.6237244897959183,
+            "ci": [
+              0.59056122449,
+              0.656919642857
+            ]
+          },
+          "macro_f1": {
+            "value": 0.622367323213274,
+            "ci": [
+              0.588935541143,
+              0.65588023985
+            ]
+          }
+        }
+      },
+      "pairs": {
+        "tokenizer_only_lr": {
+          "a": "nltk__lr",
+          "b": "lexfront__lr",
+          "label": "LexFront+LR minus NLTK+LR (tokenizer only)",
+          "accuracy": {
+            "diff": 0.040816326531,
+            "ci": [
+              0.012755102041,
+              0.06887755102
+            ],
+            "ci_excludes_zero": true
+          },
+          "macro_f1": {
+            "diff": 0.058935776615,
+            "ci": [
+              0.029744911871,
+              0.088318235996
+            ],
+            "ci_excludes_zero": true
+          },
+          "mcnemar_accuracy": {
+            "a_right_b_wrong": 53,
+            "a_wrong_b_right": 85,
+            "p_value": 0.008083354723191867
+          }
+        },
+        "tweet_vs_lexfront_lr": {
+          "a": "tweet__lr",
+          "b": "lexfront__lr",
+          "label": "LexFront+LR minus TweetTokenizer+LR (tokenizer only)",
+          "accuracy": {
+            "diff": 0.007653061224,
+            "ci": [
+              -0.007653061224,
+              0.021683673469
+            ],
+            "ci_excludes_zero": false
+          },
+          "macro_f1": {
+            "diff": 0.006708087537,
+            "ci": [
+              -0.008386319851,
+              0.0206788941
+            ],
+            "ci_excludes_zero": false
+          }
+        }
+      }
+    },
+    "tweet_eval_hate": {
+      "n_test": 2731,
+      "n_labels": 2,
+      "runs": {
+        "lexfront__lr": {
+          "run_json": "results/collection/default/tweet_eval_hate__lexfront__lr.json",
+          "accuracy": {
+            "value": 0.4902965946539729,
+            "ci": [
+              0.470889783962,
+              0.509337239107
+            ]
+          },
+          "macro_f1": {
+            "value": 0.4645369572198841,
+            "ci": [
+              0.444363700904,
+              0.483057693709
+            ]
+          }
+        },
+        "lexfront__majority": {
+          "run_json": "results/collection/default/tweet_eval_hate__lexfront__majority.json",
+          "accuracy": {
+            "value": 0.5924569754668619,
+            "ci": [
+              0.574880995972,
+              0.610408275357
+            ]
+          },
+          "macro_f1": {
+            "value": 0.37203954932168315,
+            "ci": [
+              0.365031388049,
+              0.379039454428
+            ]
+          }
+        },
+        "lexfront__nb": {
+          "run_json": "results/collection/default/tweet_eval_hate__lexfront__nb.json",
+          "accuracy": {
+            "value": 0.5239838886854632,
+            "ci": [
+              0.505309410472,
+              0.543756865617
+            ]
+          },
+          "macro_f1": {
+            "value": 0.5115925744132452,
+            "ci": [
+              0.492681765486,
+              0.530725697696
+            ]
+          }
+        },
+        "nltk__lr": {
+          "run_json": "results/collection/default/tweet_eval_hate__nltk__lr.json",
+          "accuracy": {
+            "value": 0.49322592456975467,
+            "ci": [
+              0.473086781399,
+              0.512266569022
+            ]
+          },
+          "macro_f1": {
+            "value": 0.4592029687217418,
+            "ci": [
+              0.440226380381,
+              0.478265564476
+            ]
+          }
+        },
+        "nltk__majority": {
+          "run_json": "results/collection/default/tweet_eval_hate__nltk__majority.json",
+          "accuracy": {
+            "value": 0.5924569754668619,
+            "ci": [
+              0.574880995972,
+              0.610408275357
+            ]
+          },
+          "macro_f1": {
+            "value": 0.37203954932168315,
+            "ci": [
+              0.365031388049,
+              0.379039454428
+            ]
+          }
+        },
+        "nltk__nb": {
+          "run_json": "results/collection/default/tweet_eval_hate__nltk__nb.json",
+          "accuracy": {
+            "value": 0.526913218601245,
+            "ci": [
+              0.508238740388,
+              0.545953863054
+            ]
+          },
+          "macro_f1": {
+            "value": 0.5115069133406874,
+            "ci": [
+              0.492775212115,
+              0.529970168225
+            ]
+          }
+        },
+        "tweet__lr": {
+          "run_json": "results/collection/default/tweet_eval_hate__tweet__lr.json",
+          "accuracy": {
+            "value": 0.4829732698645185,
+            "ci": [
+              0.462834126694,
+              0.502023068473
+            ]
+          },
+          "macro_f1": {
+            "value": 0.45420447622951376,
+            "ci": [
+              0.434963382725,
+              0.473077598559
+            ]
+          }
+        },
+        "tweet__majority": {
+          "run_json": "results/collection/default/tweet_eval_hate__tweet__majority.json",
+          "accuracy": {
+            "value": 0.5924569754668619,
+            "ci": [
+              0.574880995972,
+              0.610408275357
+            ]
+          },
+          "macro_f1": {
+            "value": 0.37203954932168315,
+            "ci": [
+              0.365031388049,
+              0.379039454428
+            ]
+          }
+        },
+        "tweet__nb": {
+          "run_json": "results/collection/default/tweet_eval_hate__tweet__nb.json",
+          "accuracy": {
+            "value": 0.5188575613328451,
+            "ci": [
+              0.500173928964,
+              0.538264372025
+            ]
+          },
+          "macro_f1": {
+            "value": 0.5047456195554967,
+            "ci": [
+              0.485655665335,
+              0.524048220518
+            ]
+          }
+        },
+        "whitespace__lr": {
+          "run_json": "results/collection/default/tweet_eval_hate__whitespace__lr.json",
+          "accuracy": {
+            "value": 0.5258147198828268,
+            "ci": [
+              0.50714024167,
+              0.544855364335
+            ]
+          },
+          "macro_f1": {
+            "value": 0.5128215724480315,
+            "ci": [
+              0.494603911475,
+              0.531785962956
+            ]
+          }
+        },
+        "whitespace__majority": {
+          "run_json": "results/collection/default/tweet_eval_hate__whitespace__majority.json",
+          "accuracy": {
+            "value": 0.5924569754668619,
+            "ci": [
+              0.574880995972,
+              0.610408275357
+            ]
+          },
+          "macro_f1": {
+            "value": 0.37203954932168315,
+            "ci": [
+              0.365031388049,
+              0.379039454428
+            ]
+          }
+        },
+        "whitespace__nb": {
+          "run_json": "results/collection/default/tweet_eval_hate__whitespace__nb.json",
+          "accuracy": {
+            "value": 0.5335042109117539,
+            "ci": [
+              0.51373123398,
+              0.553643354083
+            ]
+          },
+          "macro_f1": {
+            "value": 0.5228012859548928,
+            "ci": [
+              0.503419043659,
+              0.542509516044
+            ]
+          }
+        }
+      },
+      "pairs": {
+        "tokenizer_only_lr": {
+          "a": "nltk__lr",
+          "b": "lexfront__lr",
+          "label": "LexFront+LR minus NLTK+LR (tokenizer only)",
+          "accuracy": {
+            "diff": -0.002929329916,
+            "ci": [
+              -0.01354815086,
+              0.007323324789
+            ],
+            "ci_excludes_zero": false
+          },
+          "macro_f1": {
+            "diff": 0.005333988498,
+            "ci": [
+              -0.006671129438,
+              0.017426766038
+            ],
+            "ci_excludes_zero": false
+          },
+          "mcnemar_accuracy": {
+            "a_right_b_wrong": 108,
+            "a_wrong_b_right": 100,
+            "p_value": 0.6275255016466615
+          }
+        },
+        "tweet_vs_lexfront_lr": {
+          "a": "tweet__lr",
+          "b": "lexfront__lr",
+          "label": "LexFront+LR minus TweetTokenizer+LR (tokenizer only)",
+          "accuracy": {
+            "diff": 0.007323324789,
+            "ci": [
+              0.000366166239,
+              0.014280483339
+            ],
+            "ci_excludes_zero": true
+          },
+          "macro_f1": {
+            "diff": 0.01033248099,
+            "ci": [
+              0.001947005355,
+              0.018865785282
+            ],
+            "ci_excludes_zero": true
+          }
+        }
+      }
+    },
+    "tweet_eval_offensive": {
+      "n_test": 842,
+      "n_labels": 2,
+      "runs": {
+        "lexfront__lr": {
+          "run_json": "results/collection/default/tweet_eval_offensive__lexfront__lr.json",
+          "accuracy": {
+            "value": 0.7933491686460807,
+            "ci": [
+              0.766033254157,
+              0.820665083135
+            ]
+          },
+          "macro_f1": {
+            "value": 0.6736026948028802,
+            "ci": [
+              0.634530986255,
+              0.711344745828
+            ]
+          }
+        },
+        "lexfront__majority": {
+          "run_json": "results/collection/default/tweet_eval_offensive__lexfront__majority.json",
+          "accuracy": {
+            "value": 0.7197149643705463,
+            "ci": [
+              0.690023752969,
+              0.751781472684
+            ]
+          },
+          "macro_f1": {
+            "value": 0.4185082872928177,
+            "ci": [
+              0.408292340126,
+              0.429152542373
+            ]
+          }
+        },
+        "lexfront__nb": {
+          "run_json": "results/collection/default/tweet_eval_offensive__lexfront__nb.json",
+          "accuracy": {
+            "value": 0.7577197149643705,
+            "ci": [
+              0.729216152019,
+              0.787410926366
+            ]
+          },
+          "macro_f1": {
+            "value": 0.5553968007454574,
+            "ci": [
+              0.518432578637,
+              0.596182224471
+            ]
+          }
+        },
+        "nltk__lr": {
+          "run_json": "results/collection/default/tweet_eval_offensive__nltk__lr.json",
+          "accuracy": {
+            "value": 0.7945368171021377,
+            "ci": [
+              0.767191211401,
+              0.820694774347
+            ]
+          },
+          "macro_f1": {
+            "value": 0.6686419337447651,
+            "ci": [
+              0.628818018839,
+              0.706601927024
+            ]
+          }
+        },
+        "nltk__majority": {
+          "run_json": "results/collection/default/tweet_eval_offensive__nltk__majority.json",
+          "accuracy": {
+            "value": 0.7197149643705463,
+            "ci": [
+              0.690023752969,
+              0.751781472684
+            ]
+          },
+          "macro_f1": {
+            "value": 0.4185082872928177,
+            "ci": [
+              0.408292340126,
+              0.429152542373
+            ]
+          }
+        },
+        "nltk__nb": {
+          "run_json": "results/collection/default/tweet_eval_offensive__nltk__nb.json",
+          "accuracy": {
+            "value": 0.7577197149643705,
+            "ci": [
+              0.728028503563,
+              0.787410926366
+            ]
+          },
+          "macro_f1": {
+            "value": 0.5527620396600567,
+            "ci": [
+              0.516702356672,
+              0.595683118057
+            ]
+          }
+        },
+        "tweet__lr": {
+          "run_json": "results/collection/default/tweet_eval_offensive__tweet__lr.json",
+          "accuracy": {
+            "value": 0.7969121140142518,
+            "ci": [
+              0.769596199525,
+              0.824228028504
+            ]
+          },
+          "macro_f1": {
+            "value": 0.6784989382439829,
+            "ci": [
+              0.640950975136,
+              0.716103970557
+            ]
+          }
+        },
+        "tweet__majority": {
+          "run_json": "results/collection/default/tweet_eval_offensive__tweet__majority.json",
+          "accuracy": {
+            "value": 0.7197149643705463,
+            "ci": [
+              0.690023752969,
+              0.751781472684
+            ]
+          },
+          "macro_f1": {
+            "value": 0.4185082872928177,
+            "ci": [
+              0.408292340126,
+              0.429152542373
+            ]
+          }
+        },
+        "tweet__nb": {
+          "run_json": "results/collection/default/tweet_eval_offensive__tweet__nb.json",
+          "accuracy": {
+            "value": 0.7589073634204275,
+            "ci": [
+              0.730374109264,
+              0.788598574822
+            ]
+          },
+          "macro_f1": {
+            "value": 0.5588721853022776,
+            "ci": [
+              0.521214124172,
+              0.598889082075
+            ]
+          }
+        },
+        "whitespace__lr": {
+          "run_json": "results/collection/default/tweet_eval_offensive__whitespace__lr.json",
+          "accuracy": {
+            "value": 0.7885985748218527,
+            "ci": [
+              0.762470308789,
+              0.815914489311
+            ]
+          },
+          "macro_f1": {
+            "value": 0.6660993084765097,
+            "ci": [
+              0.628391072737,
+              0.703468388035
+            ]
+          }
+        },
+        "whitespace__majority": {
+          "run_json": "results/collection/default/tweet_eval_offensive__whitespace__majority.json",
+          "accuracy": {
+            "value": 0.7197149643705463,
+            "ci": [
+              0.690023752969,
+              0.751781472684
+            ]
+          },
+          "macro_f1": {
+            "value": 0.4185082872928177,
+            "ci": [
+              0.408292340126,
+              0.429152542373
+            ]
+          }
+        },
+        "whitespace__nb": {
+          "run_json": "results/collection/default/tweet_eval_offensive__whitespace__nb.json",
+          "accuracy": {
+            "value": 0.7624703087885986,
+            "ci": [
+              0.733966745843,
+              0.79216152019
+            ]
+          },
+          "macro_f1": {
+            "value": 0.5666584321475625,
+            "ci": [
+              0.530385271706,
+              0.60667914059
+            ]
+          }
+        }
+      },
+      "pairs": {
+        "tokenizer_only_lr": {
+          "a": "nltk__lr",
+          "b": "lexfront__lr",
+          "label": "LexFront+LR minus NLTK+LR (tokenizer only)",
+          "accuracy": {
+            "diff": -0.001187648456,
+            "ci": [
+              -0.013064133017,
+              0.010688836105
+            ],
+            "ci_excludes_zero": false
+          },
+          "macro_f1": {
+            "diff": 0.004960761058,
+            "ci": [
+              -0.015237484477,
+              0.026211860862
+            ],
+            "ci_excludes_zero": false
+          },
+          "mcnemar_accuracy": {
+            "a_right_b_wrong": 13,
+            "a_wrong_b_right": 12,
+            "p_value": 1.0
+          }
+        },
+        "tweet_vs_lexfront_lr": {
+          "a": "tweet__lr",
+          "b": "lexfront__lr",
+          "label": "LexFront+LR minus TweetTokenizer+LR (tokenizer only)",
+          "accuracy": {
+            "diff": -0.003562945368,
+            "ci": [
+              -0.010688836105,
+              0.003562945368
+            ],
+            "ci_excludes_zero": false
+          },
+          "macro_f1": {
+            "diff": -0.004896243441,
+            "ci": [
+              -0.018662424172,
+              0.009273492009
+            ],
+            "ci_excludes_zero": false
+          }
+        }
+      }
+    }
+  }
+}

@@ -28,6 +28,14 @@ TweetTokenizer, BPE, LexFront + BPE, WordPiece and Unigram.
 * **Intrinsic**: among the word-level tokenizers LexFront has the lowest OOV rate and the smallest vocabulary on all three
   datasets; part of that is by construction (placeholders, collapsing), so it is not evidence of better classification.
 
+## Dataset collection, cleaning and tuning (added afterwards, `results/collection/REPORT.md`)
+Five tweet_eval tasks were added (eight datasets), cleaned (empty, conflicting, duplicate and train-duplicated test texts removed; the
+largest cut is tweet_eval_hate, test 2970 -> 2731) and rerun with the default settings and with validation-selected TF-IDF / `C` / `alpha`,
+the same search for every tokenizer. Tuning raised accuracy in 44 of 64 cells and lowered it in 16 (mean +1.63 points). It qualifies two
+statements above: with tuned Naive Bayes the NLTK+NB to NLTK+LR gap on go_emotions shrinks (17.45 -> 10.49 points), and LexFront+LR minus
+NLTK+LR has no CI excluding 0 on any of the eight datasets (default settings: 4 of 8, two up and two down; tweet_topic -1.59 -> -0.32
+[-1.15, +0.47]). One run per cell, one validation split, an NB grid that is probably too narrow; reasons are hypotheses.
+
 ## What we do not claim
 Better, first or novel. That LexFront is worse in general (three datasets, one classifier family, one run per cell). Why any
 difference appears (all reasons are untested hypotheses). Anything about transformers, Hinglish or multiple seeds.

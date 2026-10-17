@@ -1,0 +1,60 @@
+{
+  "dataset": "tweet_eval_emotion",
+  "rules": "empty -> conflicting -> duplicate -> test_in_train (see experiments/clean.py)",
+  "text_key": "lower-cased, whitespace collapsed; kept texts are the original strings",
+  "n_before": {
+    "train": 3257,
+    "test": 1421
+  },
+  "n_after": {
+    "train": 3232,
+    "test": 1421
+  },
+  "removed": {
+    "empty": {
+      "train": 0,
+      "test": 0
+    },
+    "conflicting": {
+      "train": 0,
+      "test": 0
+    },
+    "duplicate": {
+      "train": 25,
+      "test": 0
+    },
+    "test_in_train": 0
+  },
+  "class_counts_before": {
+    "train": {
+      "0": 1400,
+      "1": 708,
+      "2": 294,
+      "3": 855
+    },
+    "test": {
+      "0": 558,
+      "1": 358,
+      "2": 123,
+      "3": 382
+    }
+  },
+  "class_counts_after": {
+    "train": {
+      "0": 1400,
+      "1": 683,
+      "2": 294,
+      "3": 855
+    },
+    "test": {
+      "0": 558,
+      "1": 358,
+      "2": 123,
+      "3": 382
+    }
+  },
+  "classes_missing_after": {
+    "train": [],
+    "test": []
+  }
+}

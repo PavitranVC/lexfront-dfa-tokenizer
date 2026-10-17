@@ -1,0 +1,170 @@
+{
+  "timestamp_utc": "2026-10-17T10:49:23+00:00",
+  "setting": "tuned",
+  "dataset": {
+    "name": "go_emotions",
+    "hf_id": "google-research-datasets/go_emotions",
+    "config": "simplified",
+    "n_train": 36072,
+    "n_test": 4550,
+    "n_labels": 28,
+    "label_names": [
+      "admiration",
+      "amusement",
+      "anger",
+      "annoyance",
+      "approval",
+      "caring",
+      "confusion",
+      "curiosity",
+      "desire",
+      "disappointment",
+      "disapproval",
+      "disgust",
+      "embarrassment",
+      "excitement",
+      "fear",
+      "gratitude",
+      "grief",
+      "joy",
+      "love",
+      "nervousness",
+      "optimism",
+      "pride",
+      "realization",
+      "relief",
+      "remorse",
+      "sadness",
+      "surprise",
+      "neutral"
+    ],
+    "split_info": {
+      "train": "train",
+      "test": "test",
+      "reason": "official splits; examples with more than one label removed",
+      "n_train_before_filter": 43410,
+      "n_test_before_filter": 5427,
+      "cleaning": {
+        "n_before": {
+          "train": 36308,
+          "test": 4590
+        },
+        "n_after": {
+          "train": 36072,
+          "test": 4550
+        },
+        "removed": {
+          "empty": {
+            "train": 0,
+            "test": 0
+          },
+          "conflicting": {
+            "train": 124,
+            "test": 3
+          },
+          "duplicate": {
+            "train": 112,
+            "test": 4
+          },
+          "test_in_train": 33
+        }
+      },
+      "subsample": {
+        "max_train": null,
+        "max_test": null,
+        "seed": 0
+      }
+    }
+  },
+  "data_hash": "a6f194a4a915a8c0",
+  "tokenizer": "whitespace",
+  "vectorizer": {
+    "type": "TfidfVectorizer",
+    "lowercase": true,
+    "min_df": 2,
+    "ngram_range": [
+      1,
+      2
+    ],
+    "token_pattern": null,
+    "sublinear_tf": true,
+    "name": "bigram_sublinear",
+    "n_features": 53327
+  },
+  "classifier": {
+    "name": "nb",
+    "params": {
+      "alpha": 0.1,
+      "class_prior": null,
+      "fit_prior": true,
+      "force_alpha": true
+    }
+  },
+  "tuning": {
+    "n_fit": 20000,
+    "n_val": 3607,
+    "scores": [
+      {
+        "vectorizer": "unigram",
+        "value": 0.1,
+        "val_accuracy": 0.41835320210701415
+      },
+      {
+        "vectorizer": "unigram",
+        "value": 0.3,
+        "val_accuracy": 0.3997782090379817
+      },
+      {
+        "vectorizer": "unigram",
+        "value": 1.0,
+        "val_accuracy": 0.37676739672858334
+      },
+      {
+        "vectorizer": "bigram_sublinear",
+        "value": 0.1,
+        "val_accuracy": 0.44136401441641254
+      },
+      {
+        "vectorizer": "bigram_sublinear",
+        "value": 0.3,
+        "val_accuracy": 0.4097588023288051
+      },
+      {
+        "vectorizer": "bigram_sublinear",
+        "value": 1.0,
+        "val_accuracy": 0.3789853063487663
+      }
+    ],
+    "selected": {
+      "vectorizer": "bigram_sublinear",
+      "value": 0.1,
+      "val_accuracy": 0.44136401441641254
+    }
+  },
+  "seed": 0,
+  "fingerprint": {
+    "config": "9f4084063e64ce04",
+    "code": "c10c5a86aa23e245"
+  },
+  "metrics": {
+    "accuracy": 0.45472527472527474,
+    "macro_f1": 0.1651767113105124
+  },
+  "timing_seconds": {
+    "tokenize_and_vectorize": 1.0174332000000277,
+    "classifier_fit": 0.17361728200000925,
+    "search_and_fit_total": 2.0704542919999085
+  },
+  "environment": {
+    "python": "3.11.17",
+    "sklearn": "1.9.1",
+    "nltk": "3.10.3",
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "threadpoolctl": "3.7.0",
+    "machine": "x86_64",
+    "platform": "Linux-6.18.44-fc-v139-x86_64-with-glibc2.39",
+    "blas_threads": 1
+  },
+  "predictions_file": "predictions/go_emotions__whitespace__nb.json.gz"
+}
