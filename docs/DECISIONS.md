@@ -3,6 +3,25 @@
 Newest first. One short entry each: decision, reason, source. Gaps filled on 2026-10-16 from the team's notes; items
 already recorded elsewhere are only pointed to. Citations below are from abstracts only and were not re-checked here.
 
+## 2026-10-17 (large-scale Sentiment140 test)
+
+### Scope and protocol (owner's choices; `docs/LARGE_PROTOCOL.md`, written before the full run)
+- Decision: one huge noisy dataset, run by the owner on Google Colab only, finished within a day. Sentiment140 (1.6 M tweets) from
+  `bdanko/sentiment140`, because it is the largest genuinely noisy tweet set that loads from parquet here (the official
+  `stanfordnlp/sentiment140` is script-based and refused by `datasets` >= 4). Provenance (repo commit SHA) is stored in `split.json`.
+- Split by user (5% of users held out), not by tweet: author leakage was a flaw of the base report. Cleaning with `clean.py` after the split.
+- Size ladder 10k / 100k / 1M / full with random subsets (5, 5, 3, 1) instead of one run, so the effect of data size has a spread;
+  `tuned` setting only at 10k, 100k and full (cost). Test text is also scored after seeded synthetic noise (light 0.10, heavy 0.30 of the
+  eligible words), because noise robustness is the claim LexFront was built for; training text is never corrupted.
+- Practical margin of +-0.5 accuracy points fixed in advance, because with ~80 k test tweets every difference has a narrow CI.
+  Hypotheses H1-H3 fixed in advance and reported as observed / not observed with the rule that decides it.
+- Colab design: one JSON per fit set (`--work`, on Google Drive in the notebook) so a disconnected session resumes; results consolidated
+  into `results/large/` (few files, easy to commit); optional push to a NEW branch with a token from a Colab secret (never `main`),
+  token passed through `GIT_ASKPASS`, scrubbed from error text. Memory: training texts are not memoized, only the test texts are.
+- The notebook is generated (`notebooks/make_large_notebook.py`, checked in CI) and committed without outputs. CI executes the same
+  cells as a dry run (`LEXFRONT_LARGE_QUICK=1`, Python 3.12, `requirements.txt` ranges, empty directory).
+- Limits: one source, labels derived from emoticons by the dataset's authors, synthetic noise, subsets of one size overlap, no transformers.
+
 ## 2026-10-17 (dataset collection: cleaning and fair tuning)
 
 ### Scope (owner's choices)
