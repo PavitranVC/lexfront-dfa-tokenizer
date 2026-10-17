@@ -1,5 +1,5 @@
 {
-  "timestamp_utc": "2026-10-17T00:11:19+00:00",
+  "timestamp_utc": "2026-10-17T01:14:18+00:00",
   "dataset": {
     "name": "go_emotions",
     "hf_id": "google-research-datasets/go_emotions",
@@ -96,15 +96,15 @@
   "seed": 0,
   "fingerprint": {
     "config": "93b7255b9c2c784e",
-    "code": "16dcea03d83ab451"
+    "code": "b1abb9579a754350"
   },
   "metrics": {
     "accuracy": 0.3764705882352941,
     "macro_f1": 0.046165619703042005
   },
   "timing_seconds": {
-    "tokenize_and_vectorize": 6.834090759999981,
-    "classifier_fit": 0.04384693299971332
+    "tokenize_and_vectorize": 6.199267413999905,
+    "classifier_fit": 0.02640741900017929
   },
   "environment": {
     "python": "3.11.17",
