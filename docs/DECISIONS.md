@@ -48,8 +48,9 @@ already recorded elsewhere are only pointed to. Citations below are from abstrac
   train and the test split is scored once. The test split is never used to choose anything (a test asserts it).
 - The main grid is untouched: new code lives in new files that are not part of the code fingerprint of the existing runs.
 - Limits: one seed, one validation split, small grid; tuned and default can differ by less than the noise (the report shows the sign
-  counts, not only the mean). The report also counts how often the search chose an edge of the grid: NB `alpha` often did, so the grid
-  is probably too narrow and the NB gains understated. Validation is carved from train, so under a train/test shift (`hate`) a
+  counts, not only the mean). The report also counts how often the search chose an edge of the grid: NB `alpha` often did, so a wider
+  grid might choose differently; the committed results do not test that (an unsaved spot check on a few datasets changed the
+  selection on one of them, so it is not a result). Validation is carved from train, so under a train/test shift (`hate`) a
   validation-selected setting can do worse on test than the default.
 
 ## 2026-10-17 (P4: AUDIT_5 fixes; WordPiece and Unigram)
