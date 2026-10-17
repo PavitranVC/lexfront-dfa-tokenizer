@@ -56,7 +56,8 @@ Blocks between `BEGIN`/`END` markers are regenerated; the text around them is ha
 4. **No subsampling** was needed for the committed results: every run finished well under 10 minutes. Only the notebook's
    `QUICK_MODE` subsamples (2,000 train / 500 test per dataset, seed 0) and writes to `results/quick/`.
 5. **DFA regex parser fallback (constructor-function ASTs) was not needed**: the parser works and covers all four classes.
-6. **Not run / out of scope**: BPE, LexFront + BPE hybrid, WordPiece, Unigram, ablation, transformers; Hinglish; multiple seeds.
+6. **Not run / out of scope**: WordPiece, Unigram, transformers; Hinglish; multiple seeds. (The per-rule ablation and BPE + the
+   LexFront + BPE hybrid are now run: sections below.)
 
 ## 4. Tables and DRAFT observations
 
@@ -364,6 +365,26 @@ not a test of the rule, so the observation lists it apart and leaves it out of t
 
 _Ablation: each variant is LexFront + LR with the named rule (all_off: every rule) switched off, everything else fixed; differences are variant minus full LexFront of the same setting, paired bootstrap over the test examples (same code, B and seed as `ci_table`). One training run per variant, so training randomness is not covered. The lowercase rule is tested only with case kept: in the main setting TF-IDF lowercases the text before LexFront sees it, so switching the rule off cannot change anything there. These numbers say which removals change the scores, not why; any reason given elsewhere is a hypothesis._
 <!-- END obs:ablation -->
+
+### BPE and the LexFront + BPE hybrid (P3)
+BPE (Hugging Face `tokenizers`, vocabulary 8000, `##` continuation marker, `[UNK]`) trained on each dataset's
+lowercased train split only; LexFront + BPE keeps LexFront's structural tokens (`<URL>`, `<USER>`, `<NUM>`, hashtags,
+emoticons, emoji, punctuation, UNKNOWN) whole and splits only word-like tokens with a BPE trained on the word-like
+tokens of the train split (`python -m experiments.run_bpe`, `results/bpe/`, protocol in `docs/versions/v5-bpe-hybrid.md`).
+Same TF-IDF (main setting, TF-IDF lowercases), NB and LR as the main grid. Differences are paired bootstraps over the
+test examples (same code, B and seed as `ci_table`) against the main grid's NLTK+LR and LexFront+LR, with an exact
+McNemar test for BPE+LR vs NLTK+LR. A vocabulary-size sensitivity run at 32000 is in `results/bpe_v32000/`. In the
+intrinsic table BPE's OOV rate is near zero by construction (every word splits into known pieces), so OOV is not
+comparable with the word-level tokenizers.
+
+<!-- BEGIN table:bpe_runs -->
+<!-- END table:bpe_runs -->
+
+<!-- BEGIN table:bpe_table -->
+<!-- END table:bpe_table -->
+
+<!-- BEGIN obs:bpe -->
+<!-- END obs:bpe -->
 
 ## 5. Pseudocode
 

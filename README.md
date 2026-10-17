@@ -33,6 +33,7 @@ pytest -q
 python -m experiments.run_datasets
 python -m experiments.run_module1
 python -m experiments.run_module2
+python -m experiments.run_bpe              # BPE + hybrid grid and its stats (P3)
 python -m experiments.render_docs
 ```
 
@@ -42,6 +43,7 @@ The notebook runs top to bottom on a fresh Colab runtime; `QUICK_MODE = True` (d
 
 ```
 lexer/        token spec, PLY lexer, normalizer, symbol table, LexFront, dfa/ (own regex->DFA engine)
+subword/      BPE and the LexFront + BPE hybrid (Hugging Face `tokenizers`, trained on the train split only)
 experiments/  data, tokenizers, classifiers, metrics, evaluation loop, reports, figures
 tests/        fast pytest suite
 results/      JSON results, tables/, figures/, module2/dfa_min.{dot,png}, REPORT_NOTES.md
@@ -49,4 +51,5 @@ notebooks/    LexFront_Review1.ipynb (+ make_notebook.py)
 docs/         versions/, modules/, LEARN.md
 ```
 
-Out of scope for review 1: BPE and the LexFront + BPE hybrid, WordPiece, Unigram, ablation, transformers.
+Out of scope for review 1: WordPiece, Unigram, transformers. Added since: the per-rule normalization ablation
+(`docs/versions/v4-ablation.md`) and BPE + the LexFront + BPE hybrid (`docs/versions/v5-bpe-hybrid.md`).
