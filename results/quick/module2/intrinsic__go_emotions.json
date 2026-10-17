@@ -1,5 +1,5 @@
 {
-  "timestamp_utc": "2026-10-17T00:15:35+00:00",
+  "timestamp_utc": "2026-10-17T06:39:01+00:00",
   "dataset": {
     "name": "go_emotions",
     "hf_id": "google-research-datasets/go_emotions",
@@ -69,8 +69,8 @@
       "vocab_size": 6320,
       "n_test_tokens": 6420,
       "n_test_whitespace_words": 6420,
-      "throughput_tokens_per_s": 22120234.864120968,
-      "throughput_docs_per_s": 1722759.7246200133,
+      "throughput_tokens_per_s": 23776192.694966666,
+      "throughput_docs_per_s": 1851728.4030347872,
       "throughput_docs": 500
     },
     "nltk": {
@@ -80,8 +80,8 @@
       "vocab_size": 4789,
       "n_test_tokens": 7847,
       "n_test_whitespace_words": 6420,
-      "throughput_tokens_per_s": 252147.70592124408,
-      "throughput_docs_per_s": 16066.503499505803,
+      "throughput_tokens_per_s": 160402.3193514035,
+      "throughput_docs_per_s": 10220.614206155442,
       "throughput_docs": 500
     },
     "tweet": {
@@ -91,8 +91,8 @@
       "vocab_size": 4809,
       "n_test_tokens": 7676,
       "n_test_whitespace_words": 6420,
-      "throughput_tokens_per_s": 388771.06003492704,
-      "throughput_docs_per_s": 25323.805369653925,
+      "throughput_tokens_per_s": 270451.94154226483,
+      "throughput_docs_per_s": 17616.72365439453,
       "throughput_docs": 500
     },
     "lexfront": {
@@ -102,8 +102,8 @@
       "vocab_size": 4707,
       "n_test_tokens": 7669,
       "n_test_whitespace_words": 6420,
-      "throughput_tokens_per_s": 298263.00013613224,
-      "throughput_docs_per_s": 19446.016438657727,
+      "throughput_tokens_per_s": 257161.98992169127,
+      "throughput_docs_per_s": 16766.331328836306,
       "throughput_docs": 500
     },
     "bpe": {
@@ -113,8 +113,8 @@
       "vocab_size": 4802,
       "n_test_tokens": 9197,
       "n_test_whitespace_words": 6420,
-      "throughput_tokens_per_s": 1156486.1432095792,
-      "throughput_docs_per_s": 62873.00985155917,
+      "throughput_tokens_per_s": 1069326.2198408532,
+      "throughput_docs_per_s": 58134.51233232865,
       "throughput_docs": 500,
       "trained_vocab_size": 7986
     },
@@ -125,8 +125,8 @@
       "vocab_size": 4707,
       "n_test_tokens": 8837,
       "n_test_whitespace_words": 6420,
-      "throughput_tokens_per_s": 308492.73840838467,
-      "throughput_docs_per_s": 17454.607808554072,
+      "throughput_tokens_per_s": 260811.73394811896,
+      "throughput_docs_per_s": 14756.802871343156,
       "throughput_docs": 500,
       "trained_vocab_size": 7711
     }

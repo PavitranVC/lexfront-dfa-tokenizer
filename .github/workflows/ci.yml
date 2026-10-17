@@ -59,3 +59,25 @@ jobs:
       - run: sudo apt-get update -q && sudo apt-get install -y -q graphviz
       - run: pip install -r requirements-lock.txt   # exact pins that produced the committed results
       - run: jupyter nbconvert --to notebook --execute --ExecutePreprocessor.timeout=1200 --output-dir "$RUNNER_TEMP" notebooks/LexFront_Review1.ipynb
+
+  colab-simulation:
+    # What Colab does: Python 3.12, the compatible ranges of requirements.txt (not the lock), an empty working directory.
+    # The notebook is copied out of the checkout, so its first cell has to find or clone the repo itself.
+    needs: tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: sudo apt-get update -q && sudo apt-get install -y -q graphviz
+      - run: pip install -r requirements.txt
+      - name: Run the notebook from an empty directory (its first cell clones this checkout)
+        env:
+          LEXFRONT_REPO_URL: file://${{ github.workspace }}
+        run: |
+          mkdir "$RUNNER_TEMP/empty" && cp notebooks/LexFront_Review1.ipynb "$RUNNER_TEMP/empty/"
+          cd "$RUNNER_TEMP/empty"
+          jupyter nbconvert --to notebook --execute --ExecutePreprocessor.timeout=1200 --output out.ipynb LexFront_Review1.ipynb
