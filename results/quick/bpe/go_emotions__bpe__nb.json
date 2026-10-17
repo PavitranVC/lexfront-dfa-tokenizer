@@ -1,0 +1,112 @@
+{
+  "timestamp_utc": "2026-10-17T00:17:05+00:00",
+  "dataset": {
+    "name": "go_emotions",
+    "hf_id": "google-research-datasets/go_emotions",
+    "config": "simplified",
+    "n_train": 2000,
+    "n_test": 500,
+    "n_labels": 28,
+    "label_names": [
+      "admiration",
+      "amusement",
+      "anger",
+      "annoyance",
+      "approval",
+      "caring",
+      "confusion",
+      "curiosity",
+      "desire",
+      "disappointment",
+      "disapproval",
+      "disgust",
+      "embarrassment",
+      "excitement",
+      "fear",
+      "gratitude",
+      "grief",
+      "joy",
+      "love",
+      "nervousness",
+      "optimism",
+      "pride",
+      "realization",
+      "relief",
+      "remorse",
+      "sadness",
+      "surprise",
+      "neutral"
+    ],
+    "split_info": {
+      "train": "train",
+      "test": "test",
+      "reason": "official splits; examples with more than one label removed",
+      "n_train_before_filter": 43410,
+      "n_test_before_filter": 5427,
+      "subsample": {
+        "max_train": 2000,
+        "max_test": 500,
+        "seed": 0
+      }
+    }
+  },
+  "data_hash": "4bc10ba33c6113d8",
+  "tokenizer": "bpe",
+  "subword": {
+    "model": "bpe",
+    "vocab_size": 8000,
+    "pre_tokenizer": "whitespace",
+    "continuing_subword_prefix": "##",
+    "unk_token": "[UNK]",
+    "hybrid": false,
+    "pass_through_classes": [],
+    "train_text": "train split, lowercased",
+    "train_text_hash": "91856b19d273a405",
+    "tokenizers": "0.23.3"
+  },
+  "vectorizer": {
+    "type": "TfidfVectorizer",
+    "lowercase": true,
+    "min_df": 2,
+    "ngram_range": [
+      1,
+      1
+    ],
+    "token_pattern": null,
+    "n_features": 1796
+  },
+  "classifier": {
+    "name": "nb",
+    "params": {
+      "alpha": 1.0,
+      "class_prior": null,
+      "fit_prior": true,
+      "force_alpha": true
+    }
+  },
+  "seed": 0,
+  "fingerprint": {
+    "config": "d4e25e02134a3450",
+    "code": "16dcea03d83ab451"
+  },
+  "metrics": {
+    "accuracy": 0.356,
+    "macro_f1": 0.029051109022221206
+  },
+  "timing_seconds": {
+    "tokenize_and_vectorize": 0.4040908480001235,
+    "classifier_fit": 0.0032811099999889848
+  },
+  "environment": {
+    "python": "3.11.17",
+    "sklearn": "1.9.1",
+    "nltk": "3.10.3",
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "threadpoolctl": "3.7.0",
+    "machine": "x86_64",
+    "platform": "Linux-6.18.44-fc-v139-x86_64-with-glibc2.39",
+    "blas_threads": 1
+  },
+  "predictions_file": "predictions/go_emotions__bpe__nb.json.gz"
+}

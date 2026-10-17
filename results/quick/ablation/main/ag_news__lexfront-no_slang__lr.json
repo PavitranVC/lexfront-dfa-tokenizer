@@ -1,5 +1,5 @@
 {
-  "timestamp_utc": "2026-10-16T21:27:28+00:00",
+  "timestamp_utc": "2026-10-17T00:16:16+00:00",
   "dataset": {
     "name": "ag_news",
     "hf_id": "fancyzhx/ag_news",
@@ -67,15 +67,15 @@
   "seed": 0,
   "fingerprint": {
     "config": "5f662af2da43157c",
-    "code": "10cfad715b15ce20"
+    "code": "16dcea03d83ab451"
   },
   "metrics": {
     "accuracy": 0.854,
     "macro_f1": 0.8536573764056619
   },
   "timing_seconds": {
-    "tokenize_and_vectorize": 0.6022274720000951,
-    "classifier_fit": 0.11706347699987418
+    "tokenize_and_vectorize": 0.44224746899999445,
+    "classifier_fit": 0.11681406600018818
   },
   "environment": {
     "python": "3.11.17",

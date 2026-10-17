@@ -10,6 +10,7 @@
     "difference": "variant minus the setting's reference (full LexFront), in fractions (x100 for points)",
     "mcnemar": "exact two-sided binomial test on discordant pairs, accuracy, every variant vs reference",
     "multiplicity": "none: every interval is a separate 95% interval",
+    "rule_fires": "per split: documents whose token list (docs) and lexer tokens whose normalized form (tokens) differ from full LexFront, on the text LexFront sees in the setting; 0 in train and test means the variant is the full system (not a test of the rule)",
     "not_covered": "training randomness: one training run per cell (seed 0)",
     "numpy": "2.4.6",
     "settings": {
@@ -113,7 +114,19 @@
               "a_wrong_b_right": 0,
               "p_value": 1.0
             },
-            "n_predictions_changed": 0
+            "n_predictions_changed": 0,
+            "rule_fires": {
+              "train": {
+                "docs": 0,
+                "tokens": 0,
+                "n_docs": 2000
+              },
+              "test": {
+                "docs": 0,
+                "tokens": 0,
+                "n_docs": 500
+              }
+            }
           },
           "no_mention": {
             "tokenizer": "lexfront:no_mention",
@@ -156,7 +169,19 @@
               "a_wrong_b_right": 5,
               "p_value": 0.453125
             },
-            "n_predictions_changed": 7
+            "n_predictions_changed": 7,
+            "rule_fires": {
+              "train": {
+                "docs": 1335,
+                "tokens": 1800,
+                "n_docs": 2000
+              },
+              "test": {
+                "docs": 349,
+                "tokens": 456,
+                "n_docs": 500
+              }
+            }
           },
           "no_number": {
             "tokenizer": "lexfront:no_number",
@@ -199,7 +224,19 @@
               "a_wrong_b_right": 6,
               "p_value": 0.1670684814453125
             },
-            "n_predictions_changed": 33
+            "n_predictions_changed": 33,
+            "rule_fires": {
+              "train": {
+                "docs": 656,
+                "tokens": 1301,
+                "n_docs": 2000
+              },
+              "test": {
+                "docs": 173,
+                "tokens": 320,
+                "n_docs": 500
+              }
+            }
           },
           "no_elongated": {
             "tokenizer": "lexfront:no_elongated",
@@ -242,7 +279,19 @@
               "a_wrong_b_right": 2,
               "p_value": 0.5
             },
-            "n_predictions_changed": 2
+            "n_predictions_changed": 2,
+            "rule_fires": {
+              "train": {
+                "docs": 53,
+                "tokens": 67,
+                "n_docs": 2000
+              },
+              "test": {
+                "docs": 12,
+                "tokens": 12,
+                "n_docs": 500
+              }
+            }
           },
           "no_slang": {
             "tokenizer": "lexfront:no_slang",
@@ -285,7 +334,19 @@
               "a_wrong_b_right": 3,
               "p_value": 0.25
             },
-            "n_predictions_changed": 5
+            "n_predictions_changed": 5,
+            "rule_fires": {
+              "train": {
+                "docs": 132,
+                "tokens": 151,
+                "n_docs": 2000
+              },
+              "test": {
+                "docs": 27,
+                "tokens": 32,
+                "n_docs": 500
+              }
+            }
           },
           "all_off": {
             "tokenizer": "lexfront:all_off",
@@ -328,7 +389,19 @@
               "a_wrong_b_right": 7,
               "p_value": 0.26317596435546875
             },
-            "n_predictions_changed": 27
+            "n_predictions_changed": 27,
+            "rule_fires": {
+              "train": {
+                "docs": 1589,
+                "tokens": 3319,
+                "n_docs": 2000
+              },
+              "test": {
+                "docs": 408,
+                "tokens": 820,
+                "n_docs": 500
+              }
+            }
           }
         }
       },
@@ -399,7 +472,19 @@
               "a_wrong_b_right": 11,
               "p_value": 0.44206833839416504
             },
-            "n_predictions_changed": 46
+            "n_predictions_changed": 46,
+            "rule_fires": {
+              "train": {
+                "docs": 1993,
+                "tokens": 16246,
+                "n_docs": 2000
+              },
+              "test": {
+                "docs": 496,
+                "tokens": 3998,
+                "n_docs": 500
+              }
+            }
           },
           "all_off_cs": {
             "tokenizer": "lexfront:all_off",
@@ -442,7 +527,19 @@
               "a_wrong_b_right": 19,
               "p_value": 0.6439689563703723
             },
-            "n_predictions_changed": 69
+            "n_predictions_changed": 69,
+            "rule_fires": {
+              "train": {
+                "docs": 2000,
+                "tokens": 19467,
+                "n_docs": 2000
+              },
+              "test": {
+                "docs": 500,
+                "tokens": 4800,
+                "n_docs": 500
+              }
+            }
           }
         }
       }
@@ -518,7 +615,19 @@
               "a_wrong_b_right": 0,
               "p_value": 1.0
             },
-            "n_predictions_changed": 0
+            "n_predictions_changed": 0,
+            "rule_fires": {
+              "train": {
+                "docs": 0,
+                "tokens": 0,
+                "n_docs": 2000
+              },
+              "test": {
+                "docs": 0,
+                "tokens": 0,
+                "n_docs": 500
+              }
+            }
           },
           "no_mention": {
             "tokenizer": "lexfront:no_mention",
@@ -561,7 +670,19 @@
               "a_wrong_b_right": 0,
               "p_value": 1.0
             },
-            "n_predictions_changed": 0
+            "n_predictions_changed": 0,
+            "rule_fires": {
+              "train": {
+                "docs": 0,
+                "tokens": 0,
+                "n_docs": 2000
+              },
+              "test": {
+                "docs": 0,
+                "tokens": 0,
+                "n_docs": 500
+              }
+            }
           },
           "no_number": {
             "tokenizer": "lexfront:no_number",
@@ -604,7 +725,19 @@
               "a_wrong_b_right": 0,
               "p_value": 1.0
             },
-            "n_predictions_changed": 1
+            "n_predictions_changed": 1,
+            "rule_fires": {
+              "train": {
+                "docs": 186,
+                "tokens": 239,
+                "n_docs": 2000
+              },
+              "test": {
+                "docs": 39,
+                "tokens": 55,
+                "n_docs": 500
+              }
+            }
           },
           "no_elongated": {
             "tokenizer": "lexfront:no_elongated",
@@ -647,7 +780,19 @@
               "a_wrong_b_right": 0,
               "p_value": 1.0
             },
-            "n_predictions_changed": 0
+            "n_predictions_changed": 0,
+            "rule_fires": {
+              "train": {
+                "docs": 32,
+                "tokens": 33,
+                "n_docs": 2000
+              },
+              "test": {
+                "docs": 7,
+                "tokens": 8,
+                "n_docs": 500
+              }
+            }
           },
           "no_slang": {
             "tokenizer": "lexfront:no_slang",
@@ -690,7 +835,19 @@
               "a_wrong_b_right": 0,
               "p_value": 1.0
             },
-            "n_predictions_changed": 3
+            "n_predictions_changed": 3,
+            "rule_fires": {
+              "train": {
+                "docs": 84,
+                "tokens": 85,
+                "n_docs": 2000
+              },
+              "test": {
+                "docs": 9,
+                "tokens": 11,
+                "n_docs": 500
+              }
+            }
           },
           "all_off": {
             "tokenizer": "lexfront:all_off",
@@ -733,7 +890,19 @@
               "a_wrong_b_right": 0,
               "p_value": 1.0
             },
-            "n_predictions_changed": 3
+            "n_predictions_changed": 3,
+            "rule_fires": {
+              "train": {
+                "docs": 281,
+                "tokens": 357,
+                "n_docs": 2000
+              },
+              "test": {
+                "docs": 54,
+                "tokens": 74,
+                "n_docs": 500
+              }
+            }
           }
         }
       },
@@ -804,7 +973,19 @@
               "a_wrong_b_right": 2,
               "p_value": 0.002349853515625
             },
-            "n_predictions_changed": 25
+            "n_predictions_changed": 25,
+            "rule_fires": {
+              "train": {
+                "docs": 1900,
+                "tokens": 4208,
+                "n_docs": 2000
+              },
+              "test": {
+                "docs": 482,
+                "tokens": 1107,
+                "n_docs": 500
+              }
+            }
           },
           "all_off_cs": {
             "tokenizer": "lexfront:all_off",
@@ -847,7 +1028,19 @@
               "a_wrong_b_right": 2,
               "p_value": 0.002349853515625
             },
-            "n_predictions_changed": 25
+            "n_predictions_changed": 25,
+            "rule_fires": {
+              "train": {
+                "docs": 1926,
+                "tokens": 4522,
+                "n_docs": 2000
+              },
+              "test": {
+                "docs": 484,
+                "tokens": 1171,
+                "n_docs": 500
+              }
+            }
           }
         }
       }
@@ -923,7 +1116,19 @@
               "a_wrong_b_right": 0,
               "p_value": 1.0
             },
-            "n_predictions_changed": 0
+            "n_predictions_changed": 0,
+            "rule_fires": {
+              "train": {
+                "docs": 32,
+                "tokens": 44,
+                "n_docs": 2000
+              },
+              "test": {
+                "docs": 12,
+                "tokens": 15,
+                "n_docs": 500
+              }
+            }
           },
           "no_mention": {
             "tokenizer": "lexfront:no_mention",
@@ -966,7 +1171,19 @@
               "a_wrong_b_right": 0,
               "p_value": 1.0
             },
-            "n_predictions_changed": 0
+            "n_predictions_changed": 0,
+            "rule_fires": {
+              "train": {
+                "docs": 0,
+                "tokens": 0,
+                "n_docs": 2000
+              },
+              "test": {
+                "docs": 0,
+                "tokens": 0,
+                "n_docs": 500
+              }
+            }
           },
           "no_number": {
             "tokenizer": "lexfront:no_number",
@@ -1009,7 +1226,19 @@
               "a_wrong_b_right": 7,
               "p_value": 0.1796875
             },
-            "n_predictions_changed": 11
+            "n_predictions_changed": 11,
+            "rule_fires": {
+              "train": {
+                "docs": 862,
+                "tokens": 1824,
+                "n_docs": 2000
+              },
+              "test": {
+                "docs": 234,
+                "tokens": 486,
+                "n_docs": 500
+              }
+            }
           },
           "no_elongated": {
             "tokenizer": "lexfront:no_elongated",
@@ -1052,7 +1281,19 @@
               "a_wrong_b_right": 0,
               "p_value": 1.0
             },
-            "n_predictions_changed": 0
+            "n_predictions_changed": 0,
+            "rule_fires": {
+              "train": {
+                "docs": 8,
+                "tokens": 8,
+                "n_docs": 2000
+              },
+              "test": {
+                "docs": 1,
+                "tokens": 1,
+                "n_docs": 500
+              }
+            }
           },
           "no_slang": {
             "tokenizer": "lexfront:no_slang",
@@ -1095,7 +1336,19 @@
               "a_wrong_b_right": 1,
               "p_value": 1.0
             },
-            "n_predictions_changed": 1
+            "n_predictions_changed": 1,
+            "rule_fires": {
+              "train": {
+                "docs": 118,
+                "tokens": 156,
+                "n_docs": 2000
+              },
+              "test": {
+                "docs": 28,
+                "tokens": 37,
+                "n_docs": 500
+              }
+            }
           },
           "all_off": {
             "tokenizer": "lexfront:all_off",
@@ -1138,7 +1391,19 @@
               "a_wrong_b_right": 7,
               "p_value": 0.1796875
             },
-            "n_predictions_changed": 11
+            "n_predictions_changed": 11,
+            "rule_fires": {
+              "train": {
+                "docs": 943,
+                "tokens": 2032,
+                "n_docs": 2000
+              },
+              "test": {
+                "docs": 254,
+                "tokens": 539,
+                "n_docs": 500
+              }
+            }
           }
         }
       },
@@ -1209,7 +1474,19 @@
               "a_wrong_b_right": 7,
               "p_value": 0.803619384765625
             },
-            "n_predictions_changed": 22
+            "n_predictions_changed": 22,
+            "rule_fires": {
+              "train": {
+                "docs": 2000,
+                "tokens": 22050,
+                "n_docs": 2000
+              },
+              "test": {
+                "docs": 500,
+                "tokens": 5446,
+                "n_docs": 500
+              }
+            }
           },
           "all_off_cs": {
             "tokenizer": "lexfront:all_off",
@@ -1252,7 +1529,19 @@
               "a_wrong_b_right": 11,
               "p_value": 0.557197093963623
             },
-            "n_predictions_changed": 30
+            "n_predictions_changed": 30,
+            "rule_fires": {
+              "train": {
+                "docs": 2000,
+                "tokens": 23919,
+                "n_docs": 2000
+              },
+              "test": {
+                "docs": 500,
+                "tokens": 5948,
+                "n_docs": 500
+              }
+            }
           }
         }
       }

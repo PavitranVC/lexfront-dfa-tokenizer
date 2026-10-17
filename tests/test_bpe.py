@@ -12,7 +12,7 @@ from experiments.observations import observation
 from experiments.tokenizers import TOKENIZERS, build_tokenizer, subword_record
 from lexer.normalize import WORD_LIKE
 from lexer.token_spec import CLASS_NAMES
-from subword.bpe import STRUCTURAL, BpeConfig, BpeTokenizer, LexFrontBpe, train_bpe
+from subword.bpe import STRUCTURAL, BpeConfig, BpeTokenizer, LexFrontBpe, sorted_alphabet, train_bpe
 from tests.test_experiments import toy_dataset
 
 QUIET = {"log": lambda *_: None}
@@ -53,16 +53,17 @@ def test_structural_tokens_pass_through_the_hybrid_unsplit():
     assert set(STRUCTURAL) | WORD_LIKE == set(CLASS_NAMES) and not set(STRUCTURAL) & WORD_LIKE
 
 
-def test_training_is_deterministic_and_keeps_the_trainers_vocabulary():
+def test_training_is_deterministic_and_seeds_only_the_trainers_own_alphabet():
     texts = TRAIN + ["zebra quiz jumps", "quick brown fox"]
     first, second = train_bpe(texts, SMALL), train_bpe(texts, SMALL)
     assert first.to_str() == second.to_str()
+    assert json.loads(first.to_str())["added_tokens"] == []
+    # vocab_size=1 keeps only the alphabet the unseeded trainer builds itself: seeding adds no symbol, it fixes ids
     plain = Tokenizer(models.BPE(unk_token="[UNK]", continuing_subword_prefix="##"))
     plain.pre_tokenizer = pre_tokenizers.Whitespace()
-    plain.train_from_iterator(texts, trainers.BpeTrainer(vocab_size=80, special_tokens=["[UNK]"], show_progress=False,
+    plain.train_from_iterator(texts, trainers.BpeTrainer(vocab_size=1, special_tokens=["[UNK]"], show_progress=False,
                                                          continuing_subword_prefix="##"))
-    assert set(plain.get_vocab()) == set(first.get_vocab())       # seeding the alphabet only fixes the ids
-    assert json.loads(first.to_str())["added_tokens"] == []
+    assert set(plain.get_vocab()) == set(sorted_alphabet(texts, pre_tokenizers.Whitespace(), SMALL))
 
 
 def test_training_does_not_depend_on_the_thread_count():

@@ -74,7 +74,7 @@
   },
   "files": {
     "dot": "dfa_min.dot",
-    "png": null
+    "png": "dfa_min.png"
   },
   "minimizer": "Moore partition refinement"
 }

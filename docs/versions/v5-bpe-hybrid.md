@@ -34,7 +34,8 @@ LexFront alone?
   ties between equally frequent pairs by id, so two trainings could differ in merge order (observed before the fix,
   at 1 and 4 threads alike). `subword/bpe.py` passes the alphabet the trainer would build anyway, sorted, as its
   special tokens, then removes them from the added-token list. Tests check: two trainings give the same serialized
-  tokenizer; `RAYON_NUM_THREADS=1` and `4` give the same result; the vocabulary set equals the unseeded trainer's.
+  tokenizer; `RAYON_NUM_THREADS=1` and `4` give the same result; the seeded alphabet equals the alphabet the
+  unseeded trainer builds itself (seeding adds no symbol, it only fixes the ids).
   The thread count is therefore not pinned.
 * **Grid.** 3 datasets x {bpe, lexfront_bpe} x {NB, LR}, main setting (TF-IDF `lowercase=True`, `min_df=2`,
   unigrams), seed 0, single-threaded BLAS, full data. Runs: `results/bpe/<dataset>__<tokenizer>__<clf>.json` with

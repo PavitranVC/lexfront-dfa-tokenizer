@@ -24,6 +24,9 @@ already recorded elsewhere are only pointed to. Citations below are from abstrac
 
 ### P3 protocol (decisions by the conductor, logged before coding)
 - Library: Hugging Face `tokenizers` (Rust, CPU, no torch); `requirements.txt` range `>=0.22,<0.24`, lock `0.23.3`.
+  Checked: `tokenizers` installs on Python 3.11 (lock venv) and 3.12 (0.23.3 resolved); `tests/test_bpe.py` also
+  passes with the lowest allowed 0.22.0. Note: 0.22.x requires `huggingface-hub<1.0`, which conflicts with
+  `datasets` 5.x (`huggingface-hub>=1.31`), so with the lock's `datasets` pip resolves 0.23.x.
 - Training data: every BPE is trained only on the train texts of its dataset, lowercased as the vectorizer does;
   never on test. Fixed vocabulary size 8000 for all datasets in the primary grid (no tuning); sensitivity grid at
   32000 with the same code in `results/bpe_v32000/`.
@@ -50,14 +53,16 @@ already recorded elsewhere are only pointed to. Citations below are from abstrac
   lexer deliberately kept whole. Its training text is, per train document, the word-like normalized forms joined by
   spaces.
 - Determinism (checked before coding, scratch script, tokenizers 0.23.3): with the `##` marker, two trainings on the
-  same text gave the same vocabulary and merge *sets* but different token ids and merge order, at 1 and at 4 threads
-  alike (without the marker the result was identical). Cause: the marked alphabet (`##a`, ...) gets its ids in the
+  same text gave different token ids and merge order, at 1 and at 4 threads alike (in that check the vocabulary and
+  merge *sets* matched; a later unit test showed that ties at the vocabulary cutoff can change even the set). Without
+  the marker the result was identical. Cause: the marked alphabet (`##a`, ...) gets its ids in the
   order of a Rust hash map, and ties between equally frequent pairs are broken by id. Fix: the alphabet the trainer
   would build anyway (every character, plus `##` + every character seen inside a pre-token) is passed first, sorted,
   as the trainer's special tokens, so every id is fixed; afterwards these entries are dropped from the added-token
   list (they stay ordinary vocabulary entries). With the fix, repeated trainings and RAYON_NUM_THREADS=1 / 2 / 4 gave
-  identical vocab, ids and merges, so the thread count is not pinned; a test checks the vocabulary set equals the
-  unseeded trainer's and that the result does not depend on RAYON_NUM_THREADS.
+  identical vocab, ids and merges, so the thread count is not pinned; tests check that two trainings serialize
+  identically, that the seeded alphabet equals the alphabet the unseeded trainer builds itself (no extra symbol), and
+  that the result does not depend on RAYON_NUM_THREADS.
 - Tokenizers that need training are built by a factory `build_tokenizer(name, train_texts)`
   (`experiments/tokenizers.py`); the interface stays `tokenize(text) -> list[str]`. Names: `bpe`, `lexfront_bpe`
   (8000) and `bpe:v32000`, `lexfront_bpe:v32000`. The run JSON and the config fingerprint carry a `subword` record
