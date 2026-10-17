@@ -1,0 +1,52 @@
+{
+  "dataset": "tweet_eval_hate",
+  "rules": "empty -> conflicting -> duplicate -> test_in_train (see experiments/clean.py)",
+  "text_key": "lower-cased, whitespace collapsed; kept texts are the original strings",
+  "n_before": {
+    "train": 9000,
+    "test": 2970
+  },
+  "n_after": {
+    "train": 8983,
+    "test": 2731
+  },
+  "removed": {
+    "empty": {
+      "train": 7,
+      "test": 0
+    },
+    "conflicting": {
+      "train": 5,
+      "test": 0
+    },
+    "duplicate": {
+      "train": 5,
+      "test": 4
+    },
+    "test_in_train": 235
+  },
+  "class_counts_before": {
+    "train": {
+      "0": 5217,
+      "1": 3783
+    },
+    "test": {
+      "0": 1718,
+      "1": 1252
+    }
+  },
+  "class_counts_after": {
+    "train": {
+      "0": 5203,
+      "1": 3780
+    },
+    "test": {
+      "0": 1618,
+      "1": 1113
+    }
+  },
+  "classes_missing_after": {
+    "train": [],
+    "test": []
+  }
+}

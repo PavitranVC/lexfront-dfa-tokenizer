@@ -1,0 +1,248 @@
+"""The dataset collection: cleaned data, default and tuned classifiers, bootstrap statistics, generated report.
+
+    python -m experiments.run_collection [--out results/collection] [--datasets ...] [--max-train N] [--max-test N]
+    python -m experiments.run_collection --stats-only      # statistics + REPORT.md from the stored JSON, no data needed
+
+Everything lands under --out and nothing outside it is written, so the committed results of the main grid stay as they
+are (`python -m experiments.compare_results` must still report 0 differences). Layout:
+
+    cleaning/<dataset>.json     what the cleaning pass removed (experiments/clean.py)
+    default/                    default TF-IDF + {majority, NB, LR}, the same settings as the main grid, cleaned data
+    tuned/                      validation-selected settings (experiments/tuning.py), same search for every tokenizer
+    stats/<setting>.json        percentile bootstrap over test examples + paired differences (experiments/stats.py)
+    REPORT.md                   tables generated from the JSON above; the only place the numbers are written down
+"""
+import argparse
+import json
+from pathlib import Path
+
+from . import data_extra, pipeline, run_stats, tuning
+from .classifiers import CLASSIFIER_NAMES
+
+TOKENIZERS = ("whitespace", "nltk", "tweet", "lexfront")
+SETTINGS = ("default", "tuned")
+PAIRS = run_stats.PAIRS[:2]            # tokenizer-only comparisons (NLTK -> LexFront, TweetTokenizer -> LexFront), LR
+# Raw (uncleaned) full-data default runs of the original three datasets live in these main-grid folders.
+RAW_DIRS = ("module1", "module2")
+
+
+def find_runs(out_dir, setting: str) -> dict[str, dict[str, Path]]:
+    runs: dict[str, dict[str, Path]] = {}
+    for path in sorted((Path(out_dir) / setting).glob("*__*__*.json")):
+        dataset, tokenizer, classifier = path.stem.split("__")
+        runs.setdefault(dataset, {})[f"{tokenizer}__{classifier}"] = path
+    return runs
+
+
+def write_stats(out_dir, n_boot: int = run_stats.N_BOOT, seed: int = run_stats.SEED) -> list[Path]:
+    written = []
+    for setting in SETTINGS:
+        found = find_runs(out_dir, setting)
+        if not found:
+            continue
+        order = [d for d in data_extra.COLLECTION_NAMES if d in found]
+        record = {"config": {"setting": setting, "method": "percentile bootstrap over test examples",
+                             "n_boot": n_boot, "seed": seed, "pairs": [{"name": n, "a": a, "b": b} for n, a, b, _ in PAIRS],
+                             "difference": "b minus a, in fractions (x100 for points)",
+                             "not_covered": "training randomness (one training run per cell, seed 0) and the "
+                                            "validation-split randomness of the tuned setting"},
+                  "datasets": {d: run_stats.dataset_stats(found[d], n_boot, seed, PAIRS, run_stats.PAIR_LABELS)
+                               for d in order}}
+        path = Path(out_dir) / "stats" / f"{setting}.json"
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(json.dumps(record, indent=2) + "\n")
+        written.append(path)
+    return written
+
+
+def run_all(out_dir, names, max_train, max_test, seed, force, log=print) -> None:
+    out = Path(out_dir)
+    for name in names:
+        ds, report = data_extra.load(name, True, max_train, max_test, seed)
+        (out / "cleaning").mkdir(parents=True, exist_ok=True)
+        (out / "cleaning" / f"{name}.json").write_text(json.dumps(report, indent=2) + "\n")
+        log(f"== {name}: train {report['n_before']['train']} -> {report['n_after']['train']}, "
+            f"test {report['n_before']['test']} -> {report['n_after']['test']} (before the optional subsample)")
+        for tokenizer in TOKENIZERS:
+            pipeline.run_cell(ds, tokenizer, CLASSIFIER_NAMES, out / "default", seed, force, log)
+            tuning.run_cell(ds, tokenizer, out / "tuned", seed, force, log)
+
+
+# ---- report ---------------------------------------------------------------------------------------------------
+def _pts(x) -> str:
+    return f"{100 * x:.2f}"
+
+
+def _signed(x) -> str:
+    return f"{100 * x:+.2f}"
+
+
+def _ci(pair, metric="accuracy") -> str:
+    d = pair[metric]
+    low, high = d["ci"]
+    star = " *" if d["ci_excludes_zero"] else ""
+    return f"{_signed(d['diff'])} [{_signed(low)}, {_signed(high)}]{star}"
+
+
+def _load(path):
+    return json.loads(Path(path).read_text())
+
+
+def render_report(out_dir, raw_results="results") -> str:
+    out = Path(out_dir)
+    names = [d for d in data_extra.COLLECTION_NAMES if (out / "cleaning" / f"{d}.json").exists()]
+    cleaning = {d: _load(out / "cleaning" / f"{d}.json") for d in names}
+    stat = {s: _load(out / "stats" / f"{s}.json") for s in SETTINGS if (out / "stats" / f"{s}.json").exists()}
+    lines = ["# Dataset collection: cleaning, default vs tuned classifiers",
+             "",
+             "Generated by `python -m experiments.run_collection` from the JSON next to this file; do not edit. Accuracy in "
+             "percent on the cleaned test set. One training run per cell (seed 0), no multiplicity correction. "
+             "`*` = the 95% bootstrap CI excludes 0. Reasons for any difference are hypotheses, not findings.",
+             "", "## 1. Datasets and cleaning", "",
+             "Rules (experiments/clean.py): drop empty texts; drop texts that are equal after lower-casing and collapsing "
+             "whitespace but carry different labels; keep the first of equal texts with one label; drop test texts that also "
+             "occur in train. Texts themselves are never edited.", "",
+             "| dataset | classes | train before > after | test before > after | empty | conflicting | duplicate | test in train |",
+             "|---|---|---|---|---|---|---|---|"]
+    for d in names:
+        c = cleaning[d]
+        r = c["removed"]
+        n_classes = len(c["class_counts_before"]["train"])
+        lines.append(f"| {d} | {n_classes} | {c['n_before']['train']} > {c['n_after']['train']} | "
+                     f"{c['n_before']['test']} > {c['n_after']['test']} | "
+                     f"{r['empty']['train']}+{r['empty']['test']} | {r['conflicting']['train']}+{r['conflicting']['test']} | "
+                     f"{r['duplicate']['train']}+{r['duplicate']['test']} | {r['test_in_train']} |")
+    lines += ["", "Removed counts are train+test (the last column is test only)."]
+
+    for number, clf, title in ((2, "lr", "Logistic Regression"), (3, "nb", "Naive Bayes")):
+        lines += ["", f"## {number}. Accuracy, {title}: default vs tuned", "",
+                  "| dataset | " + " | ".join(f"{t} default | {t} tuned" for t in TOKENIZERS) + " |",
+                  "|---|" + "---|" * (2 * len(TOKENIZERS))]
+        for d in names:
+            cells = []
+            for t in TOKENIZERS:
+                for s in SETTINGS:
+                    p = out / s / f"{d}__{t}__{clf}.json"
+                    cells.append(_pts(_load(p)["metrics"]["accuracy"]) if p.exists() else "-")
+            lines.append(f"| {d} | " + " | ".join(cells) + " |")
+
+    gains = [(d, clf, t, _load(out / "tuned" / f"{d}__{t}__{clf}.json")["metrics"]["accuracy"]
+              - _load(out / "default" / f"{d}__{t}__{clf}.json")["metrics"]["accuracy"])
+             for d in names for clf in ("lr", "nb") for t in TOKENIZERS
+             if (out / "tuned" / f"{d}__{t}__{clf}.json").exists() and (out / "default" / f"{d}__{t}__{clf}.json").exists()]
+    if gains:
+        up = sum(g > 0 for *_, g in gains)
+        down = sum(g < 0 for *_, g in gains)
+        lines += ["", "## 4. What tuning changed", "",
+                  f"Tuned minus default accuracy over {len(gains)} (dataset, tokenizer, classifier) cells: "
+                  f"{up} higher, {down} lower, {len(gains) - up - down} equal; mean {_signed(sum(g for *_, g in gains) / len(gains))} "
+                  f"points, min {_signed(min(g for *_, g in gains))}, max {_signed(max(g for *_, g in gains))}. "
+                  "The search is the same for every tokenizer; selection used a validation slice of train only.", "",
+                  "| dataset | LR: mean gain over tokenizers | NB: mean gain over tokenizers |", "|---|---|---|"]
+        for d in names:
+            cells = []
+            for clf in ("lr", "nb"):
+                g = [x for dd, c, _, x in gains if dd == d and c == clf]
+                cells.append(_signed(sum(g) / len(g)) if g else "-")
+            lines.append(f"| {d} | " + " | ".join(cells) + " |")
+
+    lines += _selected_settings(out, names)
+    lines += ["", "## 5. Does the tokenizer comparison change? (Logistic Regression, difference in accuracy points)", ""]
+    for pair_name, label in ((n, run_stats.PAIR_LABELS[n]) for n, *_ in PAIRS):
+        lines += [f"**{label}**", "", "| dataset | default | tuned |", "|---|---|---|"]
+        counts = {s: [0, 0, 0] for s in SETTINGS}          # excludes 0 and positive, excludes 0 and negative, n
+        for d in names:
+            cells = []
+            for s in SETTINGS:
+                pair = stat.get(s, {}).get("datasets", {}).get(d, {}).get("pairs", {}).get(pair_name)
+                if pair is None:
+                    cells.append("-")
+                    continue
+                cells.append(_ci(pair))
+                counts[s][2] += 1
+                if pair["accuracy"]["ci_excludes_zero"]:
+                    counts[s][0 if pair["accuracy"]["diff"] > 0 else 1] += 1
+            lines.append(f"| {d} | " + " | ".join(cells) + " |")
+        lines += ["", "CIs excluding 0 (higher / lower / datasets): " +
+                  "; ".join(f"{s}: {c[0]} / {c[1]} / {c[2]}" for s, c in counts.items()), ""]
+
+    raw_lines = _raw_vs_cleaned(out, raw_results, names)
+    if raw_lines:
+        lines += ["## 6. Raw vs cleaned (original three datasets, default setting)", "",
+                  "Raw = the committed full-data main-grid run; cleaned = this folder. The test sets differ (rows were "
+                  "removed), so this is not a like-for-like gain from cleaning.", ""] + raw_lines + [""]
+    lines += ["## Limits", "",
+              "Single seed and one run per cell; the CI covers test-set sampling only. The tuned setting also depends on one "
+              "random validation split. Datasets differ in size (see section 1); small test sets give wide CIs. "
+              "Cleaning removes rows, so results on cleaned and raw data are not directly comparable. The five tweet_eval "
+              "tasks share the same source (tweets), so they are not five independent domains."]
+    return "\n".join(lines) + "\n"
+
+
+def _selected_settings(out: Path, names) -> list[str]:
+    """Which candidates the validation search picked, and how often that was an edge of the grid (a sign it is too narrow)."""
+    picks = {"lr": [], "nb": []}
+    for d in names:
+        for t in TOKENIZERS:
+            for clf in picks:
+                p = out / "tuned" / f"{d}__{t}__{clf}.json"
+                if p.exists():
+                    picks[clf].append(_load(p)["tuning"]["selected"])
+    if not picks["lr"] and not picks["nb"]:
+        return []
+    lines = ["", "Selected by the validation search (cells per choice):", ""]
+    for clf, key, grid in (("lr", "C", tuning.SEARCH["lr_C"]), ("nb", "alpha", tuning.SEARCH["nb_alpha"])):
+        chosen = picks[clf]
+        if not chosen:
+            continue
+        counts = ", ".join(f"{key}={g:g}: {sum(c['value'] == g for c in chosen)}" for g in grid)
+        edge = sum(c["value"] in (grid[0], grid[-1]) for c in chosen)
+        grams = ", ".join(f"{v}: {sum(c['vectorizer'] == v for c in chosen)}" for v in tuning.SEARCH["vectorizer"])
+        lines.append(f"* {clf.upper()} ({len(chosen)} cells): {counts}; {edge} at an edge of the grid "
+                     f"({key}={grid[0]:g} or {grid[-1]:g}), so a wider grid might choose differently. TF-IDF: {grams}.")
+    return lines
+
+
+def _raw_vs_cleaned(out: Path, raw_results, names) -> list[str]:
+    rows = []
+    for d in names:
+        for t in TOKENIZERS:
+            cleaned = out / "default" / f"{d}__{t}__lr.json"
+            raw = next((Path(raw_results) / sub / f"{d}__{t}__lr.json" for sub in RAW_DIRS
+                        if (Path(raw_results) / sub / f"{d}__{t}__lr.json").exists()), None)
+            if raw is None or not cleaned.exists():
+                continue
+            r, c = _load(raw), _load(cleaned)
+            rows.append(f"| {d} | {t} | {r['dataset']['n_test']} > {c['dataset']['n_test']} | "
+                        f"{_pts(r['metrics']['accuracy'])} | {_pts(c['metrics']['accuracy'])} |")
+    if not rows:
+        return []
+    return ["| dataset | tokenizer | n_test raw > cleaned | LR raw | LR cleaned |", "|---|---|---|---|---|"] + rows
+
+
+def write_report(out_dir, raw_results="results") -> Path:
+    path = Path(out_dir) / "REPORT.md"
+    path.write_text(render_report(out_dir, raw_results))
+    return path
+
+
+def main(argv=None):
+    p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    p.add_argument("--out", default="results/collection")
+    p.add_argument("--datasets", nargs="+", default=list(data_extra.COLLECTION_NAMES))
+    p.add_argument("--max-train", type=int, default=None)
+    p.add_argument("--max-test", type=int, default=None)
+    p.add_argument("--seed", type=int, default=0)
+    p.add_argument("--force", action="store_true")
+    p.add_argument("--stats-only", action="store_true", help="skip data and fitting: statistics and REPORT.md from the stored JSON")
+    p.add_argument("--raw-results", default="results", help="main-grid results used for the raw-vs-cleaned table")
+    a = p.parse_args(argv)
+    if not a.stats_only:
+        run_all(a.out, a.datasets, a.max_train, a.max_test, a.seed, a.force)
+    for path in write_stats(a.out):
+        print("wrote", path)
+    print("wrote", write_report(a.out, a.raw_results))
+
+
+if __name__ == "__main__":
+    main()

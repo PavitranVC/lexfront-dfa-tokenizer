@@ -2,6 +2,19 @@
 
 Newest first. Dates are the day the change was made (IST workday).
 
+## 2026-10-17 (dataset collection, cleaning and fair tuning)
+- Owner asked for a proper collection of datasets, cleaning, and better accuracy where easy. Scope chosen with the owner: add English
+  noisy-text sets, keep it additive, tune the classifier equally for every tokenizer.
+- New (all in new files, so no existing run's fingerprint changed): `experiments/clean.py` (empty / conflicting / duplicate / test-in-train
+  rules, texts never edited), `experiments/data_extra.py` (original three + tweet_eval sentiment, emotion, irony, hate, offensive),
+  `experiments/tuning.py` (validation-selected TF-IDF 1- vs 1-2-grams and LR `C` / NB `alpha`, same grid for every tokenizer, test split
+  scored once), `experiments/run_collection.py` (runner, bootstrap stats, generated `results/collection/REPORT.md`). 13 tests in
+  `tests/test_collection.py`; CI regenerates the collection stats and report with `--stats-only` and fails on a diff.
+- Results (`results/collection/REPORT.md`, full data, 4 word-level tokenizers x NB/LR x 8 datasets): tuning raised accuracy in 44 of 64
+  cells, lowered it in 16, left 4 equal (mean +1.63 points); the large gains are Naive Bayes on go_emotions and tweet_eval_emotion.
+  LexFront+LR minus NLTK+LR has 4 of 8 CIs excluding 0 with default settings (2 up, 2 down) and 0 of 8 with tuned settings.
+- No existing metric changed (`compare_results` reports 0 differences against main).
+
 ## 2026-10-17 (finish 6: NLTK proxy opt-in made robust)
 - The first fix (finish 5) decided whether to opt in by looking at four proxy variables, but NLTK's guard uses
   `urllib.request.getproxies()` (any `*_proxy` variable, system settings), so a runtime with e.g. only `ALL_PROXY` was still refused.

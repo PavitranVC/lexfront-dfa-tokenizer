@@ -1,0 +1,68 @@
+{
+  "dataset": "tweet_topic",
+  "rules": "empty -> conflicting -> duplicate -> test_in_train (see experiments/clean.py)",
+  "text_key": "lower-cased, whitespace collapsed; kept texts are the original strings",
+  "n_before": {
+    "train": 3598,
+    "test": 3399
+  },
+  "n_after": {
+    "train": 3598,
+    "test": 3398
+  },
+  "removed": {
+    "empty": {
+      "train": 0,
+      "test": 0
+    },
+    "conflicting": {
+      "train": 0,
+      "test": 0
+    },
+    "duplicate": {
+      "train": 0,
+      "test": 1
+    },
+    "test_in_train": 0
+  },
+  "class_counts_before": {
+    "train": {
+      "0": 57,
+      "1": 151,
+      "2": 1378,
+      "3": 605,
+      "4": 1217,
+      "5": 190
+    },
+    "test": {
+      "0": 95,
+      "1": 166,
+      "2": 1360,
+      "3": 356,
+      "4": 1266,
+      "5": 156
+    }
+  },
+  "class_counts_after": {
+    "train": {
+      "0": 57,
+      "1": 151,
+      "2": 1378,
+      "3": 605,
+      "4": 1217,
+      "5": 190
+    },
+    "test": {
+      "0": 95,
+      "1": 166,
+      "2": 1360,
+      "3": 356,
+      "4": 1265,
+      "5": 156
+    }
+  },
+  "classes_missing_after": {
+    "train": [],
+    "test": []
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "dataset": "tweet_eval_offensive",
+  "rules": "empty -> conflicting -> duplicate -> test_in_train (see experiments/clean.py)",
+  "text_key": "lower-cased, whitespace collapsed; kept texts are the original strings",
+  "n_before": {
+    "train": 11916,
+    "test": 860
+  },
+  "n_after": {
+    "train": 11861,
+    "test": 842
+  },
+  "removed": {
+    "empty": {
+      "train": 0,
+      "test": 0
+    },
+    "conflicting": {
+      "train": 17,
+      "test": 2
+    },
+    "duplicate": {
+      "train": 38,
+      "test": 11
+    },
+    "test_in_train": 5
+  },
+  "class_counts_before": {
+    "train": {
+      "0": 7975,
+      "1": 3941
+    },
+    "test": {
+      "0": 620,
+      "1": 240
+    }
+  },
+  "class_counts_after": {
+    "train": {
+      "0": 7937,
+      "1": 3924
+    },
+    "test": {
+      "0": 606,
+      "1": 236
+    }
+  },
+  "classes_missing_after": {
+    "train": [],
+    "test": []
+  }
+}

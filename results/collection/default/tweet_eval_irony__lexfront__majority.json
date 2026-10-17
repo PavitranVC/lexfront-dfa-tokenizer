@@ -1,0 +1,104 @@
+{
+  "timestamp_utc": "2026-10-17T11:10:15+00:00",
+  "dataset": {
+    "name": "tweet_eval_irony",
+    "hf_id": "cardiffnlp/tweet_eval",
+    "config": "irony",
+    "n_train": 2862,
+    "n_test": 784,
+    "n_labels": 2,
+    "label_names": [
+      "non_irony",
+      "irony"
+    ],
+    "split_info": {
+      "train": "train",
+      "test": "test",
+      "reason": "official splits (the validation split is not used)",
+      "cleaning": {
+        "n_before": {
+          "train": 2862,
+          "test": 784
+        },
+        "n_after": {
+          "train": 2862,
+          "test": 784
+        },
+        "removed": {
+          "empty": {
+            "train": 0,
+            "test": 0
+          },
+          "conflicting": {
+            "train": 0,
+            "test": 0
+          },
+          "duplicate": {
+            "train": 0,
+            "test": 0
+          },
+          "test_in_train": 0
+        }
+      },
+      "subsample": {
+        "max_train": null,
+        "max_test": null,
+        "seed": 0
+      }
+    }
+  },
+  "data_hash": "4c74814022dee385",
+  "tokenizer": "lexfront",
+  "normalize": {
+    "url": true,
+    "mention": true,
+    "number": true,
+    "elongated": true,
+    "lowercase": true,
+    "slang": true
+  },
+  "vectorizer": {
+    "type": "TfidfVectorizer",
+    "lowercase": true,
+    "min_df": 2,
+    "ngram_range": [
+      1,
+      1
+    ],
+    "token_pattern": null,
+    "n_features": 2820
+  },
+  "classifier": {
+    "name": "majority",
+    "params": {
+      "constant": null,
+      "random_state": null,
+      "strategy": "most_frequent"
+    }
+  },
+  "seed": 0,
+  "fingerprint": {
+    "config": "5595e689eddb3346",
+    "code": "b1abb9579a754350"
+  },
+  "metrics": {
+    "accuracy": 0.39668367346938777,
+    "macro_f1": 0.28401826484018267
+  },
+  "timing_seconds": {
+    "tokenize_and_vectorize": 0.28127889999996114,
+    "classifier_fit": 0.0005580170000030193
+  },
+  "environment": {
+    "python": "3.11.17",
+    "sklearn": "1.9.1",
+    "nltk": "3.10.3",
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "threadpoolctl": "3.7.0",
+    "machine": "x86_64",
+    "platform": "Linux-6.18.44-fc-v139-x86_64-with-glibc2.39",
+    "blas_threads": 1
+  },
+  "predictions_file": "predictions/tweet_eval_irony__lexfront__majority.json.gz"
+}

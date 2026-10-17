@@ -1,0 +1,179 @@
+{
+  "timestamp_utc": "2026-10-17T10:53:25+00:00",
+  "setting": "tuned",
+  "dataset": {
+    "name": "go_emotions",
+    "hf_id": "google-research-datasets/go_emotions",
+    "config": "simplified",
+    "n_train": 36072,
+    "n_test": 4550,
+    "n_labels": 28,
+    "label_names": [
+      "admiration",
+      "amusement",
+      "anger",
+      "annoyance",
+      "approval",
+      "caring",
+      "confusion",
+      "curiosity",
+      "desire",
+      "disappointment",
+      "disapproval",
+      "disgust",
+      "embarrassment",
+      "excitement",
+      "fear",
+      "gratitude",
+      "grief",
+      "joy",
+      "love",
+      "nervousness",
+      "optimism",
+      "pride",
+      "realization",
+      "relief",
+      "remorse",
+      "sadness",
+      "surprise",
+      "neutral"
+    ],
+    "split_info": {
+      "train": "train",
+      "test": "test",
+      "reason": "official splits; examples with more than one label removed",
+      "n_train_before_filter": 43410,
+      "n_test_before_filter": 5427,
+      "cleaning": {
+        "n_before": {
+          "train": 36308,
+          "test": 4590
+        },
+        "n_after": {
+          "train": 36072,
+          "test": 4550
+        },
+        "removed": {
+          "empty": {
+            "train": 0,
+            "test": 0
+          },
+          "conflicting": {
+            "train": 124,
+            "test": 3
+          },
+          "duplicate": {
+            "train": 112,
+            "test": 4
+          },
+          "test_in_train": 33
+        }
+      },
+      "subsample": {
+        "max_train": null,
+        "max_test": null,
+        "seed": 0
+      }
+    }
+  },
+  "data_hash": "a6f194a4a915a8c0",
+  "tokenizer": "nltk",
+  "vectorizer": {
+    "type": "TfidfVectorizer",
+    "lowercase": true,
+    "min_df": 2,
+    "ngram_range": [
+      1,
+      1
+    ],
+    "token_pattern": null,
+    "name": "unigram",
+    "n_features": 12092
+  },
+  "classifier": {
+    "name": "lr",
+    "params": {
+      "C": 3.0,
+      "class_weight": null,
+      "dual": false,
+      "fit_intercept": true,
+      "intercept_scaling": 1,
+      "l1_ratio": 0.0,
+      "max_iter": 1000,
+      "n_jobs": null,
+      "penalty": "deprecated",
+      "random_state": 0,
+      "solver": "lbfgs",
+      "tol": 0.0001,
+      "verbose": 0,
+      "warm_start": false
+    }
+  },
+  "tuning": {
+    "n_fit": 20000,
+    "n_val": 3607,
+    "scores": [
+      {
+        "vectorizer": "unigram",
+        "value": 1.0,
+        "val_accuracy": 0.5328527862489604
+      },
+      {
+        "vectorizer": "unigram",
+        "value": 3.0,
+        "val_accuracy": 0.5539229276406986
+      },
+      {
+        "vectorizer": "unigram",
+        "value": 10.0,
+        "val_accuracy": 0.5453285278624896
+      },
+      {
+        "vectorizer": "bigram_sublinear",
+        "value": 1.0,
+        "val_accuracy": 0.5145550318824508
+      },
+      {
+        "vectorizer": "bigram_sublinear",
+        "value": 3.0,
+        "val_accuracy": 0.5472691987801497
+      },
+      {
+        "vectorizer": "bigram_sublinear",
+        "value": 10.0,
+        "val_accuracy": 0.5494871084003327
+      }
+    ],
+    "selected": {
+      "vectorizer": "unigram",
+      "value": 3.0,
+      "val_accuracy": 0.5539229276406986
+    }
+  },
+  "seed": 0,
+  "fingerprint": {
+    "config": "aacd10d11d387909",
+    "code": "c10c5a86aa23e245"
+  },
+  "metrics": {
+    "accuracy": 0.5628571428571428,
+    "macro_f1": 0.37779505952358067
+  },
+  "timing_seconds": {
+    "tokenize_and_vectorize": 0.33051125400004366,
+    "classifier_fit": 15.803011193000088,
+    "search_and_fit_total": 110.15611185299997
+  },
+  "environment": {
+    "python": "3.11.17",
+    "sklearn": "1.9.1",
+    "nltk": "3.10.3",
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "threadpoolctl": "3.7.0",
+    "machine": "x86_64",
+    "platform": "Linux-6.18.44-fc-v139-x86_64-with-glibc2.39",
+    "blas_threads": 1
+  },
+  "predictions_file": "predictions/go_emotions__nltk__lr.json.gz"
+}

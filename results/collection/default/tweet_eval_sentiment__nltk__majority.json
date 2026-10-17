@@ -1,0 +1,97 @@
+{
+  "timestamp_utc": "2026-10-17T11:08:14+00:00",
+  "dataset": {
+    "name": "tweet_eval_sentiment",
+    "hf_id": "cardiffnlp/tweet_eval",
+    "config": "sentiment",
+    "n_train": 45582,
+    "n_test": 12277,
+    "n_labels": 3,
+    "label_names": [
+      "negative",
+      "neutral",
+      "positive"
+    ],
+    "split_info": {
+      "train": "train",
+      "test": "test",
+      "reason": "official splits (the validation split is not used)",
+      "cleaning": {
+        "n_before": {
+          "train": 45615,
+          "test": 12284
+        },
+        "n_after": {
+          "train": 45582,
+          "test": 12277
+        },
+        "removed": {
+          "empty": {
+            "train": 0,
+            "test": 0
+          },
+          "conflicting": {
+            "train": 6,
+            "test": 7
+          },
+          "duplicate": {
+            "train": 27,
+            "test": 0
+          },
+          "test_in_train": 0
+        }
+      },
+      "subsample": {
+        "max_train": null,
+        "max_test": null,
+        "seed": 0
+      }
+    }
+  },
+  "data_hash": "83166c43e4abb6c3",
+  "tokenizer": "nltk",
+  "vectorizer": {
+    "type": "TfidfVectorizer",
+    "lowercase": true,
+    "min_df": 2,
+    "ngram_range": [
+      1,
+      1
+    ],
+    "token_pattern": null,
+    "n_features": 20564
+  },
+  "classifier": {
+    "name": "majority",
+    "params": {
+      "constant": null,
+      "random_state": null,
+      "strategy": "most_frequent"
+    }
+  },
+  "seed": 0,
+  "fingerprint": {
+    "config": "c4d535e50d525c4a",
+    "code": "b1abb9579a754350"
+  },
+  "metrics": {
+    "accuracy": 0.4833428361977682,
+    "macro_f1": 0.21723134369337213
+  },
+  "timing_seconds": {
+    "tokenize_and_vectorize": 7.758599178000168,
+    "classifier_fit": 0.0026742950001334975
+  },
+  "environment": {
+    "python": "3.11.17",
+    "sklearn": "1.9.1",
+    "nltk": "3.10.3",
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "threadpoolctl": "3.7.0",
+    "machine": "x86_64",
+    "platform": "Linux-6.18.44-fc-v139-x86_64-with-glibc2.39",
+    "blas_threads": 1
+  },
+  "predictions_file": "predictions/tweet_eval_sentiment__nltk__majority.json.gz"
+}

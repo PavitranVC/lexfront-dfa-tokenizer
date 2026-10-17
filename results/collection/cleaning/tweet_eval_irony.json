@@ -1,0 +1,52 @@
+{
+  "dataset": "tweet_eval_irony",
+  "rules": "empty -> conflicting -> duplicate -> test_in_train (see experiments/clean.py)",
+  "text_key": "lower-cased, whitespace collapsed; kept texts are the original strings",
+  "n_before": {
+    "train": 2862,
+    "test": 784
+  },
+  "n_after": {
+    "train": 2862,
+    "test": 784
+  },
+  "removed": {
+    "empty": {
+      "train": 0,
+      "test": 0
+    },
+    "conflicting": {
+      "train": 0,
+      "test": 0
+    },
+    "duplicate": {
+      "train": 0,
+      "test": 0
+    },
+    "test_in_train": 0
+  },
+  "class_counts_before": {
+    "train": {
+      "0": 1417,
+      "1": 1445
+    },
+    "test": {
+      "0": 473,
+      "1": 311
+    }
+  },
+  "class_counts_after": {
+    "train": {
+      "0": 1417,
+      "1": 1445
+    },
+    "test": {
+      "0": 473,
+      "1": 311
+    }
+  },
+  "classes_missing_after": {
+    "train": [],
+    "test": []
+  }
+}

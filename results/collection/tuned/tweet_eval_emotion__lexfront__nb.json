@@ -1,0 +1,143 @@
+{
+  "timestamp_utc": "2026-10-17T11:10:08+00:00",
+  "setting": "tuned",
+  "dataset": {
+    "name": "tweet_eval_emotion",
+    "hf_id": "cardiffnlp/tweet_eval",
+    "config": "emotion",
+    "n_train": 3232,
+    "n_test": 1421,
+    "n_labels": 4,
+    "label_names": [
+      "anger",
+      "joy",
+      "optimism",
+      "sadness"
+    ],
+    "split_info": {
+      "train": "train",
+      "test": "test",
+      "reason": "official splits (the validation split is not used)",
+      "cleaning": {
+        "n_before": {
+          "train": 3257,
+          "test": 1421
+        },
+        "n_after": {
+          "train": 3232,
+          "test": 1421
+        },
+        "removed": {
+          "empty": {
+            "train": 0,
+            "test": 0
+          },
+          "conflicting": {
+            "train": 0,
+            "test": 0
+          },
+          "duplicate": {
+            "train": 25,
+            "test": 0
+          },
+          "test_in_train": 0
+        }
+      },
+      "subsample": {
+        "max_train": null,
+        "max_test": null,
+        "seed": 0
+      }
+    }
+  },
+  "data_hash": "ad88ba4499fb4cbe",
+  "tokenizer": "lexfront",
+  "vectorizer": {
+    "type": "TfidfVectorizer",
+    "lowercase": true,
+    "min_df": 2,
+    "ngram_range": [
+      1,
+      1
+    ],
+    "token_pattern": null,
+    "name": "unigram",
+    "n_features": 3811
+  },
+  "classifier": {
+    "name": "nb",
+    "params": {
+      "alpha": 0.1,
+      "class_prior": null,
+      "fit_prior": true,
+      "force_alpha": true
+    }
+  },
+  "tuning": {
+    "n_fit": 2909,
+    "n_val": 323,
+    "scores": [
+      {
+        "vectorizer": "unigram",
+        "value": 0.1,
+        "val_accuracy": 0.6811145510835913
+      },
+      {
+        "vectorizer": "unigram",
+        "value": 0.3,
+        "val_accuracy": 0.6749226006191951
+      },
+      {
+        "vectorizer": "unigram",
+        "value": 1.0,
+        "val_accuracy": 0.5944272445820433
+      },
+      {
+        "vectorizer": "bigram_sublinear",
+        "value": 0.1,
+        "val_accuracy": 0.6377708978328174
+      },
+      {
+        "vectorizer": "bigram_sublinear",
+        "value": 0.3,
+        "val_accuracy": 0.631578947368421
+      },
+      {
+        "vectorizer": "bigram_sublinear",
+        "value": 1.0,
+        "val_accuracy": 0.5510835913312694
+      }
+    ],
+    "selected": {
+      "vectorizer": "unigram",
+      "value": 0.1,
+      "val_accuracy": 0.6811145510835913
+    }
+  },
+  "seed": 0,
+  "fingerprint": {
+    "config": "9856967c858a52aa",
+    "code": "c10c5a86aa23e245"
+  },
+  "metrics": {
+    "accuracy": 0.657283603096411,
+    "macro_f1": 0.5662172975846904
+  },
+  "timing_seconds": {
+    "tokenize_and_vectorize": 0.23564398200005598,
+    "classifier_fit": 0.002980051999884381,
+    "search_and_fit_total": 1.1610165300000972
+  },
+  "environment": {
+    "python": "3.11.17",
+    "sklearn": "1.9.1",
+    "nltk": "3.10.3",
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "threadpoolctl": "3.7.0",
+    "machine": "x86_64",
+    "platform": "Linux-6.18.44-fc-v139-x86_64-with-glibc2.39",
+    "blas_threads": 1
+  },
+  "predictions_file": "predictions/tweet_eval_emotion__lexfront__nb.json.gz"
+}

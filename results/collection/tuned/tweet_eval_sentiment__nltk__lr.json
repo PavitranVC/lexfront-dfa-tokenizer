@@ -1,0 +1,152 @@
+{
+  "timestamp_utc": "2026-10-17T11:08:44+00:00",
+  "setting": "tuned",
+  "dataset": {
+    "name": "tweet_eval_sentiment",
+    "hf_id": "cardiffnlp/tweet_eval",
+    "config": "sentiment",
+    "n_train": 45582,
+    "n_test": 12277,
+    "n_labels": 3,
+    "label_names": [
+      "negative",
+      "neutral",
+      "positive"
+    ],
+    "split_info": {
+      "train": "train",
+      "test": "test",
+      "reason": "official splits (the validation split is not used)",
+      "cleaning": {
+        "n_before": {
+          "train": 45615,
+          "test": 12284
+        },
+        "n_after": {
+          "train": 45582,
+          "test": 12277
+        },
+        "removed": {
+          "empty": {
+            "train": 0,
+            "test": 0
+          },
+          "conflicting": {
+            "train": 6,
+            "test": 7
+          },
+          "duplicate": {
+            "train": 27,
+            "test": 0
+          },
+          "test_in_train": 0
+        }
+      },
+      "subsample": {
+        "max_train": null,
+        "max_test": null,
+        "seed": 0
+      }
+    }
+  },
+  "data_hash": "83166c43e4abb6c3",
+  "tokenizer": "nltk",
+  "vectorizer": {
+    "type": "TfidfVectorizer",
+    "lowercase": true,
+    "min_df": 2,
+    "ngram_range": [
+      1,
+      1
+    ],
+    "token_pattern": null,
+    "name": "unigram",
+    "n_features": 20564
+  },
+  "classifier": {
+    "name": "lr",
+    "params": {
+      "C": 3.0,
+      "class_weight": null,
+      "dual": false,
+      "fit_intercept": true,
+      "intercept_scaling": 1,
+      "l1_ratio": 0.0,
+      "max_iter": 1000,
+      "n_jobs": null,
+      "penalty": "deprecated",
+      "random_state": 0,
+      "solver": "lbfgs",
+      "tol": 0.0001,
+      "verbose": 0,
+      "warm_start": false
+    }
+  },
+  "tuning": {
+    "n_fit": 20000,
+    "n_val": 4558,
+    "scores": [
+      {
+        "vectorizer": "unigram",
+        "value": 1.0,
+        "val_accuracy": 0.6524791575252303
+      },
+      {
+        "vectorizer": "unigram",
+        "value": 3.0,
+        "val_accuracy": 0.652917946467749
+      },
+      {
+        "vectorizer": "unigram",
+        "value": 10.0,
+        "val_accuracy": 0.6419482229047828
+      },
+      {
+        "vectorizer": "bigram_sublinear",
+        "value": 1.0,
+        "val_accuracy": 0.6434839842035981
+      },
+      {
+        "vectorizer": "bigram_sublinear",
+        "value": 3.0,
+        "val_accuracy": 0.6513821851689338
+      },
+      {
+        "vectorizer": "bigram_sublinear",
+        "value": 10.0,
+        "val_accuracy": 0.6472136902150066
+      }
+    ],
+    "selected": {
+      "vectorizer": "unigram",
+      "value": 3.0,
+      "val_accuracy": 0.652917946467749
+    }
+  },
+  "seed": 0,
+  "fingerprint": {
+    "config": "46645957c76b5114",
+    "code": "c10c5a86aa23e245"
+  },
+  "metrics": {
+    "accuracy": 0.6035676468192556,
+    "macro_f1": 0.5821774990519882
+  },
+  "timing_seconds": {
+    "tokenize_and_vectorize": 0.7358239769998818,
+    "classifier_fit": 2.7262223510001604,
+    "search_and_fit_total": 16.193847357000095
+  },
+  "environment": {
+    "python": "3.11.17",
+    "sklearn": "1.9.1",
+    "nltk": "3.10.3",
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "threadpoolctl": "3.7.0",
+    "machine": "x86_64",
+    "platform": "Linux-6.18.44-fc-v139-x86_64-with-glibc2.39",
+    "blas_threads": 1
+  },
+  "predictions_file": "predictions/tweet_eval_sentiment__nltk__lr.json.gz"
+}

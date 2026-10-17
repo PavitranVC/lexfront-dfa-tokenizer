@@ -3,6 +3,36 @@
 Newest first. One short entry each: decision, reason, source. Gaps filled on 2026-10-16 from the team's notes; items
 already recorded elsewhere are only pointed to. Citations below are from abstracts only and were not re-checked here.
 
+## 2026-10-17 (dataset collection: cleaning and fair tuning)
+
+### Scope (owner's choices)
+- Decision: add English noisy-text datasets; keep the work additive (every committed number under `results/` stays identical,
+  `compare_results` reports 0 differences); "performance" means classifier accuracy, with the same effort for every tokenizer.
+  Speed work and Hinglish are not part of this step.
+- Collection: the original three plus five tweet_eval tasks (sentiment, emotion, irony, hate, offensive), official train/test
+  splits. Chosen because they are tweets (the noise LexFront targets), load from the Hub here, and have labelled test sets
+  (SST-2's test labels are hidden). Caveats kept in the code docstring: `hate` has a train/test distribution shift, `irony` and
+  `offensive` have small test sets, and the five tasks share a source, so they are not five independent domains.
+
+### Cleaning (`experiments/clean.py`)
+- Rules, in order: drop empty texts; drop texts that are equal after lower-casing and whitespace collapsing but have different labels
+  (ambiguous gold label); keep the first of equal texts with one label; drop test texts that also occur in train (judged against
+  every non-empty train text, including ones dropped as conflicting). Texts are never edited: emoticons, hashtags, casing and
+  misspellings are what the lexer is tested on, so normalizing them here would remove the thing being measured.
+- Cleaning runs on the full data and a subsample is drawn afterwards. Each result records the cleaning counts in its dataset record.
+- The cleaned test sets differ from the raw ones, so cleaned-vs-raw accuracy is not a like-for-like "gain from cleaning"; the report says so.
+
+### Fair tuning (`experiments/tuning.py`)
+- Same grid for every (dataset, tokenizer, classifier): TF-IDF word 1-grams vs 1-2-grams with sublinear tf, and LR `C` in {1, 3, 10} or
+  NB `alpha` in {0.1, 0.3, 1}. Candidates are scored on a validation slice carved from train (10%, at most 5000; the search fits on
+  at most 20000 examples), the best validation accuracy wins (ties go to the earlier, simpler candidate), the winner is refit on all of
+  train and the test split is scored once. The test split is never used to choose anything (a test asserts it).
+- The main grid is untouched: new code lives in new files that are not part of the code fingerprint of the existing runs.
+- Limits: one seed, one validation split, small grid; tuned and default can differ by less than the noise (the report shows the sign
+  counts, not only the mean). The report also counts how often the search chose an edge of the grid: NB `alpha` often did, so the grid
+  is probably too narrow and the NB gains understated. Validation is carved from train, so under a train/test shift (`hate`) a
+  validation-selected setting can do worse on test than the default.
+
 ## 2026-10-17 (P4: AUDIT_5 fixes; WordPiece and Unigram)
 
 ### AUDIT_5 fixes (stage A)

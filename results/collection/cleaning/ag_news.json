@@ -1,0 +1,60 @@
+{
+  "dataset": "ag_news",
+  "rules": "empty -> conflicting -> duplicate -> test_in_train (see experiments/clean.py)",
+  "text_key": "lower-cased, whitespace collapsed; kept texts are the original strings",
+  "n_before": {
+    "train": 120000,
+    "test": 7600
+  },
+  "n_after": {
+    "train": 119827,
+    "test": 7590
+  },
+  "removed": {
+    "empty": {
+      "train": 0,
+      "test": 0
+    },
+    "conflicting": {
+      "train": 44,
+      "test": 0
+    },
+    "duplicate": {
+      "train": 129,
+      "test": 0
+    },
+    "test_in_train": 10
+  },
+  "class_counts_before": {
+    "train": {
+      "0": 30000,
+      "1": 30000,
+      "2": 30000,
+      "3": 30000
+    },
+    "test": {
+      "0": 1900,
+      "1": 1900,
+      "2": 1900,
+      "3": 1900
+    }
+  },
+  "class_counts_after": {
+    "train": {
+      "0": 29980,
+      "1": 29977,
+      "2": 29949,
+      "3": 29921
+    },
+    "test": {
+      "0": 1899,
+      "1": 1897,
+      "2": 1898,
+      "3": 1896
+    }
+  },
+  "classes_missing_after": {
+    "train": [],
+    "test": []
+  }
+}
