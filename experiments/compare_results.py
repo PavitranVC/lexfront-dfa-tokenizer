@@ -1,5 +1,5 @@
 """Compare two results trees (for example a worktree of main against a branch) and list every difference that is
-not timing: `python -m experiments.compare_results OLD_RESULTS NEW_RESULTS [subdir ...]`.
+not timing: `python -m experiments.compare_results [--additive] OLD_RESULTS NEW_RESULTS [subdir ...]`.
 
 JSON files are compared as data with the volatile keys removed (timestamps, timings, throughput); gzip sidecars
 (per-example predictions) are compared as decoded JSON; markdown tables are compared without throughput columns; other files byte for byte. Files that exist
@@ -47,8 +47,16 @@ def strip(value):
     return value
 
 
-def compare(old: Path, new: Path, subdirs=()) -> tuple[list[str], list[str]]:
-    """(differences, added files) between two results trees, restricted to `subdirs` of the old tree if given."""
+def contains(old, new) -> bool:
+    """True if `new` has everything `old` has, equal: extra keys in dicts of `new` are allowed (lists must be equal)."""
+    if isinstance(old, dict):
+        return isinstance(new, dict) and all(k in new and contains(v, new[k]) for k, v in old.items())
+    return old == new
+
+
+def compare(old: Path, new: Path, subdirs=(), additive: bool = False) -> tuple[list[str], list[str]]:
+    """(differences, added files) between two results trees, restricted to `subdirs` of the old tree if given.
+    With `additive`, JSON files of `new` may have extra dictionary keys (a new tokenizer's entry in an existing file)."""
     roots = [old / s for s in subdirs] if subdirs else [old]
     differences, seen = [], set()
     for root in roots:
@@ -59,7 +67,8 @@ def compare(old: Path, new: Path, subdirs=()) -> tuple[list[str], list[str]]:
             if not other.exists():
                 differences.append(f"missing in new: {rel}")
             elif path.suffix in {".json", ".gz"}:
-                if strip(load(path)) != strip(load(other)):
+                same = contains(strip(load(path)), strip(load(other))) if additive else strip(load(path)) == strip(load(other))
+                if not same:
                     differences.append(f"changed: {rel}")
             elif path.suffix == ".md":
                 if strip_markdown(path.read_text()) != strip_markdown(other.read_text()):
@@ -72,7 +81,8 @@ def compare(old: Path, new: Path, subdirs=()) -> tuple[list[str], list[str]]:
 
 
 if __name__ == "__main__":
-    differences, added = compare(Path(sys.argv[1]), Path(sys.argv[2]), sys.argv[3:])
+    args = [a for a in sys.argv[1:] if a != "--additive"]
+    differences, added = compare(Path(args[0]), Path(args[1]), args[2:], additive="--additive" in sys.argv)
     print(f"{len(differences)} differences, {len(added)} added files")
     for line in differences:
         print(" ", line)
