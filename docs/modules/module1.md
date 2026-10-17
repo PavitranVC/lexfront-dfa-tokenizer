@@ -10,7 +10,7 @@ Compares three **existing tokenizers** with the classifier pipeline held fixed.
   NLTK `TweetTokenizer`.
 * Classifiers (`experiments/classifiers.py`): TF-IDF (`tokenizer=fn, token_pattern=None, lowercase=True, min_df=2`)
   feeding a majority baseline, Multinomial Naive Bayes (the existing method) and Logistic Regression
-  (`max_iter=1000`, seed 0).
+  (`max_iter=1000`, seed 0, one BLAS thread).
 * Metrics: accuracy and macro-F1. Each run is written to `results/module1/<dataset>__<tokenizer>__<clf>.json` with
   its full configuration, timings and library versions.
 
@@ -29,7 +29,9 @@ Run: `python -m experiments.run_module1` (add `--max-train N --max-test N` to su
             for clf in [majority, naive_bayes, logistic_regression] (module 1) or [naive_bayes, logistic_regression] (module 2):
                 clf.fit(X_train, y_train)
                 record <- {config, accuracy(y_test, clf.predict(X_test)), macro_f1(...), timings, versions}
-                write record to results/<module>/<dataset>__<tokenizer>__<clf>.json
+                write record (with a config + code fingerprint) to results/<module>/<dataset>__<tokenizer>__<clf>.json
+                write (y_test, predictions) to results/<module>/predictions/<dataset>__<tokenizer>__<clf>.json.gz
+                # a cached record is reused only while its fingerprint still matches; vectorize, fit and predict run on 1 BLAS thread
     tables, figures, observations are built only from those JSON files
 ```
 
