@@ -10,6 +10,7 @@ Layout read here:  <results>/module1/<dataset>__<tokenizer>__<clf>.json
                                                                          --results results/sensitivity_case)
                    <results>/ablation/stats/bootstrap.json              (python -m experiments.run_ablation)
                    <results>/bpe/stats/bootstrap.json                   (python -m experiments.run_bpe)
+                   <results>/subword2/stats/bootstrap.json              (python -m experiments.run_subword2)
 """
 import json
 from pathlib import Path
@@ -18,7 +19,7 @@ import pandas as pd
 
 DATASET_ORDER = ["tweet_topic", "go_emotions", "ag_news"]
 TOKENIZER_ORDER = ["whitespace", "nltk", "tweet", "lexfront"]
-SUBWORD_ORDER = ["bpe", "lexfront_bpe"]        # P3; after the four fixed tokenizers in tables (figures show four)
+SUBWORD_ORDER = ["bpe", "lexfront_bpe", "wordpiece", "unigram"]        # P3, P4; after the four fixed tokenizers in tables (figures show four)
 RUN_COLUMNS = ["module", "dataset", "tokenizer", "classifier", "accuracy", "macro_f1", "n_train", "n_test",
                "n_labels", "hf_id", "config", "split_info"]
 CLASSIFIER_LABEL = {"majority": "Majority", "nb": "Naive Bayes", "lr": "Logistic Reg."}
@@ -359,13 +360,29 @@ def table_bpe(results_dir, subdir: str = BPE_SUBDIR) -> str:
     return to_markdown(pd.DataFrame(rows))
 
 
+SUBWORD2_SUBDIR = "subword2"                   # WordPiece and Unigram (python -m experiments.run_subword2)
+
+
+def table_subword_runs(results_dir) -> str:
+    """Accuracy / macro-F1 (%) of WordPiece and Unigram with NB and LR, next to NLTK+LR and BPE+LR."""
+    rows = []
+    for ds, d in load_bpe(results_dir, SUBWORD2_SUBDIR)["datasets"].items():
+        rows.append({"dataset": ds, "vocab": d["subword"]["wordpiece"]["vocab_size"],
+                     **{f"{label} acc / F1": _score_text(d["runs"].get(run)) for label, run in (
+                         ("WordPiece+NB", "wordpiece__nb"), ("WordPiece+LR", "wordpiece__lr"),
+                         ("Unigram+NB", "unigram__nb"), ("Unigram+LR", "unigram__lr"),
+                         ("NLTK+LR", "nltk__lr"), ("BPE+LR", "bpe__lr"))}})
+    return to_markdown(pd.DataFrame(rows))
+
+
 TABLES = {"datasets": table_datasets, "module1_results": table_module1,
           "existing_vs_proposed": table_existing_vs_proposed, "intrinsic_metrics": table_intrinsic,
           "dfa_states": table_dfa, "ci_table": table_ci, "ci_runs": table_ci_runs,
           "sensitivity_case": table_sensitivity_case, "sensitivity_ci": table_sensitivity_ci,
           "ablation_table": table_ablation, "bpe_runs": table_bpe_runs, "bpe_table": table_bpe,
           "bpe_v32000_runs": lambda r: table_bpe_runs(r, BPE_SENSITIVITY_SUBDIR),
-          "bpe_v32000_table": lambda r: table_bpe(r, BPE_SENSITIVITY_SUBDIR)}
+          "bpe_v32000_table": lambda r: table_bpe(r, BPE_SENSITIVITY_SUBDIR),
+          "subword_runs": table_subword_runs, "subword_table": lambda r: table_bpe(r, SUBWORD2_SUBDIR)}
 
 
 def render_all_tables(results_dir) -> dict[str, str]:

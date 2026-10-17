@@ -3,6 +3,57 @@
 Newest first. One short entry each: decision, reason, source. Gaps filled on 2026-10-16 from the team's notes; items
 already recorded elsewhere are only pointed to. Citations below are from abstracts only and were not re-checked here.
 
+## 2026-10-17 (P4: AUDIT_5 fixes; WordPiece and Unigram)
+
+### AUDIT_5 fixes (stage A)
+- A5-1: `build_tokenizer` makes `list(train_texts)` first (an iterator was consumed by the training-text hash and the
+  tokenizer then trained on nothing); a test passes an iterator.
+- A5-2/A5-3: the OOV statement is reworded everywhere it was generated or written (observation `intrinsic`, `run_module2`
+  docstring, LEARN, module2 / REPORT_NOTES text, notebook): subword tokenizers split words into vocabulary pieces, only
+  characters never seen in train (`[UNK]`) and rare pieces can be OOV, so the OOV rate is near zero (not "every word is
+  split into pieces seen in train"); the generated line says "lowest OOV rate among the word-level tokenizers". The
+  P3 text in `docs/versions/v5-bpe-hybrid.md` and in the P3 section below is left as written (earlier versions stay
+  untouched); this entry and `v6-wordpiece-unigram.md` supersede that wording.
+- A5-4: the hybrid's piece cache is cleared before every timed repetition of the intrinsic throughput (`clear_cache`), so
+  `lexfront_bpe` is timed cold like the tokenizers without a cache.
+
+### AUDIT_6 (independent check of P4; `docs/AUDIT_6.md`)
+- Leakage, determinism and independent CI recomputation passed. One low note, kept as is: Unigram's rounding to 3 decimals has
+  a margin of 2e-10 (nearest score) against numerical noise of at most 4e-11, so a different CPU or library version could
+  flip one rounded score. Reason for not changing it: any edit under `subword/` changes the code fingerprint of every
+  committed run. Mitigation: documented here, in the v6 file and in LEARN Q38; if it ever flips, the symptom is a changed
+  serialized Unigram and a fingerprint-stale rerun, not a silent wrong result.
+
+### P4 protocol (conductor's decisions)
+- WordPiece and Unigram from the Hugging Face `tokenizers` trainers (`WordPieceTrainer`, `UnigramTrainer`), same protocol
+  as BPE: trained only on the train split (lowercased as the vectorizer does), one vocabulary size 8000 for every
+  dataset, not tuned, `Whitespace` pre-tokenizer, `[UNK]`; WordPiece continuation marker `##`; Unigram has no marker
+  (no word-boundary symbol such as SentencePiece's, because the conductor fixed the pre-tokenizer).
+- No hybrids with LexFront for these two (the P3 result already shows the hybrid with BPE is worse).
+- Interface unchanged (`tokenize(text) -> list[str]`, factory `build_tokenizer`); the fingerprint carries the tokenizer
+  config, vocabulary size, library version and training-text hash. Both names are added to the intrinsic metrics.
+- Grid: 3 datasets x {wordpiece, unigram} x {NB, LR}, main setting, full data, `results/subword2/`; QUICK in
+  `results/quick/subword2/`. Statistics: paired bootstrap (accuracy, macro-F1; same code, B and seed) for wordpiece+LR and
+  unigram+LR minus nltk+LR and minus bpe+LR, and unigram+LR minus wordpiece+LR; exact McNemar on accuracy for the two
+  against nltk+LR. Generated table `subword_table` (and `subword_runs`), observation `subword`.
+- Determinism was checked before any run (4 trainings each, `RAYON_NUM_THREADS=1` and `4`, tweet_topic 6000 documents):
+  plain `WordPieceTrainer` and plain `UnigramTrainer` are both NOT deterministic (4 distinct serialized models each).
+  WordPiece has the same hash-map-order cause as BPE and is fixed the same way (sorted alphabet passed first as
+  special tokens, then removed from the added tokens): identical at 1 and 4 threads. Unigram has two sources: the EM
+  scores differ in the last digits (up to about 4e-11, floating-point summation order), and the characters that pruning
+  dropped but the trainer must keep are put back at the bottom with scores `lowest + k * 0.0001`, k following the
+  iteration order of a hash set (found by inspecting the vocabularies of two trainings: the set of pieces was identical,
+  the 1e-4 steps were assigned to different characters). Pinned by canonicalizing the trained model
+  (`canonical_unigram`): the single characters of that bottom block get the block's scores back in code-point order,
+  every score is rounded to 3 decimals, pieces are ordered by (-score, piece) with `[UNK]` first. The configuration
+  (`score_decimals`) is in the fingerprint. An unseen span is named `[UNK]` (the library would return its surface
+  string for Unigram). Limit: a score within about 1e-10 of a rounding boundary could still round differently (a few
+  in 10 000 trainings by a rough estimate). Check on the full train splits of the three datasets: 5 trainings each at
+  `RAYON_NUM_THREADS=1` and 5 at 4 gave one identical serialized model per dataset (10 of 10 equal); without the
+  canonical form the same check gave different models for tweet_topic and go_emotions. WordPiece: 2 trainings
+  each at 1 and 4 threads gave one identical model per dataset. The checks are scripted in the scratchpad of the
+  session and repeated as tests on tiny corpora (`tests/test_subword2.py`); the full-data runs are not in CI.
+
 ## 2026-10-16 (P3: AUDIT_4 fixes; BPE and the LexFront + BPE hybrid)
 
 ### AUDIT_4 fixes (stage A)

@@ -35,6 +35,8 @@ jobs:
           python -m experiments.run_bpe --stats-only --out results/bpe
           python -m experiments.run_bpe --stats-only --out results/quick/bpe
           python -m experiments.run_bpe --stats-only --out results/bpe_v32000 --vocab-size 32000
+          python -m experiments.run_subword2 --stats-only --out results/subword2
+          python -m experiments.run_subword2 --stats-only --out results/quick/subword2
           git diff --exit-code results
       - name: Generated doc blocks match the committed JSON
         run: |

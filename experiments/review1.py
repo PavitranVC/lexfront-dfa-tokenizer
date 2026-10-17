@@ -23,6 +23,7 @@ from .pipeline import run_grid
 from .run_ablation import run_ablation, write_stats as write_ablation_stats
 from .run_bpe import run_bpe, write_stats as write_bpe_stats
 from .run_stats import write as write_bootstrap
+from .run_subword2 import run_subword2, write_stats as write_subword2_stats
 from .run_module2 import run_intrinsic
 from .tokenizers import MODULE1_TOKENIZERS, TOKENIZERS
 
@@ -86,6 +87,26 @@ def run_bpe_section(quick: bool, force: bool = False, log=print):
     out = f"{results_dir(quick)}/bpe"
     run_bpe(out, max_train=sizes(quick)["max_train"], max_test=sizes(quick)["max_test"], force=force, log=log)
     log("wrote", write_bpe_stats(out))
+
+
+def run_subword2_section(quick: bool, force: bool = False, log=print):
+    """WordPiece and Unigram x {NB, LR} (each trained on the train split only) and their paired bootstrap CIs."""
+    out = f"{results_dir(quick)}/subword2"
+    run_subword2(out, max_train=sizes(quick)["max_train"], max_test=sizes(quick)["max_test"], force=force, log=log)
+    log("wrote", write_subword2_stats(out))
+
+
+def subword2_demo(texts=EXAMPLE_TWEETS[:3]) -> pd.DataFrame:
+    """BPE, WordPiece and Unigram pieces of a few example tweets, all trained here on the eight example tweets only
+    with a tiny vocabulary (illustration only)."""
+    from subword.bpe import BpeConfig, BpeTokenizer
+    from subword.unigram import UnigramConfig, UnigramTokenizer
+    from subword.wordpiece import WordPieceConfig, WordPieceTokenizer
+    tokenizers = {"bpe": BpeTokenizer(EXAMPLE_TWEETS, BpeConfig(vocab_size=150)),
+                  "wordpiece": WordPieceTokenizer(EXAMPLE_TWEETS, WordPieceConfig(vocab_size=150)),
+                  "unigram": UnigramTokenizer(EXAMPLE_TWEETS, UnigramConfig(vocab_size=150))}
+    return pd.DataFrame([{"tweet": t, **{name: " ".join(f"[{p}]" for p in tok(t)) for name, tok in tokenizers.items()}}
+                         for t in texts])
 
 
 def bpe_demo(texts=EXAMPLE_TWEETS[:3]) -> pd.DataFrame:

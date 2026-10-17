@@ -2,7 +2,7 @@
 
 Compiler concept: the *scanner* stage. Three existing methods and our LexFront lexer
 are interchangeable, which is what lets the downstream classifier stay fixed.
-Subword tokenizers (P3: BPE and the LexFront + BPE hybrid) must be trained first, so they are built by a factory,
+Subword tokenizers (P3: BPE and the LexFront + BPE hybrid; P4: WordPiece and Unigram) must be trained first, so they are built by a factory,
 `build_tokenizer(name, train_texts)`, that receives the dataset's train texts only.
 """
 from collections.abc import Callable
@@ -11,6 +11,7 @@ from nltk.tokenize import TweetTokenizer, word_tokenize
 
 from lexer.lexfront import LexFront
 from lexer.normalize import RULES, NormalizeConfig
+from subword import unigram, wordpiece
 from subword.bpe import BpeConfig, BpeTokenizer, LexFrontBpe, record, text_hash
 
 Tokenizer = Callable[[str], list[str]]
@@ -84,6 +85,12 @@ SUBWORD_TOKENIZERS: dict[str, tuple[bool, int]] = {
     "bpe": (False, BPE_VOCAB_SIZE), "lexfront_bpe": (True, BPE_VOCAB_SIZE),
     "bpe:v32000": (False, 32000), "lexfront_bpe:v32000": (True, 32000)}
 PRIMARY_SUBWORD = ("bpe", "lexfront_bpe")
+# Library-trained subword tokenizers of P4, one vocabulary size (8000) and no variants: {name: (class, config)}.
+# Both pre-tokenize with Whitespace, like the pure BPE.
+LIBRARY_SUBWORD = {"wordpiece": (wordpiece.WordPieceTokenizer, wordpiece.WordPieceConfig(vocab_size=BPE_VOCAB_SIZE)),
+                   "unigram": (unigram.UnigramTokenizer, unigram.UnigramConfig(vocab_size=BPE_VOCAB_SIZE))}
+SUBWORD2 = tuple(LIBRARY_SUBWORD)
+_RECORDS = {"wordpiece": wordpiece.record, "unigram": unigram.record}
 _TRAINED: dict[tuple[str, str], Tokenizer] = {}
 
 
@@ -93,7 +100,9 @@ def bpe_config(name: str) -> BpeConfig:
 
 
 def subword_record(name: str, train_texts) -> dict:
-    """{"subword": BPE config, hybrid pass-through and train-text hash} for a trained tokenizer, {} otherwise."""
+    """{"subword": config, hybrid pass-through and train-text hash} for a trained tokenizer, {} otherwise."""
+    if name in LIBRARY_SUBWORD:
+        return {"subword": _RECORDS[name](LIBRARY_SUBWORD[name][1], train_texts)}
     if name not in SUBWORD_TOKENIZERS:
         return {}
     return {"subword": record(bpe_config(name), SUBWORD_TOKENIZERS[name][0], train_texts)}
@@ -104,11 +113,15 @@ def build_tokenizer(name: str, train_texts) -> Tokenizer:
 
     Trained tokenizers are memoized per (name, train-text hash), so NB, LR and the intrinsic metrics share one.
     """
-    if name not in SUBWORD_TOKENIZERS:
+    if name not in SUBWORD_TOKENIZERS and name not in LIBRARY_SUBWORD:
         return get_tokenizer(name)
+    train_texts = list(train_texts)            # an iterator would be consumed by the hash below, leaving nothing to train on
     key = (name, text_hash(train_texts))
     if key not in _TRAINED:
-        cls = LexFrontBpe if SUBWORD_TOKENIZERS[name][0] else BpeTokenizer
         _TRAINED.clear()                       # one trained tokenizer at a time keeps memory flat on big datasets
-        _TRAINED[key] = cls(train_texts, bpe_config(name))
+        if name in LIBRARY_SUBWORD:
+            cls, config = LIBRARY_SUBWORD[name]
+        else:
+            cls, config = (LexFrontBpe if SUBWORD_TOKENIZERS[name][0] else BpeTokenizer), bpe_config(name)
+        _TRAINED[key] = cls(train_texts, config)
     return _TRAINED[key]

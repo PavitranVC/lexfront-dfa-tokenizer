@@ -2,7 +2,7 @@
 
 NLP concept: BPE starts from single characters and repeatedly merges the most frequent adjacent pair into a new
 symbol until the vocabulary has `vocab_size` entries. The learned merges are an ordered rewrite-rule list: encoding a
-word applies them in rank order, so any word splits into known pieces (out-of-vocabulary words almost disappear, at
+word applies them in rank order, so words split into vocabulary pieces (out-of-vocabulary tokens almost disappear, at
 the price of more tokens per word). Pieces that continue a word carry the marker `##`, so "##ing" (inside a word)
 and "ing" (a word of its own) stay different features.
 
@@ -58,7 +58,7 @@ def sorted_alphabet(texts, pre_tokenizer, config: BpeConfig) -> list[str]:
     return [config.unk_token, *sorted(chars), *(config.continuing_subword_prefix + c for c in sorted(inner))]
 
 
-def _drop_added_tokens(tokenizer: Tokenizer) -> Tokenizer:
+def drop_added_tokens(tokenizer: Tokenizer) -> Tokenizer:
     """The same model without the seeded special tokens (they must not be matched as literals in input text)."""
     spec = json.loads(tokenizer.to_str())
     spec["added_tokens"] = []
@@ -76,7 +76,7 @@ def train_bpe(texts, config: BpeConfig = BpeConfig()) -> Tokenizer:
                                   special_tokens=sorted_alphabet(texts, pre, config),
                                   continuing_subword_prefix=config.continuing_subword_prefix)
     tokenizer.train_from_iterator(texts, trainer)
-    return _drop_added_tokens(tokenizer)
+    return drop_added_tokens(tokenizer)
 
 
 class BpeTokenizer:
@@ -111,6 +111,10 @@ class LexFrontBpe:
         if word not in self._pieces:
             self._pieces[word] = self.model.encode(word).tokens
         return self._pieces[word]
+
+    def clear_cache(self) -> None:
+        """Forget the memoized pieces (so a timing starts cold, like the tokenizers that have no cache)."""
+        self._pieces.clear()
 
     def tokenize(self, text: str) -> list[str]:
         out = []

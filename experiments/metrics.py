@@ -42,6 +42,9 @@ def intrinsic_metrics(tokenizer, train_texts, test_texts, throughput_docs: int =
 
 
 def _time_once(tokenizer, texts) -> float:
+    """Seconds to tokenize `texts`; a tokenizer with a memo cache (`clear_cache`) is timed cold."""
+    if hasattr(tokenizer, "clear_cache"):
+        tokenizer.clear_cache()
     start = time.perf_counter()
     for t in texts:
         tokenizer(t)

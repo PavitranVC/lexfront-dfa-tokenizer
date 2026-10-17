@@ -1,0 +1,837 @@
+{
+  "config": {
+    "results_dir": "results/subword2",
+    "grid_dir": "results",
+    "method": "percentile bootstrap over test examples",
+    "ci_level": 0.95,
+    "n_boot": 2000,
+    "seed": 20261016,
+    "rng": "numpy.random.default_rng(seed), one fresh generator per dataset; all runs of a dataset share its resampled indices (paired)",
+    "difference": "b minus a, in fractions (x100 for points)",
+    "mcnemar": "exact two-sided binomial test on discordant pairs, accuracy, pairs vs nltk_lr only",
+    "multiplicity": "none: every interval is a separate 95% interval",
+    "not_covered": "training randomness: one training run per cell (seed 0); training is deterministic",
+    "numpy": "2.4.6",
+    "pairs": [
+      {
+        "name": "wordpiece_vs_nltk_lr",
+        "a": "nltk__lr",
+        "b": "wordpiece__lr"
+      },
+      {
+        "name": "unigram_vs_nltk_lr",
+        "a": "nltk__lr",
+        "b": "unigram__lr"
+      },
+      {
+        "name": "wordpiece_vs_bpe_lr",
+        "a": "bpe__lr",
+        "b": "wordpiece__lr"
+      },
+      {
+        "name": "unigram_vs_bpe_lr",
+        "a": "bpe__lr",
+        "b": "unigram__lr"
+      },
+      {
+        "name": "unigram_vs_wordpiece_lr",
+        "a": "wordpiece__lr",
+        "b": "unigram__lr"
+      }
+    ]
+  },
+  "datasets": {
+    "tweet_topic": {
+      "n_test": 3399,
+      "n_labels": 6,
+      "runs": {
+        "wordpiece__nb": {
+          "run_json": "results/subword2/tweet_topic__wordpiece__nb.json",
+          "accuracy": {
+            "value": 0.7084436598999706,
+            "ci": [
+              0.694020300088,
+              0.724036481318
+            ]
+          },
+          "macro_f1": {
+            "value": 0.2806611721432675,
+            "ci": [
+              0.273469306754,
+              0.288868761225
+            ]
+          }
+        },
+        "wordpiece__lr": {
+          "run_json": "results/subword2/tweet_topic__wordpiece__lr.json",
+          "accuracy": {
+            "value": 0.716092968520153,
+            "ci": [
+              0.701382759635,
+              0.731685789938
+            ]
+          },
+          "macro_f1": {
+            "value": 0.3487727767749176,
+            "ci": [
+              0.336775560667,
+              0.361543042217
+            ]
+          }
+        },
+        "unigram__nb": {
+          "run_json": "results/subword2/tweet_topic__unigram__nb.json",
+          "accuracy": {
+            "value": 0.7152103559870551,
+            "ci": [
+              0.699911738747,
+              0.73021476905
+            ]
+          },
+          "macro_f1": {
+            "value": 0.2846191056585597,
+            "ci": [
+              0.27667221033,
+              0.292842792852
+            ]
+          }
+        },
+        "unigram__lr": {
+          "run_json": "results/subword2/tweet_topic__unigram__lr.json",
+          "accuracy": {
+            "value": 0.7305089732274198,
+            "ci": [
+              0.715504560165,
+              0.746101794645
+            ]
+          },
+          "macro_f1": {
+            "value": 0.3649349524581842,
+            "ci": [
+              0.350067785634,
+              0.380737111919
+            ]
+          }
+        },
+        "nltk__lr": {
+          "run_json": "results/module1/tweet_topic__nltk__lr.json",
+          "accuracy": {
+            "value": 0.7231538687849367,
+            "ci": [
+              0.709032068255,
+              0.738746690203
+            ]
+          },
+          "macro_f1": {
+            "value": 0.3695472064407723,
+            "ci": [
+              0.353388199779,
+              0.385836443619
+            ]
+          }
+        },
+        "bpe__lr": {
+          "run_json": "results/bpe/tweet_topic__bpe__lr.json",
+          "accuracy": {
+            "value": 0.7190350102971462,
+            "ci": [
+              0.704324801412,
+              0.734929390997
+            ]
+          },
+          "macro_f1": {
+            "value": 0.35091807531247715,
+            "ci": [
+              0.338702049009,
+              0.363498300097
+            ]
+          }
+        }
+      },
+      "pairs": {
+        "wordpiece_vs_nltk_lr": {
+          "a": "nltk__lr",
+          "b": "wordpiece__lr",
+          "label": "WordPiece+LR minus NLTK+LR (tokenizer only)",
+          "accuracy": {
+            "diff": -0.007060900265,
+            "ci": [
+              -0.016181229773,
+              0.001176816711
+            ],
+            "ci_excludes_zero": false
+          },
+          "macro_f1": {
+            "diff": -0.020774429666,
+            "ci": [
+              -0.033290126712,
+              -0.008676770802
+            ],
+            "ci_excludes_zero": true
+          },
+          "mcnemar_accuracy": {
+            "a_right_b_wrong": 123,
+            "a_wrong_b_right": 99,
+            "p_value": 0.1224768458549779
+          }
+        },
+        "unigram_vs_nltk_lr": {
+          "a": "nltk__lr",
+          "b": "unigram__lr",
+          "label": "Unigram+LR minus NLTK+LR (tokenizer only)",
+          "accuracy": {
+            "diff": 0.007355104442,
+            "ci": [
+              -0.002353633422,
+              0.016769638129
+            ],
+            "ci_excludes_zero": false
+          },
+          "macro_f1": {
+            "diff": -0.004612253983,
+            "ci": [
+              -0.019321462273,
+              0.009840901341
+            ],
+            "ci_excludes_zero": false
+          },
+          "mcnemar_accuracy": {
+            "a_right_b_wrong": 122,
+            "a_wrong_b_right": 147,
+            "p_value": 0.143242399494048
+          }
+        },
+        "wordpiece_vs_bpe_lr": {
+          "a": "bpe__lr",
+          "b": "wordpiece__lr",
+          "label": "WordPiece+LR minus BPE+LR",
+          "accuracy": {
+            "diff": -0.002942041777,
+            "ci": [
+              -0.009120329509,
+              0.002942041777
+            ],
+            "ci_excludes_zero": false
+          },
+          "macro_f1": {
+            "diff": -0.002145298538,
+            "ci": [
+              -0.010830037257,
+              0.00702648292
+            ],
+            "ci_excludes_zero": false
+          }
+        },
+        "unigram_vs_bpe_lr": {
+          "a": "bpe__lr",
+          "b": "unigram__lr",
+          "label": "Unigram+LR minus BPE+LR",
+          "accuracy": {
+            "diff": 0.01147396293,
+            "ci": [
+              0.002353633422,
+              0.020888496617
+            ],
+            "ci_excludes_zero": true
+          },
+          "macro_f1": {
+            "diff": 0.014016877146,
+            "ci": [
+              0.000878600686,
+              0.028081784985
+            ],
+            "ci_excludes_zero": true
+          }
+        },
+        "unigram_vs_wordpiece_lr": {
+          "a": "wordpiece__lr",
+          "b": "unigram__lr",
+          "label": "Unigram+LR minus WordPiece+LR",
+          "accuracy": {
+            "diff": 0.014416004707,
+            "ci": [
+              0.005589879376,
+              0.024124742571
+            ],
+            "ci_excludes_zero": true
+          },
+          "macro_f1": {
+            "diff": 0.016162175683,
+            "ci": [
+              0.006168402605,
+              0.028015485732
+            ],
+            "ci_excludes_zero": true
+          }
+        }
+      },
+      "subword": {
+        "wordpiece": {
+          "model": "wordpiece",
+          "vocab_size": 8000,
+          "pre_tokenizer": "whitespace",
+          "continuing_subword_prefix": "##",
+          "unk_token": "[UNK]",
+          "hybrid": false,
+          "train_text": "train split, lowercased",
+          "train_text_hash": "60622c6e72cccd4d",
+          "tokenizers": "0.23.3"
+        },
+        "unigram": {
+          "model": "unigram",
+          "vocab_size": 8000,
+          "pre_tokenizer": "whitespace",
+          "unk_token": "[UNK]",
+          "shrinking_factor": 0.75,
+          "max_piece_length": 16,
+          "n_sub_iterations": 2,
+          "score_decimals": 3,
+          "hybrid": false,
+          "train_text": "train split, lowercased",
+          "train_text_hash": "60622c6e72cccd4d",
+          "tokenizers": "0.23.3"
+        },
+        "bpe": {
+          "model": "bpe",
+          "vocab_size": 8000,
+          "pre_tokenizer": "whitespace",
+          "continuing_subword_prefix": "##",
+          "unk_token": "[UNK]",
+          "hybrid": false,
+          "pass_through_classes": [],
+          "train_text": "train split, lowercased",
+          "train_text_hash": "60622c6e72cccd4d",
+          "tokenizers": "0.23.3"
+        }
+      }
+    },
+    "go_emotions": {
+      "n_test": 4590,
+      "n_labels": 28,
+      "runs": {
+        "wordpiece__nb": {
+          "run_json": "results/subword2/go_emotions__wordpiece__nb.json",
+          "accuracy": {
+            "value": 0.3869281045751634,
+            "ci": [
+              0.373197167756,
+              0.400653594771
+            ]
+          },
+          "macro_f1": {
+            "value": 0.056690258116160006,
+            "ci": [
+              0.051902988545,
+              0.06218247898
+            ]
+          }
+        },
+        "wordpiece__lr": {
+          "run_json": "results/subword2/go_emotions__wordpiece__lr.json",
+          "accuracy": {
+            "value": 0.55119825708061,
+            "ci": [
+              0.537037037037,
+              0.565795206972
+            ]
+          },
+          "macro_f1": {
+            "value": 0.33120222283022327,
+            "ci": [
+              0.313482898695,
+              0.351960475317
+            ]
+          }
+        },
+        "unigram__nb": {
+          "run_json": "results/subword2/go_emotions__unigram__nb.json",
+          "accuracy": {
+            "value": 0.3812636165577342,
+            "ci": [
+              0.367320261438,
+              0.395212418301
+            ]
+          },
+          "macro_f1": {
+            "value": 0.05176760839148496,
+            "ci": [
+              0.047061205534,
+              0.057198511928
+            ]
+          }
+        },
+        "unigram__lr": {
+          "run_json": "results/subword2/go_emotions__unigram__lr.json",
+          "accuracy": {
+            "value": 0.5570806100217864,
+            "ci": [
+              0.542919389978,
+              0.571683006536
+            ]
+          },
+          "macro_f1": {
+            "value": 0.35118476144969774,
+            "ci": [
+              0.332996123441,
+              0.372740724438
+            ]
+          }
+        },
+        "nltk__lr": {
+          "run_json": "results/module1/go_emotions__nltk__lr.json",
+          "accuracy": {
+            "value": 0.552723311546841,
+            "ci": [
+              0.538126361656,
+              0.567107843137
+            ]
+          },
+          "macro_f1": {
+            "value": 0.3386004128601327,
+            "ci": [
+              0.320737956147,
+              0.359225679645
+            ]
+          }
+        },
+        "bpe__lr": {
+          "run_json": "results/bpe/go_emotions__bpe__lr.json",
+          "accuracy": {
+            "value": 0.5522875816993464,
+            "ci": [
+              0.537685185185,
+              0.567320261438
+            ]
+          },
+          "macro_f1": {
+            "value": 0.3329337605212427,
+            "ci": [
+              0.315450440793,
+              0.353239332432
+            ]
+          }
+        }
+      },
+      "pairs": {
+        "wordpiece_vs_nltk_lr": {
+          "a": "nltk__lr",
+          "b": "wordpiece__lr",
+          "label": "WordPiece+LR minus NLTK+LR (tokenizer only)",
+          "accuracy": {
+            "diff": -0.001525054466,
+            "ci": [
+              -0.007843137255,
+              0.004793028322
+            ],
+            "ci_excludes_zero": false
+          },
+          "macro_f1": {
+            "diff": -0.00739819003,
+            "ci": [
+              -0.015665181989,
+              0.0008466469
+            ],
+            "ci_excludes_zero": false
+          },
+          "mcnemar_accuracy": {
+            "a_right_b_wrong": 114,
+            "a_wrong_b_right": 107,
+            "p_value": 0.6865986170537427
+          }
+        },
+        "unigram_vs_nltk_lr": {
+          "a": "nltk__lr",
+          "b": "unigram__lr",
+          "label": "Unigram+LR minus NLTK+LR (tokenizer only)",
+          "accuracy": {
+            "diff": 0.004357298475,
+            "ci": [
+              -0.002832244009,
+              0.011546840959
+            ],
+            "ci_excludes_zero": false
+          },
+          "macro_f1": {
+            "diff": 0.01258434859,
+            "ci": [
+              0.001020651931,
+              0.023856515001
+            ],
+            "ci_excludes_zero": true
+          },
+          "mcnemar_accuracy": {
+            "a_right_b_wrong": 136,
+            "a_wrong_b_right": 156,
+            "p_value": 0.2661533666728632
+          }
+        },
+        "wordpiece_vs_bpe_lr": {
+          "a": "bpe__lr",
+          "b": "wordpiece__lr",
+          "label": "WordPiece+LR minus BPE+LR",
+          "accuracy": {
+            "diff": -0.001089324619,
+            "ci": [
+              -0.004575163399,
+              0.002614379085
+            ],
+            "ci_excludes_zero": false
+          },
+          "macro_f1": {
+            "diff": -0.001731537691,
+            "ci": [
+              -0.006166018357,
+              0.002956314206
+            ],
+            "ci_excludes_zero": false
+          }
+        },
+        "unigram_vs_bpe_lr": {
+          "a": "bpe__lr",
+          "b": "unigram__lr",
+          "label": "Unigram+LR minus BPE+LR",
+          "accuracy": {
+            "diff": 0.004793028322,
+            "ci": [
+              -0.001525054466,
+              0.011111111111
+            ],
+            "ci_excludes_zero": false
+          },
+          "macro_f1": {
+            "diff": 0.018251000928,
+            "ci": [
+              0.007762386105,
+              0.029588329347
+            ],
+            "ci_excludes_zero": true
+          }
+        },
+        "unigram_vs_wordpiece_lr": {
+          "a": "wordpiece__lr",
+          "b": "unigram__lr",
+          "label": "Unigram+LR minus WordPiece+LR",
+          "accuracy": {
+            "diff": 0.005882352941,
+            "ci": [
+              -0.000435729847,
+              0.012423747277
+            ],
+            "ci_excludes_zero": false
+          },
+          "macro_f1": {
+            "diff": 0.019982538619,
+            "ci": [
+              0.008921877169,
+              0.031446580162
+            ],
+            "ci_excludes_zero": true
+          }
+        }
+      },
+      "subword": {
+        "wordpiece": {
+          "model": "wordpiece",
+          "vocab_size": 8000,
+          "pre_tokenizer": "whitespace",
+          "continuing_subword_prefix": "##",
+          "unk_token": "[UNK]",
+          "hybrid": false,
+          "train_text": "train split, lowercased",
+          "train_text_hash": "7a7321a89e527b6d",
+          "tokenizers": "0.23.3"
+        },
+        "unigram": {
+          "model": "unigram",
+          "vocab_size": 8000,
+          "pre_tokenizer": "whitespace",
+          "unk_token": "[UNK]",
+          "shrinking_factor": 0.75,
+          "max_piece_length": 16,
+          "n_sub_iterations": 2,
+          "score_decimals": 3,
+          "hybrid": false,
+          "train_text": "train split, lowercased",
+          "train_text_hash": "7a7321a89e527b6d",
+          "tokenizers": "0.23.3"
+        },
+        "bpe": {
+          "model": "bpe",
+          "vocab_size": 8000,
+          "pre_tokenizer": "whitespace",
+          "continuing_subword_prefix": "##",
+          "unk_token": "[UNK]",
+          "hybrid": false,
+          "pass_through_classes": [],
+          "train_text": "train split, lowercased",
+          "train_text_hash": "7a7321a89e527b6d",
+          "tokenizers": "0.23.3"
+        }
+      }
+    },
+    "ag_news": {
+      "n_test": 7600,
+      "n_labels": 4,
+      "runs": {
+        "wordpiece__nb": {
+          "run_json": "results/subword2/ag_news__wordpiece__nb.json",
+          "accuracy": {
+            "value": 0.8894736842105263,
+            "ci": [
+              0.882236842105,
+              0.8961875
+            ]
+          },
+          "macro_f1": {
+            "value": 0.8889259786665626,
+            "ci": [
+              0.881628270229,
+              0.895619301955
+            ]
+          }
+        },
+        "wordpiece__lr": {
+          "run_json": "results/subword2/ag_news__wordpiece__lr.json",
+          "accuracy": {
+            "value": 0.9147368421052632,
+            "ci": [
+              0.908286184211,
+              0.920789473684
+            ]
+          },
+          "macro_f1": {
+            "value": 0.9145641745780748,
+            "ci": [
+              0.908047912617,
+              0.920565602586
+            ]
+          }
+        },
+        "unigram__nb": {
+          "run_json": "results/subword2/ag_news__unigram__nb.json",
+          "accuracy": {
+            "value": 0.891578947368421,
+            "ci": [
+              0.884605263158,
+              0.898161184211
+            ]
+          },
+          "macro_f1": {
+            "value": 0.8912142781232503,
+            "ci": [
+              0.884312697865,
+              0.897638522416
+            ]
+          }
+        },
+        "unigram__lr": {
+          "run_json": "results/subword2/ag_news__unigram__lr.json",
+          "accuracy": {
+            "value": 0.9097368421052632,
+            "ci": [
+              0.903157894737,
+              0.915789473684
+            ]
+          },
+          "macro_f1": {
+            "value": 0.9095681053343696,
+            "ci": [
+              0.902952424029,
+              0.915541591458
+            ]
+          }
+        },
+        "nltk__lr": {
+          "run_json": "results/module1/ag_news__nltk__lr.json",
+          "accuracy": {
+            "value": 0.9188157894736843,
+            "ci": [
+              0.9125,
+              0.924608552632
+            ]
+          },
+          "macro_f1": {
+            "value": 0.9187045537652345,
+            "ci": [
+              0.912345791593,
+              0.924368409039
+            ]
+          }
+        },
+        "bpe__lr": {
+          "run_json": "results/bpe/ag_news__bpe__lr.json",
+          "accuracy": {
+            "value": 0.9113157894736842,
+            "ci": [
+              0.904868421053,
+              0.917503289474
+            ]
+          },
+          "macro_f1": {
+            "value": 0.9111607438076432,
+            "ci": [
+              0.904732177584,
+              0.917274352062
+            ]
+          }
+        }
+      },
+      "pairs": {
+        "wordpiece_vs_nltk_lr": {
+          "a": "nltk__lr",
+          "b": "wordpiece__lr",
+          "label": "WordPiece+LR minus NLTK+LR (tokenizer only)",
+          "accuracy": {
+            "diff": -0.004078947368,
+            "ci": [
+              -0.008157894737,
+              -0.000131578947
+            ],
+            "ci_excludes_zero": true
+          },
+          "macro_f1": {
+            "diff": -0.004140379187,
+            "ci": [
+              -0.008217658196,
+              -0.000209521391
+            ],
+            "ci_excludes_zero": true
+          },
+          "mcnemar_accuracy": {
+            "a_right_b_wrong": 132,
+            "a_wrong_b_right": 101,
+            "p_value": 0.04913864360174307
+          }
+        },
+        "unigram_vs_nltk_lr": {
+          "a": "nltk__lr",
+          "b": "unigram__lr",
+          "label": "Unigram+LR minus NLTK+LR (tokenizer only)",
+          "accuracy": {
+            "diff": -0.009078947368,
+            "ci": [
+              -0.013421052632,
+              -0.005
+            ],
+            "ci_excludes_zero": true
+          },
+          "macro_f1": {
+            "diff": -0.009136448431,
+            "ci": [
+              -0.013410422381,
+              -0.005038505529
+            ],
+            "ci_excludes_zero": true
+          },
+          "mcnemar_accuracy": {
+            "a_right_b_wrong": 164,
+            "a_wrong_b_right": 95,
+            "p_value": 2.149019753609094e-05
+          }
+        },
+        "wordpiece_vs_bpe_lr": {
+          "a": "bpe__lr",
+          "b": "wordpiece__lr",
+          "label": "WordPiece+LR minus BPE+LR",
+          "accuracy": {
+            "diff": 0.003421052632,
+            "ci": [
+              0.000526315789,
+              0.006578947368
+            ],
+            "ci_excludes_zero": true
+          },
+          "macro_f1": {
+            "diff": 0.00340343077,
+            "ci": [
+              0.000536841475,
+              0.006533295463
+            ],
+            "ci_excludes_zero": true
+          }
+        },
+        "unigram_vs_bpe_lr": {
+          "a": "bpe__lr",
+          "b": "unigram__lr",
+          "label": "Unigram+LR minus BPE+LR",
+          "accuracy": {
+            "diff": -0.001578947368,
+            "ci": [
+              -0.005657894737,
+              0.002236842105
+            ],
+            "ci_excludes_zero": false
+          },
+          "macro_f1": {
+            "diff": -0.001592638473,
+            "ci": [
+              -0.005618198374,
+              0.002235946215
+            ],
+            "ci_excludes_zero": false
+          }
+        },
+        "unigram_vs_wordpiece_lr": {
+          "a": "wordpiece__lr",
+          "b": "unigram__lr",
+          "label": "Unigram+LR minus WordPiece+LR",
+          "accuracy": {
+            "diff": -0.005,
+            "ci": [
+              -0.008947368421,
+              -0.001315789474
+            ],
+            "ci_excludes_zero": true
+          },
+          "macro_f1": {
+            "diff": -0.004996069244,
+            "ci": [
+              -0.008887161128,
+              -0.001294248868
+            ],
+            "ci_excludes_zero": true
+          }
+        }
+      },
+      "subword": {
+        "wordpiece": {
+          "model": "wordpiece",
+          "vocab_size": 8000,
+          "pre_tokenizer": "whitespace",
+          "continuing_subword_prefix": "##",
+          "unk_token": "[UNK]",
+          "hybrid": false,
+          "train_text": "train split, lowercased",
+          "train_text_hash": "c225d8ddb289ca8c",
+          "tokenizers": "0.23.3"
+        },
+        "unigram": {
+          "model": "unigram",
+          "vocab_size": 8000,
+          "pre_tokenizer": "whitespace",
+          "unk_token": "[UNK]",
+          "shrinking_factor": 0.75,
+          "max_piece_length": 16,
+          "n_sub_iterations": 2,
+          "score_decimals": 3,
+          "hybrid": false,
+          "train_text": "train split, lowercased",
+          "train_text_hash": "c225d8ddb289ca8c",
+          "tokenizers": "0.23.3"
+        },
+        "bpe": {
+          "model": "bpe",
+          "vocab_size": 8000,
+          "pre_tokenizer": "whitespace",
+          "continuing_subword_prefix": "##",
+          "unk_token": "[UNK]",
+          "hybrid": false,
+          "pass_through_classes": [],
+          "train_text": "train split, lowercased",
+          "train_text_hash": "c225d8ddb289ca8c",
+          "tokenizers": "0.23.3"
+        }
+      }
+    }
+  }
+}

@@ -1,5 +1,5 @@
 {
-  "timestamp_utc": "2026-10-17T06:39:06+00:00",
+  "timestamp_utc": "2026-10-17T06:51:25+00:00",
   "dataset": {
     "name": "ag_news",
     "hf_id": "fancyzhx/ag_news",
@@ -43,8 +43,8 @@
       "vocab_size": 15922,
       "n_test_tokens": 18742,
       "n_test_whitespace_words": 18742,
-      "throughput_tokens_per_s": 21761494.393020414,
-      "throughput_docs_per_s": 580554.2202811977,
+      "throughput_tokens_per_s": 24713921.393828545,
+      "throughput_docs_per_s": 659319.2133664642,
       "throughput_docs": 500
     },
     "nltk": {
@@ -54,8 +54,8 @@
       "vocab_size": 12748,
       "n_test_tokens": 21931,
       "n_test_whitespace_words": 18742,
-      "throughput_tokens_per_s": 306959.65191651427,
-      "throughput_docs_per_s": 6998.304954550961,
+      "throughput_tokens_per_s": 281791.1954359264,
+      "throughput_docs_per_s": 6424.49490301232,
       "throughput_docs": 500
     },
     "tweet": {
@@ -65,8 +65,8 @@
       "vocab_size": 12570,
       "n_test_tokens": 21822,
       "n_test_whitespace_words": 18742,
-      "throughput_tokens_per_s": 232425.22795107064,
-      "throughput_docs_per_s": 5325.479514963584,
+      "throughput_tokens_per_s": 257737.30106086266,
+      "throughput_docs_per_s": 5905.446362864601,
       "throughput_docs": 500
     },
     "lexfront": {
@@ -76,8 +76,8 @@
       "vocab_size": 11456,
       "n_test_tokens": 22980,
       "n_test_whitespace_words": 18742,
-      "throughput_tokens_per_s": 283865.2650938272,
-      "throughput_docs_per_s": 6176.354767054552,
+      "throughput_tokens_per_s": 276532.54232690914,
+      "throughput_docs_per_s": 6016.809014945804,
       "throughput_docs": 500
     },
     "bpe": {
@@ -87,8 +87,8 @@
       "vocab_size": 7129,
       "n_test_tokens": 28048,
       "n_test_whitespace_words": 18742,
-      "throughput_tokens_per_s": 947904.7462522065,
-      "throughput_docs_per_s": 16897.90263569963,
+      "throughput_tokens_per_s": 1027178.8190274946,
+      "throughput_docs_per_s": 18311.08847382157,
       "throughput_docs": 500,
       "trained_vocab_size": 8000
     },
@@ -99,10 +99,34 @@
       "vocab_size": 7143,
       "n_test_tokens": 27348,
       "n_test_whitespace_words": 18742,
-      "throughput_tokens_per_s": 295329.9701193301,
-      "throughput_docs_per_s": 5399.480220113538,
+      "throughput_tokens_per_s": 250455.70474098055,
+      "throughput_docs_per_s": 4579.0497429607385,
       "throughput_docs": 500,
       "trained_vocab_size": 8000
+    },
+    "wordpiece": {
+      "oov_rate_tokens": 0.0041109601773075,
+      "oov_rate_types": 0.018336314847942754,
+      "fertility": 1.4925835022943121,
+      "vocab_size": 6950,
+      "n_test_tokens": 27974,
+      "n_test_whitespace_words": 18742,
+      "throughput_tokens_per_s": 1115493.4924234287,
+      "throughput_docs_per_s": 19938.040545210348,
+      "throughput_docs": 500,
+      "trained_vocab_size": 8000
+    },
+    "unigram": {
+      "oov_rate_tokens": 0.0018272376293065338,
+      "oov_rate_types": 0.013137316233969347,
+      "fertility": 1.8104257816668445,
+      "vocab_size": 5307,
+      "n_test_tokens": 33931,
+      "n_test_whitespace_words": 18742,
+      "throughput_tokens_per_s": 994161.4586105108,
+      "throughput_docs_per_s": 14649.751828866094,
+      "throughput_docs": 500,
+      "trained_vocab_size": 6330
     }
   },
   "subword": {
@@ -135,6 +159,31 @@
         "PUNCT",
         "UNKNOWN"
       ],
+      "train_text": "train split, lowercased",
+      "train_text_hash": "5600c7a9b2d07a80",
+      "tokenizers": "0.23.3"
+    },
+    "wordpiece": {
+      "model": "wordpiece",
+      "vocab_size": 8000,
+      "pre_tokenizer": "whitespace",
+      "continuing_subword_prefix": "##",
+      "unk_token": "[UNK]",
+      "hybrid": false,
+      "train_text": "train split, lowercased",
+      "train_text_hash": "5600c7a9b2d07a80",
+      "tokenizers": "0.23.3"
+    },
+    "unigram": {
+      "model": "unigram",
+      "vocab_size": 8000,
+      "pre_tokenizer": "whitespace",
+      "unk_token": "[UNK]",
+      "shrinking_factor": 0.75,
+      "max_piece_length": 16,
+      "n_sub_iterations": 2,
+      "score_decimals": 3,
+      "hybrid": false,
       "train_text": "train split, lowercased",
       "train_text_hash": "5600c7a9b2d07a80",
       "tokenizers": "0.23.3"

@@ -28,3 +28,13 @@ def test_missing_and_added_files(tmp_path):
 def test_markdown_throughput_column_dropped():
     table = "| a | throughput (t/s) |\n|---|---|\n| x | 1,000 |\n"
     assert strip_markdown(table) == strip_markdown(table.replace("1,000", "2,000")) != table
+
+
+def test_additive_mode_allows_new_keys_only(tmp_path):
+    old, new = tmp_path / "old", tmp_path / "new"
+    write(old, "a.json", {"tokenizers": {"nltk": {"oov": 1}}})
+    write(new, "a.json", {"tokenizers": {"nltk": {"oov": 1}, "unigram": {"oov": 2}}})
+    assert compare(old, new)[0] == ["changed: a.json"]
+    assert compare(old, new, additive=True) == ([], [])
+    write(new, "a.json", {"tokenizers": {"nltk": {"oov": 3}, "unigram": {"oov": 2}}})
+    assert compare(old, new, additive=True)[0] == ["changed: a.json"]

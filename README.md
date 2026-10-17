@@ -34,6 +34,7 @@ python -m experiments.run_datasets
 python -m experiments.run_module1
 python -m experiments.run_module2
 python -m experiments.run_bpe              # BPE + hybrid grid and its stats (P3)
+python -m experiments.run_subword2         # WordPiece + Unigram grid and its stats (P4)
 python -m experiments.render_docs
 ```
 
@@ -45,7 +46,7 @@ If the Colab runtime kept a clone from an earlier session, the first cell sets t
 
 ```
 lexer/        token spec, PLY lexer, normalizer, symbol table, LexFront, dfa/ (own regex->DFA engine)
-subword/      BPE and the LexFront + BPE hybrid (Hugging Face `tokenizers`, trained on the train split only)
+subword/      BPE, the LexFront + BPE hybrid, WordPiece and Unigram (Hugging Face `tokenizers`, trained on the train split only)
 experiments/  data, tokenizers, classifiers, metrics, evaluation loop, reports, figures
 tests/        fast pytest suite
 results/      JSON results, tables/, figures/, module2/dfa_min.{dot,png}, REPORT_NOTES.md
@@ -53,5 +54,6 @@ notebooks/    LexFront_Review1.ipynb (+ make_notebook.py)
 docs/         versions/, modules/, LEARN.md
 ```
 
-Out of scope for review 1: WordPiece, Unigram, transformers. Added since: the per-rule normalization ablation
-(`docs/versions/v4-ablation.md`) and BPE + the LexFront + BPE hybrid (`docs/versions/v5-bpe-hybrid.md`).
+Out of scope: transformers (they need torch), Hinglish, more seeds. Added since review 1: the per-rule normalization ablation
+(`docs/versions/v4-ablation.md`) BPE + the LexFront + BPE hybrid (`docs/versions/v5-bpe-hybrid.md`), and WordPiece and Unigram
+(`docs/versions/v6-wordpiece-unigram.md`).

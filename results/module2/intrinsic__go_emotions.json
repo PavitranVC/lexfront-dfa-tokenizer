@@ -1,5 +1,5 @@
 {
-  "timestamp_utc": "2026-10-16T23:53:33+00:00",
+  "timestamp_utc": "2026-10-17T00:54:43+00:00",
   "dataset": {
     "name": "go_emotions",
     "hf_id": "google-research-datasets/go_emotions",
@@ -69,8 +69,8 @@
       "vocab_size": 44476,
       "n_test_tokens": 57399,
       "n_test_whitespace_words": 57399,
-      "throughput_tokens_per_s": 27530864.207322165,
-      "throughput_docs_per_s": 2244668.91213389,
+      "throughput_tokens_per_s": 25609705.171156414,
+      "throughput_docs_per_s": 2088031.4040893938,
       "throughput_docs": 1000
     },
     "nltk": {
@@ -80,8 +80,8 @@
       "vocab_size": 26410,
       "n_test_tokens": 70015,
       "n_test_whitespace_words": 57399,
-      "throughput_tokens_per_s": 247701.2035779021,
-      "throughput_docs_per_s": 16444.347313144932,
+      "throughput_tokens_per_s": 190698.05934225858,
+      "throughput_docs_per_s": 12660.031822496088,
       "throughput_docs": 1000
     },
     "tweet": {
@@ -91,8 +91,8 @@
       "vocab_size": 25907,
       "n_test_tokens": 68596,
       "n_test_whitespace_words": 57399,
-      "throughput_tokens_per_s": 311791.2873477066,
-      "throughput_docs_per_s": 21139.825571069672,
+      "throughput_tokens_per_s": 273223.6539848268,
+      "throughput_docs_per_s": 18524.89348327526,
       "throughput_docs": 1000
     },
     "lexfront": {
@@ -102,8 +102,8 @@
       "vocab_size": 24459,
       "n_test_tokens": 68587,
       "n_test_whitespace_words": 57399,
-      "throughput_tokens_per_s": 284024.6317387738,
-      "throughput_docs_per_s": 19339.822398118875,
+      "throughput_tokens_per_s": 281843.060165065,
+      "throughput_docs_per_s": 19191.274694611537,
       "throughput_docs": 1000
     },
     "bpe": {
@@ -113,8 +113,8 @@
       "vocab_size": 7704,
       "n_test_tokens": 79062,
       "n_test_whitespace_words": 57399,
-      "throughput_tokens_per_s": 1003854.6297399095,
-      "throughput_docs_per_s": 58918.57200022946,
+      "throughput_tokens_per_s": 942108.8020095397,
+      "throughput_docs_per_s": 55294.56520774385,
       "throughput_docs": 1000,
       "trained_vocab_size": 8000
     },
@@ -125,8 +125,32 @@
       "vocab_size": 8236,
       "n_test_tokens": 75267,
       "n_test_whitespace_words": 57399,
-      "throughput_tokens_per_s": 344368.8789831156,
-      "throughput_docs_per_s": 21291.50976772076,
+      "throughput_tokens_per_s": 237065.7156600939,
+      "throughput_docs_per_s": 14657.210069252746,
+      "throughput_docs": 1000,
+      "trained_vocab_size": 8000
+    },
+    "wordpiece": {
+      "oov_rate_tokens": 0.0002538586515028432,
+      "oov_rate_types": 0.0029658060013956736,
+      "fertility": 1.372567466332166,
+      "vocab_size": 7585,
+      "n_test_tokens": 78784,
+      "n_test_whitespace_words": 57399,
+      "throughput_tokens_per_s": 1155009.4059666812,
+      "throughput_docs_per_s": 67905.77964411084,
+      "throughput_docs": 1000,
+      "trained_vocab_size": 8000
+    },
+    "unigram": {
+      "oov_rate_tokens": 0.0004135839345618308,
+      "oov_rate_types": 0.0006690454950936663,
+      "fertility": 1.516472412411366,
+      "vocab_size": 7898,
+      "n_test_tokens": 87044,
+      "n_test_whitespace_words": 57399,
+      "throughput_tokens_per_s": 786662.7078870051,
+      "throughput_docs_per_s": 41859.34698488826,
       "throughput_docs": 1000,
       "trained_vocab_size": 8000
     }
@@ -161,6 +185,31 @@
         "PUNCT",
         "UNKNOWN"
       ],
+      "train_text": "train split, lowercased",
+      "train_text_hash": "7a7321a89e527b6d",
+      "tokenizers": "0.23.3"
+    },
+    "wordpiece": {
+      "model": "wordpiece",
+      "vocab_size": 8000,
+      "pre_tokenizer": "whitespace",
+      "continuing_subword_prefix": "##",
+      "unk_token": "[UNK]",
+      "hybrid": false,
+      "train_text": "train split, lowercased",
+      "train_text_hash": "7a7321a89e527b6d",
+      "tokenizers": "0.23.3"
+    },
+    "unigram": {
+      "model": "unigram",
+      "vocab_size": 8000,
+      "pre_tokenizer": "whitespace",
+      "unk_token": "[UNK]",
+      "shrinking_factor": 0.75,
+      "max_piece_length": 16,
+      "n_sub_iterations": 2,
+      "score_decimals": 3,
+      "hybrid": false,
       "train_text": "train split, lowercased",
       "train_text_hash": "7a7321a89e527b6d",
       "tokenizers": "0.23.3"
