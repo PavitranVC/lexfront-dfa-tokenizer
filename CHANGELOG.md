@@ -2,6 +2,24 @@
 
 Newest first. Dates are the day the change was made (IST workday).
 
+## 2026-10-17 (finish 1: notebook setup)
+- Notebook setup cell, reproduced failure (the traceback from the owner's Colab was not available, so this is the
+  failure found by simulation, not a confirmed match): a runtime that already holds a clone from an earlier session
+  has 80+ tracked `results/quick/*` files rewritten by that run; `git pull --ff-only` then refuses ("local changes
+  would be overwritten"), the cell only printed a warning and went on with the OLD code under the NEWER notebook, so
+  the first cell using a newer signature (`review1.run_module1_section(QUICK_MODE, force=FORCE)` ->
+  `TypeError: ... unexpected keyword argument 'force'`) failed. Now `update_checkout()` sets local changes aside
+  (`git stash`, kept) and pulls again, and stops with a clear message if the clone still cannot be updated; the
+  project modules are dropped from `sys.modules` so a re-run in a live kernel does not keep old imports.
+- NLTK data: `punkt_tab` is checked after the download instead of ignoring a failed `nltk.download(quiet=True)`.
+- Not reproduced (ran clean, Python 3.12, empty directory, `requirements.txt` ranges): newest releases of every
+  dependency, and Colab-era older ones (numpy 2.0.2, pandas 2.2.2, scipy 1.15.3, scikit-learn 1.6.1, datasets 4.0.0,
+  tokenizers 0.21.4 preinstalled, upgraded by the install).
+- `tests/test_notebook_setup.py` (stale clone with local changes is updated; an un-updatable clone fails loudly),
+  CI job `colab-simulation` (Python 3.12, ranges file, empty directory, first cell clones this checkout through
+  `LEXFRONT_REPO_URL`), `experiments/compare_results.py` (+ tests): lists every non-timing difference between two
+  results trees, used as the "existing metrics unchanged" check.
+
 ## 2026-10-17 (P3)
 - AUDIT_4 A4-1: the ablation counts how often each removed rule fires (train / test documents and lexer tokens whose
   normalized form differs from full LexFront; `<out>/<setting>/firing__<dataset>.json`, `rule_fires` in

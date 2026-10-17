@@ -15,7 +15,7 @@ md, code = nbf.v4.new_markdown_cell, nbf.v4.new_code_cell
 
 SETUP = '''# 1. Get the code, install dependencies (requirements.txt: version ranges), download NLTK data.
 import os, subprocess, sys
-REPO_URL = "https://github.com/PavitranVC/lexfront-dfa-tokenizer.git"
+REPO_URL = os.environ.get("LEXFRONT_REPO_URL", "https://github.com/PavitranVC/lexfront-dfa-tokenizer.git")   # env: CI/tests
 REPO_DIR = "lexfront-dfa-tokenizer"
 
 def find_repo_root():
@@ -26,14 +26,26 @@ def find_repo_root():
             return here
         here = os.path.dirname(here)
 
+def update_checkout():
+    """Fast-forward the clone to origin. A finished run rewrites tracked files (results/quick/...) and that blocks a plain
+    pull, so the local changes are set aside with `git stash` (kept: `git stash list`) and the pull is repeated."""
+    def git(*args):
+        return subprocess.run(["git", "-c", "user.name=colab", "-c", "user.email=colab@localhost", *args],
+                              capture_output=True, text=True)
+    pull = git("pull", "-q", "--ff-only")
+    if pull.returncode != 0 and git("stash", "push", "--include-untracked", "-q").returncode == 0:
+        print("local changes from an earlier run were set aside (git stash list) so the code could be updated")
+        pull = git("pull", "-q", "--ff-only")
+    if pull.returncode != 0:
+        raise RuntimeError("could not update the existing clone, so it would run old code under this newer notebook.\\n"
+                           f"Delete the folder (!rm -rf {os.getcwd()}) and run this cell again.\\n" + pull.stderr.strip())
+
 root = find_repo_root()
 if root is not None:                               # running inside a checkout (local, CI)
     os.chdir(root)
-elif os.path.isdir(REPO_DIR):                      # Colab after a restart: already cloned, cwd reset to /content
+elif os.path.isdir(REPO_DIR):                      # Colab after a restart or a new session: already cloned
     os.chdir(REPO_DIR)
-    pull = subprocess.run(["git", "pull", "-q", "--ff-only"], capture_output=True, text=True)   # keeps local changes
-    if pull.returncode != 0:
-        print("WARNING: git pull failed, running the code already in", os.getcwd(), "\\n", pull.stderr.strip())
+    update_checkout()                              # old code under this newer notebook would fail further down
 else:                                              # fresh Colab runtime: clone the repo
     subprocess.run(["git", "clone", "-q", REPO_URL], check=True)
     os.chdir(REPO_DIR)
@@ -41,14 +53,20 @@ if not os.path.exists(os.path.join("lexer", "token_spec.py")):
     raise RuntimeError(f"{os.getcwd()} is not a complete checkout: delete it and run this cell again")
 print("working directory:", os.getcwd())
 sys.path.insert(0, os.getcwd())
+for name in [m for m in sys.modules if m.split(".")[0] in ("experiments", "lexer", "subword")]:
+    del sys.modules[name]                          # re-run in a live kernel: do not keep the old code imported
 
 from experiments import setup_check               # standard library only
 before_install = setup_check.snapshot()
 %pip install -q -r requirements.txt
 setup_check.report_after_install(before_install)  # prints versions in use; warns if a restart is needed
 import nltk
-for package in ["punkt", "punkt_tab", "stopwords"]:
-    nltk.download(package, quiet=True)'''
+for package in ["punkt_tab"]:                      # what word_tokenize needs; a failed download must not pass silently
+    try:
+        nltk.data.find(f"tokenizers/{package}")
+    except LookupError:
+        nltk.download(package, quiet=True)
+        nltk.data.find(f"tokenizers/{package}")    # raises LookupError with the download hint if it is still missing'''
 
 CELLS = [
     md("""# LexFront — Review 1 (Modules 1 and 2)
