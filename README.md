@@ -39,6 +39,8 @@ python -m experiments.render_docs
 ```
 
 The notebook runs top to bottom on a fresh Colab runtime; `QUICK_MODE = True` (default) uses a fixed-seed subsample.
+If the Colab runtime kept a clone from an earlier session, the first cell sets that run's local changes aside
+(`git stash`) and pulls the current code; if the clone cannot be updated it stops and says how to start clean.
 
 ## Layout
 

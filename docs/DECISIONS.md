@@ -315,11 +315,17 @@ already recorded elsewhere are only pointed to. Citations below are from abstrac
   on GoEmotions and AG News the gain of proposed over existing comes almost entirely from NB -> LR; on TweetTopic
   proposed is 0.26 points below existing. Single runs, no CIs. (Corrected by FIXAUDIT, AUDIT M2.)
 - Reason: see `results/REPORT_NOTES.md` section 4, block `obs:attribution` (generated from the run JSONs).
+- Update (claims pass, 2026-10-17): confidence intervals now exist (`results/stats/bootstrap.json`): NLTK to LexFront
+  with LR is -1.59 accuracy points on tweet_topic (CI excludes 0) and shows no detectable difference on go_emotions and
+  ag_news. "Lower OOV and smaller vocabulary on all 3 datasets" holds among the word-level tokenizers only (BPE has a
+  smaller vocabulary and near-zero OOV by construction), and it is not evidence of better classification.
 
 ### Open: TF-IDF lowercasing vs LexFront's lowercase rule
 - Decision: undecided; must be settled before the ablation (options: `lowercase=False` in TF-IDF, or drop the rule
   from the ablation).
 - Reason: TF-IDF lowercases first, so the rule is inactive in all experiments. Source: `results/REPORT_NOTES.md` s.2.
+- Update (resolved in P0/P2): the main grid keeps TF-IDF `lowercase=True` (every earlier number stays comparable); the
+  lowercase rule is tested in the case-kept setting (`results/sensitivity_case/`, `results/ablation/` no_lowercase).
 
 ### Credibility check (abstracts only)
 - Decision: position the work as a combination, never claim "first" or "novel".
