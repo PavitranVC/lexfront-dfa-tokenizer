@@ -39,6 +39,7 @@ jobs:
           python -m experiments.run_subword2 --stats-only --out results/quick/subword2
           python -m experiments.run_collection --stats-only --out results/collection
           if [ -f results/large/runs.json ]; then python -m experiments.run_large --stats-only --out results/large; fi
+          if [ -f results/boost_sentiment140/runs.json ]; then python -m experiments.run_boost --stats-only --dataset sentiment140 --out results/boost_sentiment140; fi
           git diff --exit-code results
       - name: Generated doc blocks match the committed JSON
         run: |
