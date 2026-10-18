@@ -431,3 +431,8 @@ already recorded elsewhere are only pointed to. Citations below are from abstrac
 ### Phase A anchor tolerance accepted (2026-10-18, owner's instruction, after results)
 - Decision: the Logistic Regression anchor check passes when accuracy is within 0.10 point of the committed value (largest observed gap 0.07 point); Naive Bayes must still be exact (it was, 4 of 4). Phase A is merged.
 - Reason: LR predictions are not bit-identical across machines / library sets; the rule was set before this was known. The change is post-hoc and is stated in `docs/BOOST_PROTOCOL.md` (Amendment).
+
+### Phase D scaffolding reuses the phase A engine (2026-10-18)
+- Decision: one engine (`experiments/boost.py`, `run_boost.py`) and one notebook generator for all phase D datasets; Civil Comments uses macro-F1 as the primary metric, threshold 0.5 fixed in `docs/D_PROTOCOL.md`; full runs are left to the owner's Colab.
+- Reason: identical treatment across datasets; the owner asked for loader + protocol + tests + dry run + notebook, not full runs, for phase D.
+

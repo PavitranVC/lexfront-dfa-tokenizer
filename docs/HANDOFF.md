@@ -1,5 +1,6 @@
-# HANDOFF (updated 2026-10-18, phase A merged with an owner-approved LR anchor tolerance of 0.10 pt; D1-D3 in progress)
+# HANDOFF (updated 2026-10-18; phase A merged (PR #28); D1 civil_comments scaffolding in PR; D2 amazon_polarity, D3 yelp_full next)
 PHASE A (docs/BOOST_PROTOCOL.md, results/boost_sentiment140/, REPORT.md generated; branch claude/fix-lexfront-notebook-setup-brk26t, protocol commit precedes results commit).
+D1: loader `experiments/datasets_big.py`, protocol `docs/D_PROTOCOL.md`, notebook `notebooks/LexFront_Boost_civil_comments.ipynb` (owner runs on Colab, results -> results/boost_civil_comments/). Quick dry run done locally and in CI; no full-data result exists.
 RESULT SUMMARY: see results/boost_sentiment140/REPORT.md (HA2 observed; HA1, HA3, HA5 not observed; HA4 opposite: char n-grams 2.7 pts below LexFront LR).
 CHECK: `pytest -q`, `python -m experiments.run_boost --stats-only --out results/boost_sentiment140`, `python -m experiments.verify_boost --out results/boost_sentiment140 --ref results/large --protocol docs/BOOST_PROTOCOL.md --base origin/main`.
 OLDER (unchanged): results/large done (LexFront-NLTK within +-0.5 pt; H1 weak, H2 default-LR only, H3 not observed); transformers, Hinglish, more seeds out of scope.

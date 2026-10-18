@@ -49,6 +49,7 @@ jobs:
         run: |
           python notebooks/make_notebook.py --check
           python notebooks/make_large_notebook.py --check
+          python notebooks/make_boost_notebook.py --check
 
   notebook:
     # Runs the Colab notebook top to bottom in QUICK_MODE with FORCE (every run recomputed; needs Hugging Face).
@@ -108,3 +109,28 @@ jobs:
           mkdir "$RUNNER_TEMP/empty" && cp notebooks/LexFront_Large.ipynb "$RUNNER_TEMP/empty/"
           cd "$RUNNER_TEMP/empty"
           jupyter nbconvert --to notebook --execute --ExecutePreprocessor.timeout=1500 --output out.ipynb LexFront_Large.ipynb
+
+  boost-dry-run:
+    # The Colab notebook of a phase D dataset as a small dry run (streamed sample), from an empty directory with Colab-like settings.
+    needs: tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    strategy:
+      fail-fast: false
+      matrix:
+        dataset: [civil_comments]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: Run LexFront_Boost_${{ matrix.dataset }}.ipynb in quick mode from an empty directory
+        env:
+          LEXFRONT_REPO_URL: file://${{ github.workspace }}
+          LEXFRONT_BOOST_QUICK: "1"
+        run: |
+          mkdir "$RUNNER_TEMP/empty" && cp notebooks/LexFront_Boost_${{ matrix.dataset }}.ipynb "$RUNNER_TEMP/empty/"
+          cd "$RUNNER_TEMP/empty"
+          jupyter nbconvert --to notebook --execute --ExecutePreprocessor.timeout=2400 --output out.ipynb LexFront_Boost_${{ matrix.dataset }}.ipynb
