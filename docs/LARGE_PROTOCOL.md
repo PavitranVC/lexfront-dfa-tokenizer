@@ -1,6 +1,6 @@
 # Large-scale test on Sentiment140: protocol (written before the full run)
 
-Status: protocol and hypotheses fixed on 2026-10-17, before any full-data result existed. If the protocol changes after results
+Status: protocol and hypotheses fixed on 2026-10-17, before any full-data result existed. The full run was completed on Colab (results: `results/large/`, no change to this protocol; see `docs/DECISIONS.md`). If the protocol changes after results
 are seen, the change and its reason go in `docs/DECISIONS.md`. Numbers do not appear here; they are generated into
 `results/large/REPORT.md` from the stored JSON.
 

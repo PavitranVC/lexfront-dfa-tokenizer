@@ -2,6 +2,15 @@
 
 Newest first. Dates are the day the change was made (IST workday).
 
+## 2026-10-18 (large-scale Sentiment140 results)
+- The owner ran `notebooks/LexFront_Large.ipynb` on Colab (full mode, 100 fit sets, about 1.5 hours of fitting) and committed `results/large/`.
+  Checks before merging: dataset commit, split sizes and the zero user overlap match an independent local run of the same code; 48 of 48 stored
+  predictions reproduce the stored accuracies; `run_large --stats-only` in the CI environment (Python 3.11, lock file) regenerates `stats.json`
+  and `REPORT.md` byte for byte. No existing result changed. Results and hypothesis verdicts: `results/large/REPORT.md`, summarised in
+  `docs/FINAL_SUMMARY.md` with numbers copied from the report.
+- The Colab runtime was Python 3.13, scikit-learn 1.6.1, numpy 2.1.3, scipy 1.16.3, NLTK 3.10.3 (recorded in `runs.json`): outside the
+  tested 3.11 / 3.12 range, but the run completed and the statistics reproduce.
+
 ## 2026-10-17 (wording fix: NB alpha grid)
 - Docs said the NB `alpha` grid was "probably too narrow" and the NB gains "understated". A spot check with `alpha` down to 0.003 on four of the
   eight datasets (not saved, so not a result) changed the selection on one dataset only, so the claim was stronger than the evidence. Reworded in
