@@ -14,7 +14,7 @@ same margin of +-0.5 points, same bootstrap), applied unchanged to every dataset
 
 * Threshold: 0.5 is the usual Civil Comments / Jigsaw convention (at least half of the raters called the comment toxic). It is fixed here, not tuned; no other threshold is run.
 * Class balance: Amazon polarity and Yelp are balanced by construction; Civil Comments is imbalanced (toxic is the rare class), so its majority-class accuracy is high. For Civil
-  Comments the primary outcome is macro-F1 (accuracy is still reported), for the others accuracy. Every report states the majority-class accuracy and the class counts.
+  Comments the primary outcome is macro-F1 (accuracy is still reported), for the others accuracy. Every report states the majority-class accuracy and the class counts. A model whose accuracy is not above the majority-class accuracy is reported as such (the dry run showed this can happen for default Naive Bayes on Civil Comments), which is why macro-F1 is primary there.
 * Split: no dataset has an author id, so the official Hub train / test split is used and cannot be author-grouped; exact duplicates, conflicting labels and test-in-train texts are
   removed by `experiments/clean.py` (after the cap). Possible author or near-duplicate overlap that the data does not expose is a stated limit.
 * Selection (the engine of phase A): a stratified 100 000 / 20 000 slice of the TRAIN subsample only; accuracy on that slice picks the settings (also for Civil Comments).
