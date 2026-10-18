@@ -2,6 +2,9 @@
 
 Newest first. Dates are the day the change was made (IST workday).
 
+## 2026-10-18 (phase D3: Yelp full loader and notebook)
+- `yelp_full` (five star classes, 300 000 train / 50 000 test caps from `docs/D_PROTOCOL.md`) added to `experiments/datasets_big.py`, generated `notebooks/LexFront_Boost_yelp_full.ipynb`, test (including a five-class stats/report test), cost note in `docs/D_PROTOCOL.md`; not in the CI dry run because of runtime. No full-data result yet.
+
 ## 2026-10-18 (phase D2: Amazon polarity loader and notebook)
 - `amazon_polarity` added to `experiments/datasets_big.py` (text = title + content, balanced, 500 000 train / 100 000 test caps from `docs/D_PROTOCOL.md`), generated `notebooks/LexFront_Boost_amazon_polarity.ipynb`, test, CI dry run. No full-data result yet.
 

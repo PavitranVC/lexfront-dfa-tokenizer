@@ -32,6 +32,8 @@ SPECS = {
                            "called the comment toxic); toxic is the rare class"),
     "amazon_polarity": Spec("amazon_polarity", "fancyzhx/amazon_polarity", "train", "test", ("negative", "positive"), 500_000, 100_000,
                             "text = title + ' ' + content; label 0 negative, 1 positive (1-2 vs 4-5 stars, 3 stars absent); balanced"),
+    "yelp_full": Spec("yelp_full", "Yelp/yelp_review_full", "train", "test", ("1 star", "2 star", "3 stars", "4 stars", "5 stars"),
+                      300_000, 50_000, "five classes = star rating, balanced; the official Yelp license is 'other' (academic use) - check before reuse"),
 }
 
 
@@ -42,6 +44,8 @@ def extract(name: str, table) -> tuple[list, list]:
         return [str(t) for t in table["text"]], [int(float(x) >= TOXIC_THRESHOLD) for x in table["toxicity"]]
     if name == "amazon_polarity":
         return [f"{a} {b}".strip() for a, b in zip(table["title"], table["content"])], [int(x) for x in table["label"]]
+    if name == "yelp_full":
+        return [str(t) for t in table["text"]], [int(x) for x in table["label"]]
     raise ValueError(f"unknown dataset {name!r}")
 
 

@@ -118,6 +118,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        # yelp_full is not dry-run here: 5-class Logistic Regression over the protocol grid took about 30 minutes per unit even on the 27k sample (see docs/D_PROTOCOL.md)
         dataset: [civil_comments, amazon_polarity]
     steps:
       - uses: actions/checkout@v4
