@@ -41,3 +41,8 @@ examples is not covered by the CIs.
 ## What this does not show
 One dataset, one language, one seed per fit, labels derived from emoticons, no noise test, no classifier family beyond NB and LR, no transformer. A gain from wider
 settings says nothing about why; differences between tokenizers are read against the margin, not against zero.
+
+## Amendment (2026-10-18, written AFTER the phase A results were seen; the rules above are unchanged)
+The anchor rule asked for exact reproduction. Naive Bayes reproduced exactly; Logistic Regression did not (predictions differ on 766 to 1457 test examples, accuracy within 0.07 point). On the owner's instruction the check for
+Logistic Regression anchors is relaxed to "accuracy within 0.10 point of the committed value"; Naive Bayes stays exact. This is a post-hoc change, recorded in `docs/DECISIONS.md`; it does not alter any hypothesis or verdict rule.
+
