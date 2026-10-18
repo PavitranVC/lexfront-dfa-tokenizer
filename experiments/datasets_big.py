@@ -30,6 +30,8 @@ SPECS = {
     "civil_comments": Spec("civil_comments", "google/civil_comments", "train", "test", ("non-toxic", "toxic"), 500_000, None,
                            f"label = toxicity score >= {TOXIC_THRESHOLD} (the Jigsaw / Civil Comments convention: at least half of the raters "
                            "called the comment toxic); toxic is the rare class"),
+    "amazon_polarity": Spec("amazon_polarity", "fancyzhx/amazon_polarity", "train", "test", ("negative", "positive"), 500_000, 100_000,
+                            "text = title + ' ' + content; label 0 negative, 1 positive (1-2 vs 4-5 stars, 3 stars absent); balanced"),
 }
 
 
@@ -38,6 +40,8 @@ def extract(name: str, table) -> tuple[list, list]:
     """(texts, integer labels) from a table with the columns of the named dataset."""
     if name == "civil_comments":
         return [str(t) for t in table["text"]], [int(float(x) >= TOXIC_THRESHOLD) for x in table["toxicity"]]
+    if name == "amazon_polarity":
+        return [f"{a} {b}".strip() for a, b in zip(table["title"], table["content"])], [int(x) for x in table["label"]]
     raise ValueError(f"unknown dataset {name!r}")
 
 

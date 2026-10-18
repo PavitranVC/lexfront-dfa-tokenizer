@@ -2,6 +2,9 @@
 
 Newest first. Dates are the day the change was made (IST workday).
 
+## 2026-10-18 (phase D2: Amazon polarity loader and notebook)
+- `amazon_polarity` added to `experiments/datasets_big.py` (text = title + content, balanced, 500 000 train / 100 000 test caps from `docs/D_PROTOCOL.md`), generated `notebooks/LexFront_Boost_amazon_polarity.ipynb`, test, CI dry run. No full-data result yet.
+
 ## 2026-10-18 (phase D1: Civil Comments loader, protocol, notebook)
 - `docs/D_PROTOCOL.md` (covers civil_comments, amazon_polarity, yelp_full; written before any run), `experiments/datasets_big.py` (civil_comments only so far), `notebooks/make_boost_notebook.py` and
   `notebooks/LexFront_Boost_civil_comments.ipynb` (generated, `--check` and a quick dry run in CI), `tests/test_datasets_big.py`. Primary metric for Civil Comments is macro-F1 (toxic is the rare class). No full-data result yet: the owner runs the notebook on Colab.

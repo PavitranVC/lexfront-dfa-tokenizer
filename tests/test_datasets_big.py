@@ -59,3 +59,10 @@ def test_notebook_generator_covers_every_dataset_and_uses_the_dataset_id():
     for name in datasets_big.SPECS:
         cs = make_boost_notebook.cells(name)
         assert any(f'DATASET = "{name}"' in c.source for c in cs) and any("run_boost.main" in c.source for c in cs)
+
+
+def test_amazon_polarity_joins_title_and_content_and_keeps_labels():
+    texts, labels = datasets_big.extract("amazon_polarity", Table({"title": ["Great", ""], "content": ["works well", "broke"], "label": [1, 0]}))
+    assert texts == ["Great works well", "broke"] and labels == [1, 0]
+    spec = datasets_big.SPECS["amazon_polarity"]
+    assert spec.label_names == ("negative", "positive") and spec.max_train == 500_000 and spec.max_test == 100_000
