@@ -3,6 +3,15 @@
 Newest first. One short entry each: decision, reason, source. Gaps filled on 2026-10-16 from the team's notes; items
 already recorded elsewhere are only pointed to. Citations below are from abstracts only and were not re-checked here.
 
+## 2026-10-18 (large-scale Sentiment140: results received)
+
+- The protocol of `docs/LARGE_PROTOCOL.md` was followed without change (same split, ladder, noise levels, margin, hypotheses).
+- Runtime: the owner's Colab ran Python 3.13 with scikit-learn 1.6.1, numpy 2.1.3, scipy 1.16.3 (stored in `runs.json`). This is outside the
+  tested 3.11 / 3.12 range (README), so these results are not byte-comparable with the lock-file environment; the statistics step uses only
+  stored predictions and reproduces byte for byte in the CI environment.
+- Verdict rules are applied as written. H1's rule ("|gap| at the largest size < at the smallest") is satisfied by gaps of 0.12 and 0.03 points,
+  both far inside the 0.5-point margin, so the report's "observed" is formal; the summary says it is weak support. No rule was changed after the results.
+
 ## 2026-10-17 (large-scale Sentiment140 test)
 
 ### Scope and protocol (owner's choices; `docs/LARGE_PROTOCOL.md`, written before the full run)

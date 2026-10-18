@@ -36,6 +36,24 @@ statements above: with tuned Naive Bayes the NLTK+NB to NLTK+LR gap on go_emotio
 NLTK+LR has no CI excluding 0 on any of the eight datasets (default settings: 4 of 8, two up and two down; tweet_topic -1.59 -> -0.32
 [-1.15, +0.47]). One run per cell, one validation split, an NB `alpha` grid whose edge values were often chosen (a wider grid was not run); reasons are hypotheses.
 
+## Large-scale test on Sentiment140 (added afterwards; `results/large/REPORT.md`, protocol `docs/LARGE_PROTOCOL.md`)
+Run on Colab: 1 495 821 training and 78 278 test tweets after a user-grouped split (no author in both splits) and cleaning; whitespace, NLTK,
+TweetTokenizer and LexFront; one run per cell; accuracy in percent, 95% bootstrap CIs, practical margin +-0.5 points fixed in advance.
+* **Tokenizer differences are small.** Full training set, default settings, Logistic Regression: whitespace 79.60, NLTK 79.88,
+  TweetTokenizer 79.96, LexFront 79.85; LexFront minus NLTK -0.03 [-0.16, +0.10] (within the margin). Naive Bayes: LexFront minus NLTK
+  +0.27 [+0.08, +0.46] (CI excludes 0, still within the margin). With tuned settings (validation-selected 1-2-grams, `C` / `alpha`)
+  every tokenizer rises (LR: whitespace 81.44, NLTK 82.37, TweetTokenizer 82.23, LexFront 82.54) and LexFront minus NLTK is +0.17 [-0.00, +0.34] (within).
+* **Hypotheses fixed in advance.** H1 (gap shrinks with training size): observed under its rule (+0.12 at 10 000 vs -0.03 at full), but both
+  gaps are tiny against the margin, so this is weak support. H2 (LexFront loses less accuracy under heavy test noise than NLTK): observed
+  for default LR (+0.16 [+0.02, +0.32], within the margin), not for default NB (-0.09 [-0.30, +0.12]). H3 (differences smaller when tuned):
+  not observed (-0.03 default vs +0.17 tuned).
+* **Practical numbers** (Colab CPU): tokenization of test tweets 1 080 016 docs/s whitespace, 4 845 NLTK, 10 542 TweetTokenizer, 6 566 LexFront;
+  LexFront produced 104 503 features against 228 086 for NLTK (partly by construction: placeholders and collapsing).
+* **Data note.** Only 1.93% of training tweets contain a simple emoticon, so LexFront's emoticon class has little to act on here; mentions
+  appear in 55.20% of positive and 38.05% of negative tweets (a dataset quirk any model can use).
+* Limits: one dataset and source, labels derived from emoticons by the dataset's authors, synthetic noise, subsets of one size overlap, one run per
+  cell, no multiplicity correction. The differences say nothing about why they occur.
+
 ## What we do not claim
 Better, first or novel. That LexFront is worse in general (three datasets, one classifier family, one run per cell). Why any
 difference appears (all reasons are untested hypotheses). Anything about transformers, Hinglish or multiple seeds.

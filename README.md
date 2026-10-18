@@ -7,7 +7,7 @@ symbol table and error recovery) used as a **pre-tokenizer for noisy English tex
 existing tokenizers with the classifier held fixed. Compiler Design course project, Review 1 (Modules 1 and 2).
 
 * Notebook (Colab, CPU): `notebooks/LexFront_Review1.ipynb`
-* Large-scale test on Sentiment140 (1.6 M tweets, Colab, CPU, resumable): [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/PavitranVC/lexfront-dfa-tokenizer/blob/main/notebooks/LexFront_Large.ipynb)  protocol: `docs/LARGE_PROTOCOL.md`
+* Large-scale test on Sentiment140 (1.6 M tweets, Colab, CPU, resumable): [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/PavitranVC/lexfront-dfa-tokenizer/blob/main/notebooks/LexFront_Large.ipynb)  protocol: `docs/LARGE_PROTOCOL.md`, results: `results/large/REPORT.md`
 * Study guide for the viva: `docs/LEARN.md`
 * One-page honest summary of the results: `docs/FINAL_SUMMARY.md`
 * Module write-ups: `docs/modules/module1.md`, `docs/modules/module2.md`
