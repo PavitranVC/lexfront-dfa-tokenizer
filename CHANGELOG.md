@@ -2,6 +2,10 @@
 
 Newest first. Dates are the day the change was made (IST workday).
 
+## 2026-10-18 (next plan)
+- `docs/NEXT_PLAN.md`: phases A-D to raise classifier accuracy and add large datasets (ground rules, baselines quoted from `results/large/REPORT.md`, compute
+  reference from `results/large/runs.json`, a labelled dataset probe, cost guidance). Docs only; nothing run.
+
 ## 2026-10-18 (large-scale Sentiment140 results)
 - The owner ran `notebooks/LexFront_Large.ipynb` on Colab (full mode, 100 fit sets, about 1.5 hours of fitting) and committed `results/large/`.
   Checks before merging: dataset commit, split sizes and the zero user overlap match an independent local run of the same code; 48 of 48 stored
