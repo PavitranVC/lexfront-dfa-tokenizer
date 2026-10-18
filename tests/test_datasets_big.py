@@ -66,3 +66,9 @@ def test_amazon_polarity_joins_title_and_content_and_keeps_labels():
     assert texts == ["Great works well", "broke"] and labels == [1, 0]
     spec = datasets_big.SPECS["amazon_polarity"]
     assert spec.label_names == ("negative", "positive") and spec.max_train == 500_000 and spec.max_test == 100_000
+
+
+def test_yelp_full_keeps_five_star_classes():
+    texts, labels = datasets_big.extract("yelp_full", Table({"text": ["meh", "great"], "label": [2, 4]}))
+    assert texts == ["meh", "great"] and labels == [2, 4]
+    assert len(datasets_big.SPECS["yelp_full"].label_names) == 5

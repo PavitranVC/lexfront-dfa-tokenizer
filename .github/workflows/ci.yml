@@ -118,7 +118,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        dataset: [civil_comments, amazon_polarity]
+        dataset: [civil_comments, amazon_polarity, yelp_full]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
