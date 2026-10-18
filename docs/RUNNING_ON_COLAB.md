@@ -3,6 +3,11 @@
 You need: a Google account with a little free Drive space, a browser, a stable connection. No GPU, no tokens, no coding.
 Take **one dataset per person**: Civil Comments or Amazon polarity (estimate 4 to 7 hours each). Do not start Yelp until the project owner has decided on its grid (see the cost note in `docs/D_PROTOCOL.md`).
 
+## Space and data use
+* **Google Drive:** under 1 MB per dataset. Only the per-fit result files are kept there; the Sentiment140 phase A work folder (14 fit files plus predictions) measured 356 KB, and the phase D folders have the same structure on test sets of similar size.
+* **Download (from the Hugging Face Hub, once per fresh Colab runtime):** Civil Comments about 0.42 GB, Amazon polarity about 1.15 GB, Yelp about 0.32 GB of compressed parquet files (sizes from the Hub listing), plus a few hundred MB of Python packages and the repository. A disconnect that deletes the runtime means downloading again; on a metered connection, prefer Wi-Fi.
+* **Colab runtime disk and memory:** the dataset is unpacked on the runtime's local disk (a few GB for Amazon; an estimate, not measured), which Colab provides. The working memory peak is the limit: about 5 to 7 GB was measured on tweets, and longer reviews and comments are expected to need more (not measured).
+
 ## Steps
 1. Open the notebook from `notebooks/README.md` (the Colab badge in its row) and choose a **CPU** runtime.
 2. In the second code cell set `QUICK_MODE = False` and leave `USE_DRIVE = True`. Do not change `DATASET`.
