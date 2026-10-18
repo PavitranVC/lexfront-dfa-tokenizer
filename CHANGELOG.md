@@ -2,6 +2,10 @@
 
 Newest first. Dates are the day the change was made (IST workday).
 
+## 2026-10-18 (phase A: wider settings and character n-grams)
+- `docs/BOOST_PROTOCOL.md` (written first), `experiments/{boost,run_boost,verify_boost}.py`, `tests/test_boost.py`, `results/boost_sentiment140/` (14 resumable units, CI lock environment), CI stats-only step.
+  Anchor: Naive Bayes re-runs reproduce the committed predictions exactly; Logistic Regression does not (accuracy within 0.1 point), accepted as a tolerance by the owner after the results were seen (`docs/DECISIONS.md`, protocol Amendment).
+
 ## 2026-10-18 (next plan)
 - `docs/NEXT_PLAN.md`: phases A-D to raise classifier accuracy and add large datasets (ground rules, baselines quoted from `results/large/REPORT.md`, compute
   reference from `results/large/runs.json`, a labelled dataset probe, cost guidance). Docs only; nothing run.

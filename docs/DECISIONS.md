@@ -421,3 +421,13 @@ already recorded elsewhere are only pointed to. Citations below are from abstrac
 - Reason: its weaknesses: no baseline, accuracy only, possible author leakage, misused terms, code that didn't run.
   We therefore add majority baseline, macro-F1, fixed classifier, and runnable code. (`v1-base-paper.md` has only the figures.)
 - Source: team reading of the report; figures not re-run.
+
+### Phase A stopped on an anchor mismatch (2026-10-18)
+- Decision: do not merge; the pre-registered rule "default re-run must reproduce the committed predictions exactly" failed for Logistic Regression (NB passed). Protocol not changed.
+- Reason: LR predictions are not bit-identical across machines/library sets (tried Python 3.11 lock and 3.13 with the Colab versions). Whether to accept a tolerance is the owner's call.
+- Source: this session; evidence in `results/boost_sentiment140/REPORT.md` (anchor lines).
+
+
+### Phase A anchor tolerance accepted (2026-10-18, owner's instruction, after results)
+- Decision: the Logistic Regression anchor check passes when accuracy is within 0.10 point of the committed value (largest observed gap 0.07 point); Naive Bayes must still be exact (it was, 4 of 4). Phase A is merged.
+- Reason: LR predictions are not bit-identical across machines / library sets; the rule was set before this was known. The change is post-hoc and is stated in `docs/BOOST_PROTOCOL.md` (Amendment).
