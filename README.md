@@ -6,6 +6,28 @@ A compiler-style lexer (token classes as regexes → Thompson NFA → subset-con
 symbol table and error recovery) used as a **pre-tokenizer for noisy English text classification**, compared with
 existing tokenizers with the classifier held fixed. Compiler Design course project, Review 1 (Modules 1 and 2).
 
+## Status at a glance
+
+| Part | State | Where |
+|---|---|---|
+| Lexer, DFA engine, comparison on small datasets | done | `results/`, `docs/FINAL_SUMMARY.md` |
+| Eight-dataset collection with fair tuning | done | `results/collection/REPORT.md` |
+| Sentiment140, 1.6 M tweets | done | `results/large/REPORT.md` |
+| Phase A: wider settings and character n-grams (Sentiment140) | done | `results/boost_sentiment140/REPORT.md` |
+| Phase D: Civil Comments, Amazon polarity, Yelp | code, protocol and notebooks ready; **full runs not yet done** | `docs/D_PROTOCOL.md`, `notebooks/README.md` |
+
+Headline numbers (Sentiment140, Logistic Regression, test accuracy %; from the two reports above): at default settings whitespace 79.60, NLTK 79.88,
+TweetTokenizer 79.96, LexFront 79.85; with the wider validation-selected settings whitespace 81.68, NLTK 82.73, TweetTokenizer 82.50, LexFront 82.84; a
+character n-gram baseline 80.11. LexFront minus NLTK is +0.11 [-0.04, +0.25] points, inside the pre-set practical margin of +-0.5 points. These numbers come from one dataset
+and one training run per cell; they do not say why any difference occurs. The reports and protocols state the limits.
+
+## Where to start
+* Run it: `notebooks/README.md` (all notebooks, run times, Colab badges) and `docs/RUNNING_ON_COLAB.md` (instructions for someone taking over a run).
+* Read it: `docs/README.md` (index of every document).
+* Taking over the project: `docs/HANDOFF.md`, then `docs/NEXT_PLAN.md`.
+
+## Main links
+
 * Notebook (Colab, CPU): `notebooks/LexFront_Review1.ipynb`
 * Large-scale test on Sentiment140 (1.6 M tweets, Colab, CPU, resumable): [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/PavitranVC/lexfront-dfa-tokenizer/blob/main/notebooks/LexFront_Large.ipynb)  protocol: `docs/LARGE_PROTOCOL.md`, results: `results/large/REPORT.md`
 * Study guide for the viva: `docs/LEARN.md`
@@ -38,6 +60,8 @@ python -m experiments.run_module2
 python -m experiments.run_bpe              # BPE + hybrid grid and its stats (P3)
 python -m experiments.run_subword2         # WordPiece + Unigram grid and its stats (P4)
 python -m experiments.render_docs
+python -m experiments.run_boost --stats-only --out results/boost_sentiment140   # phase A report from the committed files
+python -m experiments.verify_boost --out results/boost_sentiment140 --ref results/large --protocol docs/BOOST_PROTOCOL.md --base origin/main   # self-check
 python -m experiments.run_large           # Sentiment140 large-scale test (--quick for a dry run; see the Colab notebook)
 python -m experiments.run_collection      # 8 cleaned datasets, default vs tuned classifiers (about 1.5 h; --stats-only rebuilds the report)
 ```
@@ -51,11 +75,11 @@ If the Colab runtime kept a clone from an earlier session, the first cell sets t
 ```
 lexer/        token spec, PLY lexer, normalizer, symbol table, LexFront, dfa/ (own regex->DFA engine)
 subword/      BPE, the LexFront + BPE hybrid, WordPiece and Unigram (Hugging Face `tokenizers`, trained on the train split only)
-experiments/  data, tokenizers, classifiers, metrics, evaluation loop, reports, figures; clean / data_extra / tuning / run_collection (dataset collection); large / run_large (Sentiment140)
+experiments/  data, tokenizers, classifiers, metrics, evaluation loop, reports, figures; clean / data_extra / tuning / run_collection (dataset collection); large / run_large (Sentiment140); boost / run_boost / verify_boost / datasets_big (phase A and D)
 tests/        fast pytest suite
 results/      JSON results, tables/, figures/, module2/dfa_min.{dot,png}, REPORT_NOTES.md, collection/REPORT.md
-notebooks/    LexFront_Review1.ipynb (+ make_notebook.py)
-docs/         versions/, modules/, LEARN.md
+notebooks/    five generated notebooks and their generators (see notebooks/README.md)
+docs/         index in docs/README.md: protocols, decisions, handoff, audits, versions/, modules/, LEARN.md
 ```
 
 Out of scope: transformers (they need torch), Hinglish, more seeds. Added since review 1: the per-rule normalization ablation
