@@ -2,6 +2,10 @@
 
 Newest first. Dates are the day the change was made (IST workday).
 
+## 2026-10-18 (phase A: wider settings, not merged)
+- `docs/BOOST_PROTOCOL.md` (written first), `experiments/{boost,run_boost,verify_boost}.py`, `tests/test_boost.py`, `results/boost_sentiment140/` (14 resumable units, 3.11 lock environment).
+  Anchor check failed for Logistic Regression (NB exact, LR differs on 766 to 1457 test predictions); nothing merged, see `docs/HANDOFF.md`. Report: `results/boost_sentiment140/REPORT.md`.
+
 ## 2026-10-18 (next plan)
 - `docs/NEXT_PLAN.md`: phases A-D to raise classifier accuracy and add large datasets (ground rules, baselines quoted from `results/large/REPORT.md`, compute
   reference from `results/large/runs.json`, a labelled dataset probe, cost guidance). Docs only; nothing run.

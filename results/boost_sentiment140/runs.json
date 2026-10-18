@@ -1,0 +1,3414 @@
+{
+ "runs": [
+  {
+   "run_id": "char__wide__lr",
+   "tokenizer": "char",
+   "stage": "wide",
+   "n_train": 1495821,
+   "n_test": 78278,
+   "classifiers": {
+    "lr": {
+     "classifier": "lr",
+     "setting": "wide",
+     "vectorizer": {
+      "name": "c35",
+      "n_features": 668832,
+      "analyzer": "char_wb",
+      "lowercase": true,
+      "sublinear_tf": true,
+      "min_df": 5,
+      "ngram_range": [
+       3,
+       5
+      ]
+     },
+     "params": {
+      "C": 1.0,
+      "class_weight": null,
+      "dual": false,
+      "fit_intercept": true,
+      "intercept_scaling": 1,
+      "l1_ratio": 0.0,
+      "max_iter": 1000,
+      "n_jobs": null,
+      "penalty": "deprecated",
+      "random_state": 0,
+      "solver": "lbfgs",
+      "tol": 0.0001,
+      "verbose": 0,
+      "warm_start": false
+     },
+     "tuning": {
+      "n_fit": 100000,
+      "n_val": 20000,
+      "scores": [
+       {
+        "vectorizer": "c24",
+        "value": 0.3,
+        "val_accuracy": 0.77575
+       },
+       {
+        "vectorizer": "c24",
+        "value": 1.0,
+        "val_accuracy": 0.7826
+       },
+       {
+        "vectorizer": "c24",
+        "value": 3.0,
+        "val_accuracy": 0.78315
+       },
+       {
+        "vectorizer": "c24",
+        "value": 10.0,
+        "val_accuracy": 0.78225
+       },
+       {
+        "vectorizer": "c24",
+        "value": 30.0,
+        "val_accuracy": 0.7742
+       },
+       {
+        "vectorizer": "c35",
+        "value": 0.3,
+        "val_accuracy": 0.7799
+       },
+       {
+        "vectorizer": "c35",
+        "value": 1.0,
+        "val_accuracy": 0.79025
+       },
+       {
+        "vectorizer": "c35",
+        "value": 3.0,
+        "val_accuracy": 0.78935
+       },
+       {
+        "vectorizer": "c35",
+        "value": 10.0,
+        "val_accuracy": 0.78325
+       },
+       {
+        "vectorizer": "c35",
+        "value": 30.0,
+        "val_accuracy": 0.7762
+       }
+      ],
+      "selected": {
+       "vectorizer": "c35",
+       "value": 1.0,
+       "val_accuracy": 0.79025
+      }
+     },
+     "metrics": {
+      "clean": {
+       "accuracy": 0.8010552134699405,
+       "macro_f1": 0.8010151296841652,
+       "n": 78278,
+       "n_correct": 62705
+      }
+     },
+     "timing_seconds": {
+      "search": 66.76084272699973,
+      "tokenize_and_vectorize_train": 164.24214751,
+      "classifier_fit": 107.67824125600009
+     }
+    }
+   },
+   "fingerprint": {
+    "config": "a27117008761b8d4",
+    "code": "5dc884172743db14"
+   },
+   "wall_seconds": 346.72386403400014,
+   "peak_rss_gb": 5.717988,
+   "timestamp_utc": "2026-10-18T02:08:28+00:00",
+   "environment": {
+    "python": "3.11.17",
+    "sklearn": "1.9.1",
+    "nltk": "3.10.3",
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "threadpoolctl": "3.7.0",
+    "machine": "x86_64",
+    "platform": "Linux-6.18.44-fc-v139-x86_64-with-glibc2.39",
+    "blas_threads": 1
+   }
+  },
+  {
+   "run_id": "char__wide__nb",
+   "tokenizer": "char",
+   "stage": "wide",
+   "n_train": 1495821,
+   "n_test": 78278,
+   "classifiers": {
+    "nb": {
+     "classifier": "nb",
+     "setting": "wide",
+     "vectorizer": {
+      "name": "c35",
+      "n_features": 668832,
+      "analyzer": "char_wb",
+      "lowercase": true,
+      "sublinear_tf": true,
+      "min_df": 5,
+      "ngram_range": [
+       3,
+       5
+      ]
+     },
+     "params": {
+      "alpha": 1.0,
+      "class_prior": null,
+      "fit_prior": true,
+      "force_alpha": true
+     },
+     "tuning": {
+      "n_fit": 100000,
+      "n_val": 20000,
+      "scores": [
+       {
+        "vectorizer": "c24",
+        "value": 0.03,
+        "val_accuracy": 0.7339
+       },
+       {
+        "vectorizer": "c24",
+        "value": 0.1,
+        "val_accuracy": 0.73595
+       },
+       {
+        "vectorizer": "c24",
+        "value": 0.3,
+        "val_accuracy": 0.737
+       },
+       {
+        "vectorizer": "c24",
+        "value": 1.0,
+        "val_accuracy": 0.7401
+       },
+       {
+        "vectorizer": "c35",
+        "value": 0.03,
+        "val_accuracy": 0.7444
+       },
+       {
+        "vectorizer": "c35",
+        "value": 0.1,
+        "val_accuracy": 0.7466
+       },
+       {
+        "vectorizer": "c35",
+        "value": 0.3,
+        "val_accuracy": 0.7475
+       },
+       {
+        "vectorizer": "c35",
+        "value": 1.0,
+        "val_accuracy": 0.74905
+       }
+      ],
+      "selected": {
+       "vectorizer": "c35",
+       "value": 1.0,
+       "val_accuracy": 0.74905
+      }
+     },
+     "metrics": {
+      "clean": {
+       "accuracy": 0.7522292342676103,
+       "macro_f1": 0.7521577935535334,
+       "n": 78278,
+       "n_correct": 58883
+      }
+     },
+     "timing_seconds": {
+      "search": 24.975403637,
+      "tokenize_and_vectorize_train": 161.51366236000013,
+      "classifier_fit": 1.5438280339999437
+     }
+    }
+   },
+   "fingerprint": {
+    "config": "e1988be94a3cf7f4",
+    "code": "5dc884172743db14"
+   },
+   "wall_seconds": 195.87829608899983,
+   "peak_rss_gb": 5.718252,
+   "timestamp_utc": "2026-10-18T02:11:44+00:00",
+   "environment": {
+    "python": "3.11.17",
+    "sklearn": "1.9.1",
+    "nltk": "3.10.3",
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "threadpoolctl": "3.7.0",
+    "machine": "x86_64",
+    "platform": "Linux-6.18.44-fc-v139-x86_64-with-glibc2.39",
+    "blas_threads": 1
+   }
+  },
+  {
+   "run_id": "lexfront__anchor",
+   "tokenizer": "lexfront",
+   "stage": "anchor",
+   "n_train": 1495821,
+   "n_test": 78278,
+   "classifiers": {
+    "nb": {
+     "classifier": "nb",
+     "setting": "default",
+     "vectorizer": {
+      "name": "unigram",
+      "n_features": 104503
+     },
+     "params": {
+      "alpha": 1.0,
+      "class_prior": null,
+      "fit_prior": true,
+      "force_alpha": true
+     },
+     "tuning": null,
+     "metrics": {
+      "clean": {
+       "accuracy": 0.773256853777562,
+       "macro_f1": 0.773235981272399,
+       "n": 78278,
+       "n_correct": 60529
+      }
+     },
+     "timing_seconds": {
+      "tokenize_and_vectorize_train": 120.24423802400008,
+      "search": 0.0,
+      "classifier_fit": 0.3439475069999389,
+      "predict_all_variants": 0.007625707000102011
+     }
+    },
+    "lr": {
+     "classifier": "lr",
+     "setting": "default",
+     "vectorizer": {
+      "name": "unigram",
+      "n_features": 104503
+     },
+     "params": {
+      "C": 1.0,
+      "class_weight": null,
+      "dual": false,
+      "fit_intercept": true,
+      "intercept_scaling": 1,
+      "l1_ratio": 0.0,
+      "max_iter": 1000,
+      "n_jobs": null,
+      "penalty": "deprecated",
+      "random_state": 0,
+      "solver": "lbfgs",
+      "tol": 0.0001,
+      "verbose": 0,
+      "warm_start": false
+     },
+     "tuning": null,
+     "metrics": {
+      "clean": {
+       "accuracy": 0.79844911724878,
+       "macro_f1": 0.798426835311735,
+       "n": 78278,
+       "n_correct": 62501
+      }
+     },
+     "timing_seconds": {
+      "tokenize_and_vectorize_train": 120.24423802400008,
+      "search": 0.0,
+      "classifier_fit": 26.255379704000006,
+      "predict_all_variants": 0.006519152999999278
+     }
+    }
+   },
+   "fingerprint": {
+    "config": "20a2688d28f2c7e9",
+    "code": "5dc884172743db14"
+   },
+   "wall_seconds": 153.23639269400007,
+   "peak_rss_gb": 1.601188,
+   "timestamp_utc": "2026-10-18T01:20:45+00:00",
+   "environment": {
+    "python": "3.11.17",
+    "sklearn": "1.9.1",
+    "nltk": "3.10.3",
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "threadpoolctl": "3.7.0",
+    "machine": "x86_64",
+    "platform": "Linux-6.18.44-fc-v139-x86_64-with-glibc2.39",
+    "blas_threads": 1
+   }
+  },
+  {
+   "run_id": "lexfront__wide__lr",
+   "tokenizer": "lexfront",
+   "stage": "wide",
+   "n_train": 1495821,
+   "n_test": 78278,
+   "classifiers": {
+    "lr": {
+     "classifier": "lr",
+     "setting": "wide",
+     "vectorizer": {
+      "name": "w3_raw_df2",
+      "n_features": 2577021,
+      "lowercase": true,
+      "min_df": 2,
+      "ngram_range": [
+       1,
+       3
+      ],
+      "token_pattern": null,
+      "sublinear_tf": false
+     },
+     "params": {
+      "C": 3.0,
+      "class_weight": null,
+      "dual": false,
+      "fit_intercept": true,
+      "intercept_scaling": 1,
+      "l1_ratio": 0.0,
+      "max_iter": 1000,
+      "n_jobs": null,
+      "penalty": "deprecated",
+      "random_state": 0,
+      "solver": "lbfgs",
+      "tol": 0.0001,
+      "verbose": 0,
+      "warm_start": false
+     },
+     "tuning": {
+      "n_fit": 100000,
+      "n_val": 20000,
+      "scores": [
+       {
+        "vectorizer": "w1_raw_df2",
+        "value": 0.3,
+        "val_accuracy": 0.784
+       },
+       {
+        "vectorizer": "w1_raw_df2",
+        "value": 1.0,
+        "val_accuracy": 0.79095
+       },
+       {
+        "vectorizer": "w1_raw_df2",
+        "value": 3.0,
+        "val_accuracy": 0.7893
+       },
+       {
+        "vectorizer": "w1_raw_df2",
+        "value": 10.0,
+        "val_accuracy": 0.7811
+       },
+       {
+        "vectorizer": "w1_raw_df2",
+        "value": 30.0,
+        "val_accuracy": 0.7718
+       },
+       {
+        "vectorizer": "w1_raw_df5",
+        "value": 0.3,
+        "val_accuracy": 0.78335
+       },
+       {
+        "vectorizer": "w1_raw_df5",
+        "value": 1.0,
+        "val_accuracy": 0.7897
+       },
+       {
+        "vectorizer": "w1_raw_df5",
+        "value": 3.0,
+        "val_accuracy": 0.78865
+       },
+       {
+        "vectorizer": "w1_raw_df5",
+        "value": 10.0,
+        "val_accuracy": 0.7848
+       },
+       {
+        "vectorizer": "w1_raw_df5",
+        "value": 30.0,
+        "val_accuracy": 0.7788
+       },
+       {
+        "vectorizer": "w1_sub_df2",
+        "value": 0.3,
+        "val_accuracy": 0.78425
+       },
+       {
+        "vectorizer": "w1_sub_df2",
+        "value": 1.0,
+        "val_accuracy": 0.79095
+       },
+       {
+        "vectorizer": "w1_sub_df2",
+        "value": 3.0,
+        "val_accuracy": 0.7905
+       },
+       {
+        "vectorizer": "w1_sub_df2",
+        "value": 10.0,
+        "val_accuracy": 0.78325
+       },
+       {
+        "vectorizer": "w1_sub_df2",
+        "value": 30.0,
+        "val_accuracy": 0.76985
+       },
+       {
+        "vectorizer": "w1_sub_df5",
+        "value": 0.3,
+        "val_accuracy": 0.78345
+       },
+       {
+        "vectorizer": "w1_sub_df5",
+        "value": 1.0,
+        "val_accuracy": 0.79035
+       },
+       {
+        "vectorizer": "w1_sub_df5",
+        "value": 3.0,
+        "val_accuracy": 0.78895
+       },
+       {
+        "vectorizer": "w1_sub_df5",
+        "value": 10.0,
+        "val_accuracy": 0.7864
+       },
+       {
+        "vectorizer": "w1_sub_df5",
+        "value": 30.0,
+        "val_accuracy": 0.7808
+       },
+       {
+        "vectorizer": "w2_raw_df2",
+        "value": 0.3,
+        "val_accuracy": 0.78565
+       },
+       {
+        "vectorizer": "w2_raw_df2",
+        "value": 1.0,
+        "val_accuracy": 0.80155
+       },
+       {
+        "vectorizer": "w2_raw_df2",
+        "value": 3.0,
+        "val_accuracy": 0.80295
+       },
+       {
+        "vectorizer": "w2_raw_df2",
+        "value": 10.0,
+        "val_accuracy": 0.7953
+       },
+       {
+        "vectorizer": "w2_raw_df2",
+        "value": 30.0,
+        "val_accuracy": 0.7867
+       },
+       {
+        "vectorizer": "w2_raw_df5",
+        "value": 0.3,
+        "val_accuracy": 0.78815
+       },
+       {
+        "vectorizer": "w2_raw_df5",
+        "value": 1.0,
+        "val_accuracy": 0.8013
+       },
+       {
+        "vectorizer": "w2_raw_df5",
+        "value": 3.0,
+        "val_accuracy": 0.8
+       },
+       {
+        "vectorizer": "w2_raw_df5",
+        "value": 10.0,
+        "val_accuracy": 0.79145
+       },
+       {
+        "vectorizer": "w2_raw_df5",
+        "value": 30.0,
+        "val_accuracy": 0.77595
+       },
+       {
+        "vectorizer": "w2_sub_df2",
+        "value": 0.3,
+        "val_accuracy": 0.7861
+       },
+       {
+        "vectorizer": "w2_sub_df2",
+        "value": 1.0,
+        "val_accuracy": 0.80175
+       },
+       {
+        "vectorizer": "w2_sub_df2",
+        "value": 3.0,
+        "val_accuracy": 0.804
+       },
+       {
+        "vectorizer": "w2_sub_df2",
+        "value": 10.0,
+        "val_accuracy": 0.79685
+       },
+       {
+        "vectorizer": "w2_sub_df2",
+        "value": 30.0,
+        "val_accuracy": 0.78605
+       },
+       {
+        "vectorizer": "w2_sub_df5",
+        "value": 0.3,
+        "val_accuracy": 0.78785
+       },
+       {
+        "vectorizer": "w2_sub_df5",
+        "value": 1.0,
+        "val_accuracy": 0.8007
+       },
+       {
+        "vectorizer": "w2_sub_df5",
+        "value": 3.0,
+        "val_accuracy": 0.8013
+       },
+       {
+        "vectorizer": "w2_sub_df5",
+        "value": 10.0,
+        "val_accuracy": 0.7917
+       },
+       {
+        "vectorizer": "w2_sub_df5",
+        "value": 30.0,
+        "val_accuracy": 0.7758
+       },
+       {
+        "vectorizer": "w3_raw_df2",
+        "value": 0.3,
+        "val_accuracy": 0.78405
+       },
+       {
+        "vectorizer": "w3_raw_df2",
+        "value": 1.0,
+        "val_accuracy": 0.79965
+       },
+       {
+        "vectorizer": "w3_raw_df2",
+        "value": 3.0,
+        "val_accuracy": 0.8062
+       },
+       {
+        "vectorizer": "w3_raw_df2",
+        "value": 10.0,
+        "val_accuracy": 0.8027
+       },
+       {
+        "vectorizer": "w3_raw_df2",
+        "value": 30.0,
+        "val_accuracy": 0.7961
+       },
+       {
+        "vectorizer": "w3_raw_df5",
+        "value": 0.3,
+        "val_accuracy": 0.7877
+       },
+       {
+        "vectorizer": "w3_raw_df5",
+        "value": 1.0,
+        "val_accuracy": 0.8026
+       },
+       {
+        "vectorizer": "w3_raw_df5",
+        "value": 3.0,
+        "val_accuracy": 0.8042
+       },
+       {
+        "vectorizer": "w3_raw_df5",
+        "value": 10.0,
+        "val_accuracy": 0.7958
+       },
+       {
+        "vectorizer": "w3_raw_df5",
+        "value": 30.0,
+        "val_accuracy": 0.78005
+       },
+       {
+        "vectorizer": "w3_sub_df2",
+        "value": 0.3,
+        "val_accuracy": 0.78435
+       },
+       {
+        "vectorizer": "w3_sub_df2",
+        "value": 1.0,
+        "val_accuracy": 0.8006
+       },
+       {
+        "vectorizer": "w3_sub_df2",
+        "value": 3.0,
+        "val_accuracy": 0.8041
+       },
+       {
+        "vectorizer": "w3_sub_df2",
+        "value": 10.0,
+        "val_accuracy": 0.8002
+       },
+       {
+        "vectorizer": "w3_sub_df2",
+        "value": 30.0,
+        "val_accuracy": 0.7955
+       },
+       {
+        "vectorizer": "w3_sub_df5",
+        "value": 0.3,
+        "val_accuracy": 0.78745
+       },
+       {
+        "vectorizer": "w3_sub_df5",
+        "value": 1.0,
+        "val_accuracy": 0.80135
+       },
+       {
+        "vectorizer": "w3_sub_df5",
+        "value": 3.0,
+        "val_accuracy": 0.8037
+       },
+       {
+        "vectorizer": "w3_sub_df5",
+        "value": 10.0,
+        "val_accuracy": 0.7942
+       },
+       {
+        "vectorizer": "w3_sub_df5",
+        "value": 30.0,
+        "val_accuracy": 0.7815
+       }
+      ],
+      "selected": {
+       "vectorizer": "w3_raw_df2",
+       "value": 3.0,
+       "val_accuracy": 0.8062
+      }
+     },
+     "metrics": {
+      "clean": {
+       "accuracy": 0.8284064488106492,
+       "macro_f1": 0.8283998341007814,
+       "n": 78278,
+       "n_correct": 64846
+      }
+     },
+     "timing_seconds": {
+      "search": 186.57353420899994,
+      "tokenize_and_vectorize_train": 221.814476172,
+      "classifier_fit": 103.95965018800007
+     }
+    }
+   },
+   "fingerprint": {
+    "config": "b8c1291ab7811702",
+    "code": "5dc884172743db14"
+   },
+   "wall_seconds": 522.685909675,
+   "peak_rss_gb": 4.81174,
+   "timestamp_utc": "2026-10-18T01:36:33+00:00",
+   "environment": {
+    "python": "3.11.17",
+    "sklearn": "1.9.1",
+    "nltk": "3.10.3",
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "threadpoolctl": "3.7.0",
+    "machine": "x86_64",
+    "platform": "Linux-6.18.44-fc-v139-x86_64-with-glibc2.39",
+    "blas_threads": 1
+   }
+  },
+  {
+   "run_id": "lexfront__wide__nb",
+   "tokenizer": "lexfront",
+   "stage": "wide",
+   "n_train": 1495821,
+   "n_test": 78278,
+   "classifiers": {
+    "nb": {
+     "classifier": "nb",
+     "setting": "wide",
+     "vectorizer": {
+      "name": "w2_sub_df2",
+      "n_features": 980860,
+      "lowercase": true,
+      "min_df": 2,
+      "ngram_range": [
+       1,
+       2
+      ],
+      "token_pattern": null,
+      "sublinear_tf": true
+     },
+     "params": {
+      "alpha": 1.0,
+      "class_prior": null,
+      "fit_prior": true,
+      "force_alpha": true
+     },
+     "tuning": {
+      "n_fit": 100000,
+      "n_val": 20000,
+      "scores": [
+       {
+        "vectorizer": "w1_raw_df2",
+        "value": 0.03,
+        "val_accuracy": 0.75425
+       },
+       {
+        "vectorizer": "w1_raw_df2",
+        "value": 0.1,
+        "val_accuracy": 0.75715
+       },
+       {
+        "vectorizer": "w1_raw_df2",
+        "value": 0.3,
+        "val_accuracy": 0.76155
+       },
+       {
+        "vectorizer": "w1_raw_df2",
+        "value": 1.0,
+        "val_accuracy": 0.7709
+       },
+       {
+        "vectorizer": "w1_raw_df5",
+        "value": 0.03,
+        "val_accuracy": 0.7653
+       },
+       {
+        "vectorizer": "w1_raw_df5",
+        "value": 0.1,
+        "val_accuracy": 0.7657
+       },
+       {
+        "vectorizer": "w1_raw_df5",
+        "value": 0.3,
+        "val_accuracy": 0.76735
+       },
+       {
+        "vectorizer": "w1_raw_df5",
+        "value": 1.0,
+        "val_accuracy": 0.7718
+       },
+       {
+        "vectorizer": "w1_sub_df2",
+        "value": 0.03,
+        "val_accuracy": 0.7533
+       },
+       {
+        "vectorizer": "w1_sub_df2",
+        "value": 0.1,
+        "val_accuracy": 0.75625
+       },
+       {
+        "vectorizer": "w1_sub_df2",
+        "value": 0.3,
+        "val_accuracy": 0.7616
+       },
+       {
+        "vectorizer": "w1_sub_df2",
+        "value": 1.0,
+        "val_accuracy": 0.76905
+       },
+       {
+        "vectorizer": "w1_sub_df5",
+        "value": 0.03,
+        "val_accuracy": 0.7655
+       },
+       {
+        "vectorizer": "w1_sub_df5",
+        "value": 0.1,
+        "val_accuracy": 0.76625
+       },
+       {
+        "vectorizer": "w1_sub_df5",
+        "value": 0.3,
+        "val_accuracy": 0.76795
+       },
+       {
+        "vectorizer": "w1_sub_df5",
+        "value": 1.0,
+        "val_accuracy": 0.7722
+       },
+       {
+        "vectorizer": "w2_raw_df2",
+        "value": 0.03,
+        "val_accuracy": 0.7715
+       },
+       {
+        "vectorizer": "w2_raw_df2",
+        "value": 0.1,
+        "val_accuracy": 0.7782
+       },
+       {
+        "vectorizer": "w2_raw_df2",
+        "value": 0.3,
+        "val_accuracy": 0.7844
+       },
+       {
+        "vectorizer": "w2_raw_df2",
+        "value": 1.0,
+        "val_accuracy": 0.78835
+       },
+       {
+        "vectorizer": "w2_raw_df5",
+        "value": 0.03,
+        "val_accuracy": 0.7815
+       },
+       {
+        "vectorizer": "w2_raw_df5",
+        "value": 0.1,
+        "val_accuracy": 0.78315
+       },
+       {
+        "vectorizer": "w2_raw_df5",
+        "value": 0.3,
+        "val_accuracy": 0.7852
+       },
+       {
+        "vectorizer": "w2_raw_df5",
+        "value": 1.0,
+        "val_accuracy": 0.78715
+       },
+       {
+        "vectorizer": "w2_sub_df2",
+        "value": 0.03,
+        "val_accuracy": 0.77195
+       },
+       {
+        "vectorizer": "w2_sub_df2",
+        "value": 0.1,
+        "val_accuracy": 0.77865
+       },
+       {
+        "vectorizer": "w2_sub_df2",
+        "value": 0.3,
+        "val_accuracy": 0.78375
+       },
+       {
+        "vectorizer": "w2_sub_df2",
+        "value": 1.0,
+        "val_accuracy": 0.78875
+       },
+       {
+        "vectorizer": "w2_sub_df5",
+        "value": 0.03,
+        "val_accuracy": 0.78235
+       },
+       {
+        "vectorizer": "w2_sub_df5",
+        "value": 0.1,
+        "val_accuracy": 0.78395
+       },
+       {
+        "vectorizer": "w2_sub_df5",
+        "value": 0.3,
+        "val_accuracy": 0.7857
+       },
+       {
+        "vectorizer": "w2_sub_df5",
+        "value": 1.0,
+        "val_accuracy": 0.7869
+       },
+       {
+        "vectorizer": "w3_raw_df2",
+        "value": 0.03,
+        "val_accuracy": 0.7748
+       },
+       {
+        "vectorizer": "w3_raw_df2",
+        "value": 0.1,
+        "val_accuracy": 0.78165
+       },
+       {
+        "vectorizer": "w3_raw_df2",
+        "value": 0.3,
+        "val_accuracy": 0.78705
+       },
+       {
+        "vectorizer": "w3_raw_df2",
+        "value": 1.0,
+        "val_accuracy": 0.7887
+       },
+       {
+        "vectorizer": "w3_raw_df5",
+        "value": 0.03,
+        "val_accuracy": 0.7835
+       },
+       {
+        "vectorizer": "w3_raw_df5",
+        "value": 0.1,
+        "val_accuracy": 0.7846
+       },
+       {
+        "vectorizer": "w3_raw_df5",
+        "value": 0.3,
+        "val_accuracy": 0.7856
+       },
+       {
+        "vectorizer": "w3_raw_df5",
+        "value": 1.0,
+        "val_accuracy": 0.78805
+       },
+       {
+        "vectorizer": "w3_sub_df2",
+        "value": 0.03,
+        "val_accuracy": 0.7759
+       },
+       {
+        "vectorizer": "w3_sub_df2",
+        "value": 0.1,
+        "val_accuracy": 0.7817
+       },
+       {
+        "vectorizer": "w3_sub_df2",
+        "value": 0.3,
+        "val_accuracy": 0.7873
+       },
+       {
+        "vectorizer": "w3_sub_df2",
+        "value": 1.0,
+        "val_accuracy": 0.7886
+       },
+       {
+        "vectorizer": "w3_sub_df5",
+        "value": 0.03,
+        "val_accuracy": 0.7835
+       },
+       {
+        "vectorizer": "w3_sub_df5",
+        "value": 0.1,
+        "val_accuracy": 0.7846
+       },
+       {
+        "vectorizer": "w3_sub_df5",
+        "value": 0.3,
+        "val_accuracy": 0.78605
+       },
+       {
+        "vectorizer": "w3_sub_df5",
+        "value": 1.0,
+        "val_accuracy": 0.78805
+       }
+      ],
+      "selected": {
+       "vectorizer": "w2_sub_df2",
+       "value": 1.0,
+       "val_accuracy": 0.78875
+      }
+     },
+     "metrics": {
+      "clean": {
+       "accuracy": 0.8048621579498709,
+       "macro_f1": 0.804816669714185,
+       "n": 78278,
+       "n_correct": 63003
+      }
+     },
+     "timing_seconds": {
+      "search": 54.58802086800006,
+      "tokenize_and_vectorize_train": 165.81838525600006,
+      "classifier_fit": 0.5364905839996936
+     }
+    }
+   },
+   "fingerprint": {
+    "config": "6d63ca1f2fc7e89b",
+    "code": "5dc884172743db14"
+   },
+   "wall_seconds": 223.5272399070002,
+   "peak_rss_gb": 4.81174,
+   "timestamp_utc": "2026-10-18T01:40:17+00:00",
+   "environment": {
+    "python": "3.11.17",
+    "sklearn": "1.9.1",
+    "nltk": "3.10.3",
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "threadpoolctl": "3.7.0",
+    "machine": "x86_64",
+    "platform": "Linux-6.18.44-fc-v139-x86_64-with-glibc2.39",
+    "blas_threads": 1
+   }
+  },
+  {
+   "run_id": "nltk__anchor",
+   "tokenizer": "nltk",
+   "stage": "anchor",
+   "n_train": 1495821,
+   "n_test": 78278,
+   "classifiers": {
+    "nb": {
+     "classifier": "nb",
+     "setting": "default",
+     "vectorizer": {
+      "name": "unigram",
+      "n_features": 228086
+     },
+     "params": {
+      "alpha": 1.0,
+      "class_prior": null,
+      "fit_prior": true,
+      "force_alpha": true
+     },
+     "tuning": null,
+     "metrics": {
+      "clean": {
+       "accuracy": 0.7705102327601625,
+       "macro_f1": 0.7703861071215776,
+       "n": 78278,
+       "n_correct": 60314
+      }
+     },
+     "timing_seconds": {
+      "tokenize_and_vectorize_train": 181.57480644999987,
+      "search": 0.0,
+      "classifier_fit": 0.3948438470001747,
+      "predict_all_variants": 0.009525141999802145
+     }
+    },
+    "lr": {
+     "classifier": "lr",
+     "setting": "default",
+     "vectorizer": {
+      "name": "unigram",
+      "n_features": 228086
+     },
+     "params": {
+      "C": 1.0,
+      "class_weight": null,
+      "dual": false,
+      "fit_intercept": true,
+      "intercept_scaling": 1,
+      "l1_ratio": 0.0,
+      "max_iter": 1000,
+      "n_jobs": null,
+      "penalty": "deprecated",
+      "random_state": 0,
+      "solver": "lbfgs",
+      "tol": 0.0001,
+      "verbose": 0,
+      "warm_start": false
+     },
+     "tuning": null,
+     "metrics": {
+      "clean": {
+       "accuracy": 0.7987557168042106,
+       "macro_f1": 0.7987303376802924,
+       "n": 78278,
+       "n_correct": 62525
+      }
+     },
+     "timing_seconds": {
+      "tokenize_and_vectorize_train": 181.57480644999987,
+      "search": 0.0,
+      "classifier_fit": 29.164394467999955,
+      "predict_all_variants": 0.0065079410001089855
+     }
+    }
+   },
+   "fingerprint": {
+    "config": "d5688ff1f7478d5e",
+    "code": "5dc884172743db14"
+   },
+   "wall_seconds": 221.02463085099998,
+   "peak_rss_gb": 4.81174,
+   "timestamp_utc": "2026-10-18T01:43:58+00:00",
+   "environment": {
+    "python": "3.11.17",
+    "sklearn": "1.9.1",
+    "nltk": "3.10.3",
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "threadpoolctl": "3.7.0",
+    "machine": "x86_64",
+    "platform": "Linux-6.18.44-fc-v139-x86_64-with-glibc2.39",
+    "blas_threads": 1
+   }
+  },
+  {
+   "run_id": "nltk__wide__lr",
+   "tokenizer": "nltk",
+   "stage": "wide",
+   "n_train": 1495821,
+   "n_test": 78278,
+   "classifiers": {
+    "lr": {
+     "classifier": "lr",
+     "setting": "wide",
+     "vectorizer": {
+      "name": "w3_sub_df2",
+      "n_features": 2859449,
+      "lowercase": true,
+      "min_df": 2,
+      "ngram_range": [
+       1,
+       3
+      ],
+      "token_pattern": null,
+      "sublinear_tf": true
+     },
+     "params": {
+      "C": 3.0,
+      "class_weight": null,
+      "dual": false,
+      "fit_intercept": true,
+      "intercept_scaling": 1,
+      "l1_ratio": 0.0,
+      "max_iter": 1000,
+      "n_jobs": null,
+      "penalty": "deprecated",
+      "random_state": 0,
+      "solver": "lbfgs",
+      "tol": 0.0001,
+      "verbose": 0,
+      "warm_start": false
+     },
+     "tuning": {
+      "n_fit": 100000,
+      "n_val": 20000,
+      "scores": [
+       {
+        "vectorizer": "w1_raw_df2",
+        "value": 0.3,
+        "val_accuracy": 0.7818
+       },
+       {
+        "vectorizer": "w1_raw_df2",
+        "value": 1.0,
+        "val_accuracy": 0.7902
+       },
+       {
+        "vectorizer": "w1_raw_df2",
+        "value": 3.0,
+        "val_accuracy": 0.7897
+       },
+       {
+        "vectorizer": "w1_raw_df2",
+        "value": 10.0,
+        "val_accuracy": 0.78005
+       },
+       {
+        "vectorizer": "w1_raw_df2",
+        "value": 30.0,
+        "val_accuracy": 0.7694
+       },
+       {
+        "vectorizer": "w1_raw_df5",
+        "value": 0.3,
+        "val_accuracy": 0.78235
+       },
+       {
+        "vectorizer": "w1_raw_df5",
+        "value": 1.0,
+        "val_accuracy": 0.78785
+       },
+       {
+        "vectorizer": "w1_raw_df5",
+        "value": 3.0,
+        "val_accuracy": 0.787
+       },
+       {
+        "vectorizer": "w1_raw_df5",
+        "value": 10.0,
+        "val_accuracy": 0.78295
+       },
+       {
+        "vectorizer": "w1_raw_df5",
+        "value": 30.0,
+        "val_accuracy": 0.7781
+       },
+       {
+        "vectorizer": "w1_sub_df2",
+        "value": 0.3,
+        "val_accuracy": 0.7822
+       },
+       {
+        "vectorizer": "w1_sub_df2",
+        "value": 1.0,
+        "val_accuracy": 0.7904
+       },
+       {
+        "vectorizer": "w1_sub_df2",
+        "value": 3.0,
+        "val_accuracy": 0.78825
+       },
+       {
+        "vectorizer": "w1_sub_df2",
+        "value": 10.0,
+        "val_accuracy": 0.7805
+       },
+       {
+        "vectorizer": "w1_sub_df2",
+        "value": 30.0,
+        "val_accuracy": 0.76915
+       },
+       {
+        "vectorizer": "w1_sub_df5",
+        "value": 0.3,
+        "val_accuracy": 0.78185
+       },
+       {
+        "vectorizer": "w1_sub_df5",
+        "value": 1.0,
+        "val_accuracy": 0.7885
+       },
+       {
+        "vectorizer": "w1_sub_df5",
+        "value": 3.0,
+        "val_accuracy": 0.7877
+       },
+       {
+        "vectorizer": "w1_sub_df5",
+        "value": 10.0,
+        "val_accuracy": 0.78205
+       },
+       {
+        "vectorizer": "w1_sub_df5",
+        "value": 30.0,
+        "val_accuracy": 0.77765
+       },
+       {
+        "vectorizer": "w2_raw_df2",
+        "value": 0.3,
+        "val_accuracy": 0.78105
+       },
+       {
+        "vectorizer": "w2_raw_df2",
+        "value": 1.0,
+        "val_accuracy": 0.79965
+       },
+       {
+        "vectorizer": "w2_raw_df2",
+        "value": 3.0,
+        "val_accuracy": 0.8005
+       },
+       {
+        "vectorizer": "w2_raw_df2",
+        "value": 10.0,
+        "val_accuracy": 0.7935
+       },
+       {
+        "vectorizer": "w2_raw_df2",
+        "value": 30.0,
+        "val_accuracy": 0.7851
+       },
+       {
+        "vectorizer": "w2_raw_df5",
+        "value": 0.3,
+        "val_accuracy": 0.7857
+       },
+       {
+        "vectorizer": "w2_raw_df5",
+        "value": 1.0,
+        "val_accuracy": 0.7987
+       },
+       {
+        "vectorizer": "w2_raw_df5",
+        "value": 3.0,
+        "val_accuracy": 0.7987
+       },
+       {
+        "vectorizer": "w2_raw_df5",
+        "value": 10.0,
+        "val_accuracy": 0.78865
+       },
+       {
+        "vectorizer": "w2_raw_df5",
+        "value": 30.0,
+        "val_accuracy": 0.7746
+       },
+       {
+        "vectorizer": "w2_sub_df2",
+        "value": 0.3,
+        "val_accuracy": 0.783
+       },
+       {
+        "vectorizer": "w2_sub_df2",
+        "value": 1.0,
+        "val_accuracy": 0.79855
+       },
+       {
+        "vectorizer": "w2_sub_df2",
+        "value": 3.0,
+        "val_accuracy": 0.80075
+       },
+       {
+        "vectorizer": "w2_sub_df2",
+        "value": 10.0,
+        "val_accuracy": 0.7938
+       },
+       {
+        "vectorizer": "w2_sub_df2",
+        "value": 30.0,
+        "val_accuracy": 0.7846
+       },
+       {
+        "vectorizer": "w2_sub_df5",
+        "value": 0.3,
+        "val_accuracy": 0.7873
+       },
+       {
+        "vectorizer": "w2_sub_df5",
+        "value": 1.0,
+        "val_accuracy": 0.7985
+       },
+       {
+        "vectorizer": "w2_sub_df5",
+        "value": 3.0,
+        "val_accuracy": 0.79985
+       },
+       {
+        "vectorizer": "w2_sub_df5",
+        "value": 10.0,
+        "val_accuracy": 0.7897
+       },
+       {
+        "vectorizer": "w2_sub_df5",
+        "value": 30.0,
+        "val_accuracy": 0.77905
+       },
+       {
+        "vectorizer": "w3_raw_df2",
+        "value": 0.3,
+        "val_accuracy": 0.7811
+       },
+       {
+        "vectorizer": "w3_raw_df2",
+        "value": 1.0,
+        "val_accuracy": 0.7965
+       },
+       {
+        "vectorizer": "w3_raw_df2",
+        "value": 3.0,
+        "val_accuracy": 0.8023
+       },
+       {
+        "vectorizer": "w3_raw_df2",
+        "value": 10.0,
+        "val_accuracy": 0.7969
+       },
+       {
+        "vectorizer": "w3_raw_df2",
+        "value": 30.0,
+        "val_accuracy": 0.79185
+       },
+       {
+        "vectorizer": "w3_raw_df5",
+        "value": 0.3,
+        "val_accuracy": 0.78615
+       },
+       {
+        "vectorizer": "w3_raw_df5",
+        "value": 1.0,
+        "val_accuracy": 0.8002
+       },
+       {
+        "vectorizer": "w3_raw_df5",
+        "value": 3.0,
+        "val_accuracy": 0.80045
+       },
+       {
+        "vectorizer": "w3_raw_df5",
+        "value": 10.0,
+        "val_accuracy": 0.793
+       },
+       {
+        "vectorizer": "w3_raw_df5",
+        "value": 30.0,
+        "val_accuracy": 0.7788
+       },
+       {
+        "vectorizer": "w3_sub_df2",
+        "value": 0.3,
+        "val_accuracy": 0.78175
+       },
+       {
+        "vectorizer": "w3_sub_df2",
+        "value": 1.0,
+        "val_accuracy": 0.7974
+       },
+       {
+        "vectorizer": "w3_sub_df2",
+        "value": 3.0,
+        "val_accuracy": 0.80275
+       },
+       {
+        "vectorizer": "w3_sub_df2",
+        "value": 10.0,
+        "val_accuracy": 0.7997
+       },
+       {
+        "vectorizer": "w3_sub_df2",
+        "value": 30.0,
+        "val_accuracy": 0.7906
+       },
+       {
+        "vectorizer": "w3_sub_df5",
+        "value": 0.3,
+        "val_accuracy": 0.78525
+       },
+       {
+        "vectorizer": "w3_sub_df5",
+        "value": 1.0,
+        "val_accuracy": 0.8
+       },
+       {
+        "vectorizer": "w3_sub_df5",
+        "value": 3.0,
+        "val_accuracy": 0.80185
+       },
+       {
+        "vectorizer": "w3_sub_df5",
+        "value": 10.0,
+        "val_accuracy": 0.79295
+       },
+       {
+        "vectorizer": "w3_sub_df5",
+        "value": 30.0,
+        "val_accuracy": 0.77945
+       }
+      ],
+      "selected": {
+       "vectorizer": "w3_sub_df2",
+       "value": 3.0,
+       "val_accuracy": 0.80275
+      }
+     },
+     "metrics": {
+      "clean": {
+       "accuracy": 0.8273461253481182,
+       "macro_f1": 0.8273411310594431,
+       "n": 78278,
+       "n_correct": 64763
+      }
+     },
+     "timing_seconds": {
+      "search": 167.1428749249999,
+      "tokenize_and_vectorize_train": 290.77145991,
+      "classifier_fit": 204.24830273899988
+     }
+    }
+   },
+   "fingerprint": {
+    "config": "7b957606dec78969",
+    "code": "5dc884172743db14"
+   },
+   "wall_seconds": 666.851802789,
+   "peak_rss_gb": 6.891548,
+   "timestamp_utc": "2026-10-18T01:55:05+00:00",
+   "environment": {
+    "python": "3.11.17",
+    "sklearn": "1.9.1",
+    "nltk": "3.10.3",
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "threadpoolctl": "3.7.0",
+    "machine": "x86_64",
+    "platform": "Linux-6.18.44-fc-v139-x86_64-with-glibc2.39",
+    "blas_threads": 1
+   }
+  },
+  {
+   "run_id": "nltk__wide__nb",
+   "tokenizer": "nltk",
+   "stage": "wide",
+   "n_train": 1495821,
+   "n_test": 78278,
+   "classifiers": {
+    "nb": {
+     "classifier": "nb",
+     "setting": "wide",
+     "vectorizer": {
+      "name": "w2_raw_df2",
+      "n_features": 1271671,
+      "lowercase": true,
+      "min_df": 2,
+      "ngram_range": [
+       1,
+       2
+      ],
+      "token_pattern": null,
+      "sublinear_tf": false
+     },
+     "params": {
+      "alpha": 1.0,
+      "class_prior": null,
+      "fit_prior": true,
+      "force_alpha": true
+     },
+     "tuning": {
+      "n_fit": 100000,
+      "n_val": 20000,
+      "scores": [
+       {
+        "vectorizer": "w1_raw_df2",
+        "value": 0.03,
+        "val_accuracy": 0.748
+       },
+       {
+        "vectorizer": "w1_raw_df2",
+        "value": 0.1,
+        "val_accuracy": 0.75205
+       },
+       {
+        "vectorizer": "w1_raw_df2",
+        "value": 0.3,
+        "val_accuracy": 0.7569
+       },
+       {
+        "vectorizer": "w1_raw_df2",
+        "value": 1.0,
+        "val_accuracy": 0.76485
+       },
+       {
+        "vectorizer": "w1_raw_df5",
+        "value": 0.03,
+        "val_accuracy": 0.76395
+       },
+       {
+        "vectorizer": "w1_raw_df5",
+        "value": 0.1,
+        "val_accuracy": 0.76435
+       },
+       {
+        "vectorizer": "w1_raw_df5",
+        "value": 0.3,
+        "val_accuracy": 0.76655
+       },
+       {
+        "vectorizer": "w1_raw_df5",
+        "value": 1.0,
+        "val_accuracy": 0.7689
+       },
+       {
+        "vectorizer": "w1_sub_df2",
+        "value": 0.03,
+        "val_accuracy": 0.74845
+       },
+       {
+        "vectorizer": "w1_sub_df2",
+        "value": 0.1,
+        "val_accuracy": 0.75165
+       },
+       {
+        "vectorizer": "w1_sub_df2",
+        "value": 0.3,
+        "val_accuracy": 0.75665
+       },
+       {
+        "vectorizer": "w1_sub_df2",
+        "value": 1.0,
+        "val_accuracy": 0.7656
+       },
+       {
+        "vectorizer": "w1_sub_df5",
+        "value": 0.03,
+        "val_accuracy": 0.7639
+       },
+       {
+        "vectorizer": "w1_sub_df5",
+        "value": 0.1,
+        "val_accuracy": 0.76435
+       },
+       {
+        "vectorizer": "w1_sub_df5",
+        "value": 0.3,
+        "val_accuracy": 0.7658
+       },
+       {
+        "vectorizer": "w1_sub_df5",
+        "value": 1.0,
+        "val_accuracy": 0.76905
+       },
+       {
+        "vectorizer": "w2_raw_df2",
+        "value": 0.03,
+        "val_accuracy": 0.7697
+       },
+       {
+        "vectorizer": "w2_raw_df2",
+        "value": 0.1,
+        "val_accuracy": 0.77605
+       },
+       {
+        "vectorizer": "w2_raw_df2",
+        "value": 0.3,
+        "val_accuracy": 0.7829
+       },
+       {
+        "vectorizer": "w2_raw_df2",
+        "value": 1.0,
+        "val_accuracy": 0.7874
+       },
+       {
+        "vectorizer": "w2_raw_df5",
+        "value": 0.03,
+        "val_accuracy": 0.78095
+       },
+       {
+        "vectorizer": "w2_raw_df5",
+        "value": 0.1,
+        "val_accuracy": 0.7823
+       },
+       {
+        "vectorizer": "w2_raw_df5",
+        "value": 0.3,
+        "val_accuracy": 0.78355
+       },
+       {
+        "vectorizer": "w2_raw_df5",
+        "value": 1.0,
+        "val_accuracy": 0.78515
+       },
+       {
+        "vectorizer": "w2_sub_df2",
+        "value": 0.03,
+        "val_accuracy": 0.7697
+       },
+       {
+        "vectorizer": "w2_sub_df2",
+        "value": 0.1,
+        "val_accuracy": 0.7765
+       },
+       {
+        "vectorizer": "w2_sub_df2",
+        "value": 0.3,
+        "val_accuracy": 0.78325
+       },
+       {
+        "vectorizer": "w2_sub_df2",
+        "value": 1.0,
+        "val_accuracy": 0.7872
+       },
+       {
+        "vectorizer": "w2_sub_df5",
+        "value": 0.03,
+        "val_accuracy": 0.7806
+       },
+       {
+        "vectorizer": "w2_sub_df5",
+        "value": 0.1,
+        "val_accuracy": 0.7824
+       },
+       {
+        "vectorizer": "w2_sub_df5",
+        "value": 0.3,
+        "val_accuracy": 0.78365
+       },
+       {
+        "vectorizer": "w2_sub_df5",
+        "value": 1.0,
+        "val_accuracy": 0.7863
+       },
+       {
+        "vectorizer": "w3_raw_df2",
+        "value": 0.03,
+        "val_accuracy": 0.77245
+       },
+       {
+        "vectorizer": "w3_raw_df2",
+        "value": 0.1,
+        "val_accuracy": 0.77965
+       },
+       {
+        "vectorizer": "w3_raw_df2",
+        "value": 0.3,
+        "val_accuracy": 0.78515
+       },
+       {
+        "vectorizer": "w3_raw_df2",
+        "value": 1.0,
+        "val_accuracy": 0.78575
+       },
+       {
+        "vectorizer": "w3_raw_df5",
+        "value": 0.03,
+        "val_accuracy": 0.782
+       },
+       {
+        "vectorizer": "w3_raw_df5",
+        "value": 0.1,
+        "val_accuracy": 0.78315
+       },
+       {
+        "vectorizer": "w3_raw_df5",
+        "value": 0.3,
+        "val_accuracy": 0.78285
+       },
+       {
+        "vectorizer": "w3_raw_df5",
+        "value": 1.0,
+        "val_accuracy": 0.783
+       },
+       {
+        "vectorizer": "w3_sub_df2",
+        "value": 0.03,
+        "val_accuracy": 0.7717
+       },
+       {
+        "vectorizer": "w3_sub_df2",
+        "value": 0.1,
+        "val_accuracy": 0.77935
+       },
+       {
+        "vectorizer": "w3_sub_df2",
+        "value": 0.3,
+        "val_accuracy": 0.7857
+       },
+       {
+        "vectorizer": "w3_sub_df2",
+        "value": 1.0,
+        "val_accuracy": 0.7869
+       },
+       {
+        "vectorizer": "w3_sub_df5",
+        "value": 0.03,
+        "val_accuracy": 0.7818
+       },
+       {
+        "vectorizer": "w3_sub_df5",
+        "value": 0.1,
+        "val_accuracy": 0.78305
+       },
+       {
+        "vectorizer": "w3_sub_df5",
+        "value": 0.3,
+        "val_accuracy": 0.78285
+       },
+       {
+        "vectorizer": "w3_sub_df5",
+        "value": 1.0,
+        "val_accuracy": 0.7829
+       }
+      ],
+      "selected": {
+       "vectorizer": "w2_raw_df2",
+       "value": 1.0,
+       "val_accuracy": 0.7874
+      }
+     },
+     "metrics": {
+      "clean": {
+       "accuracy": 0.8030864355246685,
+       "macro_f1": 0.8029618920508991,
+       "n": 78278,
+       "n_correct": 62864
+      }
+     },
+     "timing_seconds": {
+      "search": 62.861165733000234,
+      "tokenize_and_vectorize_train": 231.8487155339999,
+      "classifier_fit": 0.5850938060002591
+     }
+    }
+   },
+   "fingerprint": {
+    "config": "2a1e3efb74bfdd24",
+    "code": "5dc884172743db14"
+   },
+   "wall_seconds": 297.880807344,
+   "peak_rss_gb": 6.891548,
+   "timestamp_utc": "2026-10-18T02:00:03+00:00",
+   "environment": {
+    "python": "3.11.17",
+    "sklearn": "1.9.1",
+    "nltk": "3.10.3",
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "threadpoolctl": "3.7.0",
+    "machine": "x86_64",
+    "platform": "Linux-6.18.44-fc-v139-x86_64-with-glibc2.39",
+    "blas_threads": 1
+   }
+  },
+  {
+   "run_id": "tweet__anchor",
+   "tokenizer": "tweet",
+   "stage": "anchor",
+   "n_train": 1495821,
+   "n_test": 78278,
+   "classifiers": {
+    "nb": {
+     "classifier": "nb",
+     "setting": "default",
+     "vectorizer": {
+      "name": "unigram",
+      "n_features": 226995
+     },
+     "params": {
+      "alpha": 1.0,
+      "class_prior": null,
+      "fit_prior": true,
+      "force_alpha": true
+     },
+     "tuning": null,
+     "metrics": {
+      "clean": {
+       "accuracy": 0.7710851069265949,
+       "macro_f1": 0.7709339230499146,
+       "n": 78278,
+       "n_correct": 60359
+      }
+     },
+     "timing_seconds": {
+      "tokenize_and_vectorize_train": 119.30623345200001,
+      "search": 0.0,
+      "classifier_fit": 0.35563169600004585,
+      "predict_all_variants": 0.009824771000012333
+     }
+    },
+    "lr": {
+     "classifier": "lr",
+     "setting": "default",
+     "vectorizer": {
+      "name": "unigram",
+      "n_features": 226995
+     },
+     "params": {
+      "C": 1.0,
+      "class_weight": null,
+      "dual": false,
+      "fit_intercept": true,
+      "intercept_scaling": 1,
+      "l1_ratio": 0.0,
+      "max_iter": 1000,
+      "n_jobs": null,
+      "penalty": "deprecated",
+      "random_state": 0,
+      "solver": "lbfgs",
+      "tol": 0.0001,
+      "verbose": 0,
+      "warm_start": false
+     },
+     "tuning": null,
+     "metrics": {
+      "clean": {
+       "accuracy": 0.7993050410076905,
+       "macro_f1": 0.7992817068350537,
+       "n": 78278,
+       "n_correct": 62568
+      }
+     },
+     "timing_seconds": {
+      "tokenize_and_vectorize_train": 119.30623345200001,
+      "search": 0.0,
+      "classifier_fit": 27.66914112099994,
+      "predict_all_variants": 0.005055696999988868
+     }
+    }
+   },
+   "fingerprint": {
+    "config": "39efbad34a9e1511",
+    "code": "5dc884172743db14"
+   },
+   "wall_seconds": 153.79447761699998,
+   "peak_rss_gb": 1.601052,
+   "timestamp_utc": "2026-10-18T01:20:46+00:00",
+   "environment": {
+    "python": "3.11.17",
+    "sklearn": "1.9.1",
+    "nltk": "3.10.3",
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "threadpoolctl": "3.7.0",
+    "machine": "x86_64",
+    "platform": "Linux-6.18.44-fc-v139-x86_64-with-glibc2.39",
+    "blas_threads": 1
+   }
+  },
+  {
+   "run_id": "tweet__wide__lr",
+   "tokenizer": "tweet",
+   "stage": "wide",
+   "n_train": 1495821,
+   "n_test": 78278,
+   "classifiers": {
+    "lr": {
+     "classifier": "lr",
+     "setting": "wide",
+     "vectorizer": {
+      "name": "w3_sub_df2",
+      "n_features": 2723769,
+      "lowercase": true,
+      "min_df": 2,
+      "ngram_range": [
+       1,
+       3
+      ],
+      "token_pattern": null,
+      "sublinear_tf": true
+     },
+     "params": {
+      "C": 3.0,
+      "class_weight": null,
+      "dual": false,
+      "fit_intercept": true,
+      "intercept_scaling": 1,
+      "l1_ratio": 0.0,
+      "max_iter": 1000,
+      "n_jobs": null,
+      "penalty": "deprecated",
+      "random_state": 0,
+      "solver": "lbfgs",
+      "tol": 0.0001,
+      "verbose": 0,
+      "warm_start": false
+     },
+     "tuning": {
+      "n_fit": 100000,
+      "n_val": 20000,
+      "scores": [
+       {
+        "vectorizer": "w1_raw_df2",
+        "value": 0.3,
+        "val_accuracy": 0.77975
+       },
+       {
+        "vectorizer": "w1_raw_df2",
+        "value": 1.0,
+        "val_accuracy": 0.78935
+       },
+       {
+        "vectorizer": "w1_raw_df2",
+        "value": 3.0,
+        "val_accuracy": 0.78785
+       },
+       {
+        "vectorizer": "w1_raw_df2",
+        "value": 10.0,
+        "val_accuracy": 0.7808
+       },
+       {
+        "vectorizer": "w1_raw_df2",
+        "value": 30.0,
+        "val_accuracy": 0.7697
+       },
+       {
+        "vectorizer": "w1_raw_df5",
+        "value": 0.3,
+        "val_accuracy": 0.7785
+       },
+       {
+        "vectorizer": "w1_raw_df5",
+        "value": 1.0,
+        "val_accuracy": 0.78635
+       },
+       {
+        "vectorizer": "w1_raw_df5",
+        "value": 3.0,
+        "val_accuracy": 0.78785
+       },
+       {
+        "vectorizer": "w1_raw_df5",
+        "value": 10.0,
+        "val_accuracy": 0.78215
+       },
+       {
+        "vectorizer": "w1_raw_df5",
+        "value": 30.0,
+        "val_accuracy": 0.7777
+       },
+       {
+        "vectorizer": "w1_sub_df2",
+        "value": 0.3,
+        "val_accuracy": 0.7806
+       },
+       {
+        "vectorizer": "w1_sub_df2",
+        "value": 1.0,
+        "val_accuracy": 0.7891
+       },
+       {
+        "vectorizer": "w1_sub_df2",
+        "value": 3.0,
+        "val_accuracy": 0.78915
+       },
+       {
+        "vectorizer": "w1_sub_df2",
+        "value": 10.0,
+        "val_accuracy": 0.78105
+       },
+       {
+        "vectorizer": "w1_sub_df2",
+        "value": 30.0,
+        "val_accuracy": 0.7717
+       },
+       {
+        "vectorizer": "w1_sub_df5",
+        "value": 0.3,
+        "val_accuracy": 0.78
+       },
+       {
+        "vectorizer": "w1_sub_df5",
+        "value": 1.0,
+        "val_accuracy": 0.78875
+       },
+       {
+        "vectorizer": "w1_sub_df5",
+        "value": 3.0,
+        "val_accuracy": 0.7869
+       },
+       {
+        "vectorizer": "w1_sub_df5",
+        "value": 10.0,
+        "val_accuracy": 0.78145
+       },
+       {
+        "vectorizer": "w1_sub_df5",
+        "value": 30.0,
+        "val_accuracy": 0.77745
+       },
+       {
+        "vectorizer": "w2_raw_df2",
+        "value": 0.3,
+        "val_accuracy": 0.78225
+       },
+       {
+        "vectorizer": "w2_raw_df2",
+        "value": 1.0,
+        "val_accuracy": 0.79905
+       },
+       {
+        "vectorizer": "w2_raw_df2",
+        "value": 3.0,
+        "val_accuracy": 0.8016
+       },
+       {
+        "vectorizer": "w2_raw_df2",
+        "value": 10.0,
+        "val_accuracy": 0.7931
+       },
+       {
+        "vectorizer": "w2_raw_df2",
+        "value": 30.0,
+        "val_accuracy": 0.78265
+       },
+       {
+        "vectorizer": "w2_raw_df5",
+        "value": 0.3,
+        "val_accuracy": 0.78455
+       },
+       {
+        "vectorizer": "w2_raw_df5",
+        "value": 1.0,
+        "val_accuracy": 0.79865
+       },
+       {
+        "vectorizer": "w2_raw_df5",
+        "value": 3.0,
+        "val_accuracy": 0.79925
+       },
+       {
+        "vectorizer": "w2_raw_df5",
+        "value": 10.0,
+        "val_accuracy": 0.7901
+       },
+       {
+        "vectorizer": "w2_raw_df5",
+        "value": 30.0,
+        "val_accuracy": 0.77365
+       },
+       {
+        "vectorizer": "w2_sub_df2",
+        "value": 0.3,
+        "val_accuracy": 0.78225
+       },
+       {
+        "vectorizer": "w2_sub_df2",
+        "value": 1.0,
+        "val_accuracy": 0.799
+       },
+       {
+        "vectorizer": "w2_sub_df2",
+        "value": 3.0,
+        "val_accuracy": 0.8008
+       },
+       {
+        "vectorizer": "w2_sub_df2",
+        "value": 10.0,
+        "val_accuracy": 0.79435
+       },
+       {
+        "vectorizer": "w2_sub_df2",
+        "value": 30.0,
+        "val_accuracy": 0.78505
+       },
+       {
+        "vectorizer": "w2_sub_df5",
+        "value": 0.3,
+        "val_accuracy": 0.78565
+       },
+       {
+        "vectorizer": "w2_sub_df5",
+        "value": 1.0,
+        "val_accuracy": 0.79915
+       },
+       {
+        "vectorizer": "w2_sub_df5",
+        "value": 3.0,
+        "val_accuracy": 0.79975
+       },
+       {
+        "vectorizer": "w2_sub_df5",
+        "value": 10.0,
+        "val_accuracy": 0.79005
+       },
+       {
+        "vectorizer": "w2_sub_df5",
+        "value": 30.0,
+        "val_accuracy": 0.7794
+       },
+       {
+        "vectorizer": "w3_raw_df2",
+        "value": 0.3,
+        "val_accuracy": 0.7801
+       },
+       {
+        "vectorizer": "w3_raw_df2",
+        "value": 1.0,
+        "val_accuracy": 0.79645
+       },
+       {
+        "vectorizer": "w3_raw_df2",
+        "value": 3.0,
+        "val_accuracy": 0.80195
+       },
+       {
+        "vectorizer": "w3_raw_df2",
+        "value": 10.0,
+        "val_accuracy": 0.7993
+       },
+       {
+        "vectorizer": "w3_raw_df2",
+        "value": 30.0,
+        "val_accuracy": 0.7916
+       },
+       {
+        "vectorizer": "w3_raw_df5",
+        "value": 0.3,
+        "val_accuracy": 0.784
+       },
+       {
+        "vectorizer": "w3_raw_df5",
+        "value": 1.0,
+        "val_accuracy": 0.79875
+       },
+       {
+        "vectorizer": "w3_raw_df5",
+        "value": 3.0,
+        "val_accuracy": 0.80055
+       },
+       {
+        "vectorizer": "w3_raw_df5",
+        "value": 10.0,
+        "val_accuracy": 0.7934
+       },
+       {
+        "vectorizer": "w3_raw_df5",
+        "value": 30.0,
+        "val_accuracy": 0.77885
+       },
+       {
+        "vectorizer": "w3_sub_df2",
+        "value": 0.3,
+        "val_accuracy": 0.7805
+       },
+       {
+        "vectorizer": "w3_sub_df2",
+        "value": 1.0,
+        "val_accuracy": 0.7979
+       },
+       {
+        "vectorizer": "w3_sub_df2",
+        "value": 3.0,
+        "val_accuracy": 0.80215
+       },
+       {
+        "vectorizer": "w3_sub_df2",
+        "value": 10.0,
+        "val_accuracy": 0.7984
+       },
+       {
+        "vectorizer": "w3_sub_df2",
+        "value": 30.0,
+        "val_accuracy": 0.7935
+       },
+       {
+        "vectorizer": "w3_sub_df5",
+        "value": 0.3,
+        "val_accuracy": 0.7843
+       },
+       {
+        "vectorizer": "w3_sub_df5",
+        "value": 1.0,
+        "val_accuracy": 0.7985
+       },
+       {
+        "vectorizer": "w3_sub_df5",
+        "value": 3.0,
+        "val_accuracy": 0.80105
+       },
+       {
+        "vectorizer": "w3_sub_df5",
+        "value": 10.0,
+        "val_accuracy": 0.79315
+       },
+       {
+        "vectorizer": "w3_sub_df5",
+        "value": 30.0,
+        "val_accuracy": 0.778
+       }
+      ],
+      "selected": {
+       "vectorizer": "w3_sub_df2",
+       "value": 3.0,
+       "val_accuracy": 0.80215
+      }
+     },
+     "metrics": {
+      "clean": {
+       "accuracy": 0.8250210787194359,
+       "macro_f1": 0.8250201013648039,
+       "n": 78278,
+       "n_correct": 64581
+      }
+     },
+     "timing_seconds": {
+      "search": 130.77197454299994,
+      "tokenize_and_vectorize_train": 232.119912743,
+      "classifier_fit": 98.64953321999997
+     }
+    }
+   },
+   "fingerprint": {
+    "config": "824600521c961048",
+    "code": "5dc884172743db14"
+   },
+   "wall_seconds": 471.831200242,
+   "peak_rss_gb": 4.850876,
+   "timestamp_utc": "2026-10-18T01:35:42+00:00",
+   "environment": {
+    "python": "3.11.17",
+    "sklearn": "1.9.1",
+    "nltk": "3.10.3",
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "threadpoolctl": "3.7.0",
+    "machine": "x86_64",
+    "platform": "Linux-6.18.44-fc-v139-x86_64-with-glibc2.39",
+    "blas_threads": 1
+   }
+  },
+  {
+   "run_id": "tweet__wide__nb",
+   "tokenizer": "tweet",
+   "stage": "wide",
+   "n_train": 1495821,
+   "n_test": 78278,
+   "classifiers": {
+    "nb": {
+     "classifier": "nb",
+     "setting": "wide",
+     "vectorizer": {
+      "name": "w2_sub_df2",
+      "n_features": 1171616,
+      "lowercase": true,
+      "min_df": 2,
+      "ngram_range": [
+       1,
+       2
+      ],
+      "token_pattern": null,
+      "sublinear_tf": true
+     },
+     "params": {
+      "alpha": 1.0,
+      "class_prior": null,
+      "fit_prior": true,
+      "force_alpha": true
+     },
+     "tuning": {
+      "n_fit": 100000,
+      "n_val": 20000,
+      "scores": [
+       {
+        "vectorizer": "w1_raw_df2",
+        "value": 0.03,
+        "val_accuracy": 0.7477
+       },
+       {
+        "vectorizer": "w1_raw_df2",
+        "value": 0.1,
+        "val_accuracy": 0.7513
+       },
+       {
+        "vectorizer": "w1_raw_df2",
+        "value": 0.3,
+        "val_accuracy": 0.7559
+       },
+       {
+        "vectorizer": "w1_raw_df2",
+        "value": 1.0,
+        "val_accuracy": 0.76465
+       },
+       {
+        "vectorizer": "w1_raw_df5",
+        "value": 0.03,
+        "val_accuracy": 0.7611
+       },
+       {
+        "vectorizer": "w1_raw_df5",
+        "value": 0.1,
+        "val_accuracy": 0.762
+       },
+       {
+        "vectorizer": "w1_raw_df5",
+        "value": 0.3,
+        "val_accuracy": 0.7641
+       },
+       {
+        "vectorizer": "w1_raw_df5",
+        "value": 1.0,
+        "val_accuracy": 0.7674
+       },
+       {
+        "vectorizer": "w1_sub_df2",
+        "value": 0.03,
+        "val_accuracy": 0.7454
+       },
+       {
+        "vectorizer": "w1_sub_df2",
+        "value": 0.1,
+        "val_accuracy": 0.74955
+       },
+       {
+        "vectorizer": "w1_sub_df2",
+        "value": 0.3,
+        "val_accuracy": 0.7546
+       },
+       {
+        "vectorizer": "w1_sub_df2",
+        "value": 1.0,
+        "val_accuracy": 0.7641
+       },
+       {
+        "vectorizer": "w1_sub_df5",
+        "value": 0.03,
+        "val_accuracy": 0.7613
+       },
+       {
+        "vectorizer": "w1_sub_df5",
+        "value": 0.1,
+        "val_accuracy": 0.7624
+       },
+       {
+        "vectorizer": "w1_sub_df5",
+        "value": 0.3,
+        "val_accuracy": 0.76345
+       },
+       {
+        "vectorizer": "w1_sub_df5",
+        "value": 1.0,
+        "val_accuracy": 0.7677
+       },
+       {
+        "vectorizer": "w2_raw_df2",
+        "value": 0.03,
+        "val_accuracy": 0.76835
+       },
+       {
+        "vectorizer": "w2_raw_df2",
+        "value": 0.1,
+        "val_accuracy": 0.77705
+       },
+       {
+        "vectorizer": "w2_raw_df2",
+        "value": 0.3,
+        "val_accuracy": 0.784
+       },
+       {
+        "vectorizer": "w2_raw_df2",
+        "value": 1.0,
+        "val_accuracy": 0.7883
+       },
+       {
+        "vectorizer": "w2_raw_df5",
+        "value": 0.03,
+        "val_accuracy": 0.7805
+       },
+       {
+        "vectorizer": "w2_raw_df5",
+        "value": 0.1,
+        "val_accuracy": 0.78115
+       },
+       {
+        "vectorizer": "w2_raw_df5",
+        "value": 0.3,
+        "val_accuracy": 0.78215
+       },
+       {
+        "vectorizer": "w2_raw_df5",
+        "value": 1.0,
+        "val_accuracy": 0.78475
+       },
+       {
+        "vectorizer": "w2_sub_df2",
+        "value": 0.03,
+        "val_accuracy": 0.76815
+       },
+       {
+        "vectorizer": "w2_sub_df2",
+        "value": 0.1,
+        "val_accuracy": 0.77715
+       },
+       {
+        "vectorizer": "w2_sub_df2",
+        "value": 0.3,
+        "val_accuracy": 0.78375
+       },
+       {
+        "vectorizer": "w2_sub_df2",
+        "value": 1.0,
+        "val_accuracy": 0.78845
+       },
+       {
+        "vectorizer": "w2_sub_df5",
+        "value": 0.03,
+        "val_accuracy": 0.78115
+       },
+       {
+        "vectorizer": "w2_sub_df5",
+        "value": 0.1,
+        "val_accuracy": 0.7813
+       },
+       {
+        "vectorizer": "w2_sub_df5",
+        "value": 0.3,
+        "val_accuracy": 0.7824
+       },
+       {
+        "vectorizer": "w2_sub_df5",
+        "value": 1.0,
+        "val_accuracy": 0.78535
+       },
+       {
+        "vectorizer": "w3_raw_df2",
+        "value": 0.03,
+        "val_accuracy": 0.77245
+       },
+       {
+        "vectorizer": "w3_raw_df2",
+        "value": 0.1,
+        "val_accuracy": 0.7804
+       },
+       {
+        "vectorizer": "w3_raw_df2",
+        "value": 0.3,
+        "val_accuracy": 0.7849
+       },
+       {
+        "vectorizer": "w3_raw_df2",
+        "value": 1.0,
+        "val_accuracy": 0.78835
+       },
+       {
+        "vectorizer": "w3_raw_df5",
+        "value": 0.03,
+        "val_accuracy": 0.7809
+       },
+       {
+        "vectorizer": "w3_raw_df5",
+        "value": 0.1,
+        "val_accuracy": 0.78145
+       },
+       {
+        "vectorizer": "w3_raw_df5",
+        "value": 0.3,
+        "val_accuracy": 0.7825
+       },
+       {
+        "vectorizer": "w3_raw_df5",
+        "value": 1.0,
+        "val_accuracy": 0.7843
+       },
+       {
+        "vectorizer": "w3_sub_df2",
+        "value": 0.03,
+        "val_accuracy": 0.7721
+       },
+       {
+        "vectorizer": "w3_sub_df2",
+        "value": 0.1,
+        "val_accuracy": 0.7801
+       },
+       {
+        "vectorizer": "w3_sub_df2",
+        "value": 0.3,
+        "val_accuracy": 0.7846
+       },
+       {
+        "vectorizer": "w3_sub_df2",
+        "value": 1.0,
+        "val_accuracy": 0.7884
+       },
+       {
+        "vectorizer": "w3_sub_df5",
+        "value": 0.03,
+        "val_accuracy": 0.78085
+       },
+       {
+        "vectorizer": "w3_sub_df5",
+        "value": 0.1,
+        "val_accuracy": 0.7812
+       },
+       {
+        "vectorizer": "w3_sub_df5",
+        "value": 0.3,
+        "val_accuracy": 0.78275
+       },
+       {
+        "vectorizer": "w3_sub_df5",
+        "value": 1.0,
+        "val_accuracy": 0.7847
+       }
+      ],
+      "selected": {
+       "vectorizer": "w2_sub_df2",
+       "value": 1.0,
+       "val_accuracy": 0.78845
+      }
+     },
+     "metrics": {
+      "clean": {
+       "accuracy": 0.8052070824497305,
+       "macro_f1": 0.8050912824488092,
+       "n": 78278,
+       "n_correct": 63030
+      }
+     },
+     "timing_seconds": {
+      "search": 52.38883782700009,
+      "tokenize_and_vectorize_train": 166.071766153,
+      "classifier_fit": 0.5459130399999594
+     }
+    }
+   },
+   "fingerprint": {
+    "config": "3fda815e0bf71c75",
+    "code": "5dc884172743db14"
+   },
+   "wall_seconds": 221.3226971669999,
+   "peak_rss_gb": 4.850876,
+   "timestamp_utc": "2026-10-18T01:39:24+00:00",
+   "environment": {
+    "python": "3.11.17",
+    "sklearn": "1.9.1",
+    "nltk": "3.10.3",
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "threadpoolctl": "3.7.0",
+    "machine": "x86_64",
+    "platform": "Linux-6.18.44-fc-v139-x86_64-with-glibc2.39",
+    "blas_threads": 1
+   }
+  },
+  {
+   "run_id": "whitespace__anchor",
+   "tokenizer": "whitespace",
+   "stage": "anchor",
+   "n_train": 1495821,
+   "n_test": 78278,
+   "classifiers": {
+    "nb": {
+     "classifier": "nb",
+     "setting": "default",
+     "vectorizer": {
+      "name": "unigram",
+      "n_features": 324804
+     },
+     "params": {
+      "alpha": 1.0,
+      "class_prior": null,
+      "fit_prior": true,
+      "force_alpha": true
+     },
+     "tuning": null,
+     "metrics": {
+      "clean": {
+       "accuracy": 0.7679807864278597,
+       "macro_f1": 0.767766463222916,
+       "n": 78278,
+       "n_correct": 60116
+      }
+     },
+     "timing_seconds": {
+      "tokenize_and_vectorize_train": 15.466661925000153,
+      "search": 0.0,
+      "classifier_fit": 0.35747288100014885,
+      "predict_all_variants": 0.011242007999953785
+     }
+    },
+    "lr": {
+     "classifier": "lr",
+     "setting": "default",
+     "vectorizer": {
+      "name": "unigram",
+      "n_features": 324804
+     },
+     "params": {
+      "C": 1.0,
+      "class_weight": null,
+      "dual": false,
+      "fit_intercept": true,
+      "intercept_scaling": 1,
+      "l1_ratio": 0.0,
+      "max_iter": 1000,
+      "n_jobs": null,
+      "penalty": "deprecated",
+      "random_state": 0,
+      "solver": "lbfgs",
+      "tol": 0.0001,
+      "verbose": 0,
+      "warm_start": false
+     },
+     "tuning": null,
+     "metrics": {
+      "clean": {
+       "accuracy": 0.7966606198421012,
+       "macro_f1": 0.7966468986038817,
+       "n": 78278,
+       "n_correct": 62361
+      }
+     },
+     "timing_seconds": {
+      "tokenize_and_vectorize_train": 15.466661925000153,
+      "search": 0.0,
+      "classifier_fit": 41.76311085899988,
+      "predict_all_variants": 0.004906173999643215
+     }
+    }
+   },
+   "fingerprint": {
+    "config": "53314175834439b3",
+    "code": "5dc884172743db14"
+   },
+   "wall_seconds": 58.54273449900006,
+   "peak_rss_gb": 4.850876,
+   "timestamp_utc": "2026-10-18T01:40:22+00:00",
+   "environment": {
+    "python": "3.11.17",
+    "sklearn": "1.9.1",
+    "nltk": "3.10.3",
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "threadpoolctl": "3.7.0",
+    "machine": "x86_64",
+    "platform": "Linux-6.18.44-fc-v139-x86_64-with-glibc2.39",
+    "blas_threads": 1
+   }
+  },
+  {
+   "run_id": "whitespace__wide__lr",
+   "tokenizer": "whitespace",
+   "stage": "wide",
+   "n_train": 1495821,
+   "n_test": 78278,
+   "classifiers": {
+    "lr": {
+     "classifier": "lr",
+     "setting": "wide",
+     "vectorizer": {
+      "name": "w3_raw_df2",
+      "n_features": 2445195,
+      "lowercase": true,
+      "min_df": 2,
+      "ngram_range": [
+       1,
+       3
+      ],
+      "token_pattern": null,
+      "sublinear_tf": false
+     },
+     "params": {
+      "C": 3.0,
+      "class_weight": null,
+      "dual": false,
+      "fit_intercept": true,
+      "intercept_scaling": 1,
+      "l1_ratio": 0.0,
+      "max_iter": 1000,
+      "n_jobs": null,
+      "penalty": "deprecated",
+      "random_state": 0,
+      "solver": "lbfgs",
+      "tol": 0.0001,
+      "verbose": 0,
+      "warm_start": false
+     },
+     "tuning": {
+      "n_fit": 100000,
+      "n_val": 20000,
+      "scores": [
+       {
+        "vectorizer": "w1_raw_df2",
+        "value": 0.3,
+        "val_accuracy": 0.76905
+       },
+       {
+        "vectorizer": "w1_raw_df2",
+        "value": 1.0,
+        "val_accuracy": 0.78075
+       },
+       {
+        "vectorizer": "w1_raw_df2",
+        "value": 3.0,
+        "val_accuracy": 0.77915
+       },
+       {
+        "vectorizer": "w1_raw_df2",
+        "value": 10.0,
+        "val_accuracy": 0.77055
+       },
+       {
+        "vectorizer": "w1_raw_df2",
+        "value": 30.0,
+        "val_accuracy": 0.7557
+       },
+       {
+        "vectorizer": "w1_raw_df5",
+        "value": 0.3,
+        "val_accuracy": 0.7699
+       },
+       {
+        "vectorizer": "w1_raw_df5",
+        "value": 1.0,
+        "val_accuracy": 0.7806
+       },
+       {
+        "vectorizer": "w1_raw_df5",
+        "value": 3.0,
+        "val_accuracy": 0.7792
+       },
+       {
+        "vectorizer": "w1_raw_df5",
+        "value": 10.0,
+        "val_accuracy": 0.77165
+       },
+       {
+        "vectorizer": "w1_raw_df5",
+        "value": 30.0,
+        "val_accuracy": 0.7645
+       },
+       {
+        "vectorizer": "w1_sub_df2",
+        "value": 0.3,
+        "val_accuracy": 0.7686
+       },
+       {
+        "vectorizer": "w1_sub_df2",
+        "value": 1.0,
+        "val_accuracy": 0.78
+       },
+       {
+        "vectorizer": "w1_sub_df2",
+        "value": 3.0,
+        "val_accuracy": 0.77855
+       },
+       {
+        "vectorizer": "w1_sub_df2",
+        "value": 10.0,
+        "val_accuracy": 0.7689
+       },
+       {
+        "vectorizer": "w1_sub_df2",
+        "value": 30.0,
+        "val_accuracy": 0.75725
+       },
+       {
+        "vectorizer": "w1_sub_df5",
+        "value": 0.3,
+        "val_accuracy": 0.76985
+       },
+       {
+        "vectorizer": "w1_sub_df5",
+        "value": 1.0,
+        "val_accuracy": 0.779
+       },
+       {
+        "vectorizer": "w1_sub_df5",
+        "value": 3.0,
+        "val_accuracy": 0.7789
+       },
+       {
+        "vectorizer": "w1_sub_df5",
+        "value": 10.0,
+        "val_accuracy": 0.772
+       },
+       {
+        "vectorizer": "w1_sub_df5",
+        "value": 30.0,
+        "val_accuracy": 0.76585
+       },
+       {
+        "vectorizer": "w2_raw_df2",
+        "value": 0.3,
+        "val_accuracy": 0.77185
+       },
+       {
+        "vectorizer": "w2_raw_df2",
+        "value": 1.0,
+        "val_accuracy": 0.78695
+       },
+       {
+        "vectorizer": "w2_raw_df2",
+        "value": 3.0,
+        "val_accuracy": 0.78995
+       },
+       {
+        "vectorizer": "w2_raw_df2",
+        "value": 10.0,
+        "val_accuracy": 0.78325
+       },
+       {
+        "vectorizer": "w2_raw_df2",
+        "value": 30.0,
+        "val_accuracy": 0.7713
+       },
+       {
+        "vectorizer": "w2_raw_df5",
+        "value": 0.3,
+        "val_accuracy": 0.77475
+       },
+       {
+        "vectorizer": "w2_raw_df5",
+        "value": 1.0,
+        "val_accuracy": 0.7885
+       },
+       {
+        "vectorizer": "w2_raw_df5",
+        "value": 3.0,
+        "val_accuracy": 0.78785
+       },
+       {
+        "vectorizer": "w2_raw_df5",
+        "value": 10.0,
+        "val_accuracy": 0.77955
+       },
+       {
+        "vectorizer": "w2_raw_df5",
+        "value": 30.0,
+        "val_accuracy": 0.76465
+       },
+       {
+        "vectorizer": "w2_sub_df2",
+        "value": 0.3,
+        "val_accuracy": 0.771
+       },
+       {
+        "vectorizer": "w2_sub_df2",
+        "value": 1.0,
+        "val_accuracy": 0.78685
+       },
+       {
+        "vectorizer": "w2_sub_df2",
+        "value": 3.0,
+        "val_accuracy": 0.79085
+       },
+       {
+        "vectorizer": "w2_sub_df2",
+        "value": 10.0,
+        "val_accuracy": 0.78415
+       },
+       {
+        "vectorizer": "w2_sub_df2",
+        "value": 30.0,
+        "val_accuracy": 0.77155
+       },
+       {
+        "vectorizer": "w2_sub_df5",
+        "value": 0.3,
+        "val_accuracy": 0.7747
+       },
+       {
+        "vectorizer": "w2_sub_df5",
+        "value": 1.0,
+        "val_accuracy": 0.7869
+       },
+       {
+        "vectorizer": "w2_sub_df5",
+        "value": 3.0,
+        "val_accuracy": 0.78815
+       },
+       {
+        "vectorizer": "w2_sub_df5",
+        "value": 10.0,
+        "val_accuracy": 0.7787
+       },
+       {
+        "vectorizer": "w2_sub_df5",
+        "value": 30.0,
+        "val_accuracy": 0.76555
+       },
+       {
+        "vectorizer": "w3_raw_df2",
+        "value": 0.3,
+        "val_accuracy": 0.77085
+       },
+       {
+        "vectorizer": "w3_raw_df2",
+        "value": 1.0,
+        "val_accuracy": 0.7873
+       },
+       {
+        "vectorizer": "w3_raw_df2",
+        "value": 3.0,
+        "val_accuracy": 0.79105
+       },
+       {
+        "vectorizer": "w3_raw_df2",
+        "value": 10.0,
+        "val_accuracy": 0.78735
+       },
+       {
+        "vectorizer": "w3_raw_df2",
+        "value": 30.0,
+        "val_accuracy": 0.77765
+       },
+       {
+        "vectorizer": "w3_raw_df5",
+        "value": 0.3,
+        "val_accuracy": 0.775
+       },
+       {
+        "vectorizer": "w3_raw_df5",
+        "value": 1.0,
+        "val_accuracy": 0.7879
+       },
+       {
+        "vectorizer": "w3_raw_df5",
+        "value": 3.0,
+        "val_accuracy": 0.7879
+       },
+       {
+        "vectorizer": "w3_raw_df5",
+        "value": 10.0,
+        "val_accuracy": 0.77965
+       },
+       {
+        "vectorizer": "w3_raw_df5",
+        "value": 30.0,
+        "val_accuracy": 0.76405
+       },
+       {
+        "vectorizer": "w3_sub_df2",
+        "value": 0.3,
+        "val_accuracy": 0.7707
+       },
+       {
+        "vectorizer": "w3_sub_df2",
+        "value": 1.0,
+        "val_accuracy": 0.78645
+       },
+       {
+        "vectorizer": "w3_sub_df2",
+        "value": 3.0,
+        "val_accuracy": 0.78995
+       },
+       {
+        "vectorizer": "w3_sub_df2",
+        "value": 10.0,
+        "val_accuracy": 0.7868
+       },
+       {
+        "vectorizer": "w3_sub_df2",
+        "value": 30.0,
+        "val_accuracy": 0.7751
+       },
+       {
+        "vectorizer": "w3_sub_df5",
+        "value": 0.3,
+        "val_accuracy": 0.7753
+       },
+       {
+        "vectorizer": "w3_sub_df5",
+        "value": 1.0,
+        "val_accuracy": 0.78635
+       },
+       {
+        "vectorizer": "w3_sub_df5",
+        "value": 3.0,
+        "val_accuracy": 0.78865
+       },
+       {
+        "vectorizer": "w3_sub_df5",
+        "value": 10.0,
+        "val_accuracy": 0.7792
+       },
+       {
+        "vectorizer": "w3_sub_df5",
+        "value": 30.0,
+        "val_accuracy": 0.76445
+       }
+      ],
+      "selected": {
+       "vectorizer": "w3_raw_df2",
+       "value": 3.0,
+       "val_accuracy": 0.79105
+      }
+     },
+     "metrics": {
+      "clean": {
+       "accuracy": 0.8167556657042847,
+       "macro_f1": 0.8167503902216543,
+       "n": 78278,
+       "n_correct": 63934
+      }
+     },
+     "timing_seconds": {
+      "search": 89.83829759700029,
+      "tokenize_and_vectorize_train": 97.06248671799995,
+      "classifier_fit": 25.01239336200024
+     }
+    }
+   },
+   "fingerprint": {
+    "config": "59ae4b6d91bf6019",
+    "code": "5dc884172743db14"
+   },
+   "wall_seconds": 215.38262638200013,
+   "peak_rss_gb": 5.285,
+   "timestamp_utc": "2026-10-18T01:43:58+00:00",
+   "environment": {
+    "python": "3.11.17",
+    "sklearn": "1.9.1",
+    "nltk": "3.10.3",
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "threadpoolctl": "3.7.0",
+    "machine": "x86_64",
+    "platform": "Linux-6.18.44-fc-v139-x86_64-with-glibc2.39",
+    "blas_threads": 1
+   }
+  },
+  {
+   "run_id": "whitespace__wide__nb",
+   "tokenizer": "whitespace",
+   "stage": "wide",
+   "n_train": 1495821,
+   "n_test": 78278,
+   "classifiers": {
+    "nb": {
+     "classifier": "nb",
+     "setting": "wide",
+     "vectorizer": {
+      "name": "w3_sub_df2",
+      "n_features": 2445195,
+      "lowercase": true,
+      "min_df": 2,
+      "ngram_range": [
+       1,
+       3
+      ],
+      "token_pattern": null,
+      "sublinear_tf": true
+     },
+     "params": {
+      "alpha": 1.0,
+      "class_prior": null,
+      "fit_prior": true,
+      "force_alpha": true
+     },
+     "tuning": {
+      "n_fit": 100000,
+      "n_val": 20000,
+      "scores": [
+       {
+        "vectorizer": "w1_raw_df2",
+        "value": 0.03,
+        "val_accuracy": 0.7356
+       },
+       {
+        "vectorizer": "w1_raw_df2",
+        "value": 0.1,
+        "val_accuracy": 0.74015
+       },
+       {
+        "vectorizer": "w1_raw_df2",
+        "value": 0.3,
+        "val_accuracy": 0.7464
+       },
+       {
+        "vectorizer": "w1_raw_df2",
+        "value": 1.0,
+        "val_accuracy": 0.75565
+       },
+       {
+        "vectorizer": "w1_raw_df5",
+        "value": 0.03,
+        "val_accuracy": 0.75465
+       },
+       {
+        "vectorizer": "w1_raw_df5",
+        "value": 0.1,
+        "val_accuracy": 0.75565
+       },
+       {
+        "vectorizer": "w1_raw_df5",
+        "value": 0.3,
+        "val_accuracy": 0.758
+       },
+       {
+        "vectorizer": "w1_raw_df5",
+        "value": 1.0,
+        "val_accuracy": 0.76125
+       },
+       {
+        "vectorizer": "w1_sub_df2",
+        "value": 0.03,
+        "val_accuracy": 0.736
+       },
+       {
+        "vectorizer": "w1_sub_df2",
+        "value": 0.1,
+        "val_accuracy": 0.7408
+       },
+       {
+        "vectorizer": "w1_sub_df2",
+        "value": 0.3,
+        "val_accuracy": 0.7472
+       },
+       {
+        "vectorizer": "w1_sub_df2",
+        "value": 1.0,
+        "val_accuracy": 0.7557
+       },
+       {
+        "vectorizer": "w1_sub_df5",
+        "value": 0.03,
+        "val_accuracy": 0.75485
+       },
+       {
+        "vectorizer": "w1_sub_df5",
+        "value": 0.1,
+        "val_accuracy": 0.75615
+       },
+       {
+        "vectorizer": "w1_sub_df5",
+        "value": 0.3,
+        "val_accuracy": 0.75835
+       },
+       {
+        "vectorizer": "w1_sub_df5",
+        "value": 1.0,
+        "val_accuracy": 0.7615
+       },
+       {
+        "vectorizer": "w2_raw_df2",
+        "value": 0.03,
+        "val_accuracy": 0.7568
+       },
+       {
+        "vectorizer": "w2_raw_df2",
+        "value": 0.1,
+        "val_accuracy": 0.76675
+       },
+       {
+        "vectorizer": "w2_raw_df2",
+        "value": 0.3,
+        "val_accuracy": 0.7755
+       },
+       {
+        "vectorizer": "w2_raw_df2",
+        "value": 1.0,
+        "val_accuracy": 0.77865
+       },
+       {
+        "vectorizer": "w2_raw_df5",
+        "value": 0.03,
+        "val_accuracy": 0.7728
+       },
+       {
+        "vectorizer": "w2_raw_df5",
+        "value": 0.1,
+        "val_accuracy": 0.774
+       },
+       {
+        "vectorizer": "w2_raw_df5",
+        "value": 0.3,
+        "val_accuracy": 0.7759
+       },
+       {
+        "vectorizer": "w2_raw_df5",
+        "value": 1.0,
+        "val_accuracy": 0.77935
+       },
+       {
+        "vectorizer": "w2_sub_df2",
+        "value": 0.03,
+        "val_accuracy": 0.7562
+       },
+       {
+        "vectorizer": "w2_sub_df2",
+        "value": 0.1,
+        "val_accuracy": 0.76605
+       },
+       {
+        "vectorizer": "w2_sub_df2",
+        "value": 0.3,
+        "val_accuracy": 0.77575
+       },
+       {
+        "vectorizer": "w2_sub_df2",
+        "value": 1.0,
+        "val_accuracy": 0.77895
+       },
+       {
+        "vectorizer": "w2_sub_df5",
+        "value": 0.03,
+        "val_accuracy": 0.7726
+       },
+       {
+        "vectorizer": "w2_sub_df5",
+        "value": 0.1,
+        "val_accuracy": 0.7743
+       },
+       {
+        "vectorizer": "w2_sub_df5",
+        "value": 0.3,
+        "val_accuracy": 0.7757
+       },
+       {
+        "vectorizer": "w2_sub_df5",
+        "value": 1.0,
+        "val_accuracy": 0.77905
+       },
+       {
+        "vectorizer": "w3_raw_df2",
+        "value": 0.03,
+        "val_accuracy": 0.76055
+       },
+       {
+        "vectorizer": "w3_raw_df2",
+        "value": 0.1,
+        "val_accuracy": 0.76875
+       },
+       {
+        "vectorizer": "w3_raw_df2",
+        "value": 0.3,
+        "val_accuracy": 0.77655
+       },
+       {
+        "vectorizer": "w3_raw_df2",
+        "value": 1.0,
+        "val_accuracy": 0.78005
+       },
+       {
+        "vectorizer": "w3_raw_df5",
+        "value": 0.03,
+        "val_accuracy": 0.7721
+       },
+       {
+        "vectorizer": "w3_raw_df5",
+        "value": 0.1,
+        "val_accuracy": 0.77345
+       },
+       {
+        "vectorizer": "w3_raw_df5",
+        "value": 0.3,
+        "val_accuracy": 0.7751
+       },
+       {
+        "vectorizer": "w3_raw_df5",
+        "value": 1.0,
+        "val_accuracy": 0.77815
+       },
+       {
+        "vectorizer": "w3_sub_df2",
+        "value": 0.03,
+        "val_accuracy": 0.76045
+       },
+       {
+        "vectorizer": "w3_sub_df2",
+        "value": 0.1,
+        "val_accuracy": 0.76865
+       },
+       {
+        "vectorizer": "w3_sub_df2",
+        "value": 0.3,
+        "val_accuracy": 0.7766
+       },
+       {
+        "vectorizer": "w3_sub_df2",
+        "value": 1.0,
+        "val_accuracy": 0.7801
+       },
+       {
+        "vectorizer": "w3_sub_df5",
+        "value": 0.03,
+        "val_accuracy": 0.7722
+       },
+       {
+        "vectorizer": "w3_sub_df5",
+        "value": 0.1,
+        "val_accuracy": 0.7734
+       },
+       {
+        "vectorizer": "w3_sub_df5",
+        "value": 0.3,
+        "val_accuracy": 0.77505
+       },
+       {
+        "vectorizer": "w3_sub_df5",
+        "value": 1.0,
+        "val_accuracy": 0.7785
+       }
+      ],
+      "selected": {
+       "vectorizer": "w3_sub_df2",
+       "value": 1.0,
+       "val_accuracy": 0.7801
+      }
+     },
+     "metrics": {
+      "clean": {
+       "accuracy": 0.8052581823756355,
+       "macro_f1": 0.8051560688074424,
+       "n": 78278,
+       "n_correct": 63034
+      }
+     },
+     "timing_seconds": {
+      "search": 40.06381593500009,
+      "tokenize_and_vectorize_train": 95.9431586149999,
+      "classifier_fit": 0.6389212459998816
+     }
+    }
+   },
+   "fingerprint": {
+    "config": "cec8d26f42dd8f0f",
+    "code": "5dc884172743db14"
+   },
+   "wall_seconds": 140.2212479220002,
+   "peak_rss_gb": 5.331016,
+   "timestamp_utc": "2026-10-18T01:46:19+00:00",
+   "environment": {
+    "python": "3.11.17",
+    "sklearn": "1.9.1",
+    "nltk": "3.10.3",
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "threadpoolctl": "3.7.0",
+    "machine": "x86_64",
+    "platform": "Linux-6.18.44-fc-v139-x86_64-with-glibc2.39",
+    "blas_threads": 1
+   }
+  }
+ ]
+}

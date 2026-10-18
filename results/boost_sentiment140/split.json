@@ -1,0 +1,65 @@
+{
+ "split": {
+  "n_users": 659775,
+  "n_test_users": 32989,
+  "users_in_both_splits": 0,
+  "test_user_fraction": 0.05,
+  "seed": 0,
+  "n_rows_before_split": 1600000,
+  "hf_id": "bdanko/sentiment140",
+  "repo_sha": "c8aaf1333e9d0cf5886f4eb9506ad917f1d8931c",
+  "n_rows": 1600000
+ },
+ "cleaning": {
+  "dataset": "sentiment140",
+  "rules": "empty -> conflicting -> duplicate -> test_in_train (see experiments/clean.py)",
+  "text_key": "lower-cased, whitespace collapsed; kept texts are the original strings",
+  "n_before": {
+   "train": 1520184,
+   "test": 79816
+  },
+  "n_after": {
+   "train": 1495821,
+   "test": 78278
+  },
+  "removed": {
+   "empty": {
+    "train": 0,
+    "test": 0
+   },
+   "conflicting": {
+    "train": 8170,
+    "test": 240
+   },
+   "duplicate": {
+    "train": 16193,
+    "test": 381
+   },
+   "test_in_train": 917
+  },
+  "class_counts_before": {
+   "train": {
+    "0": 759724,
+    "1": 760460
+   },
+   "test": {
+    "0": 40276,
+    "1": 39540
+   }
+  },
+  "class_counts_after": {
+   "train": {
+    "0": 745616,
+    "1": 750205
+   },
+   "test": {
+    "0": 39358,
+    "1": 38920
+   }
+  },
+  "classes_missing_after": {
+   "train": [],
+   "test": []
+  }
+ }
+}

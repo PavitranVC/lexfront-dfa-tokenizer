@@ -1,14 +1,11 @@
-# HANDOFF (updated 2026-10-17 by the collection session, status: complete)
-DONE: PR #17 notebook setup fix (a Colab runtime that kept an older clone with local changes ran OLD code under the new notebook; now stashes + pulls,
-fails loudly; CI job colab-simulation), PR #18 claims pass, PR #19 P4 (WordPiece + Unigram, train-only, deterministic, AUDIT_6), final PR (summary, cleanup).
-NUMBERS: results/stats: NLTK->LexFront+LR -1.59 acc pts on tweet_topic [-2.38,-0.82], +0.09 / +0.00 (CIs include 0) on go_emotions / ag_news; NB->LR is the
-whole "proposed over existing" gain. results/sensitivity_case + ablation: go_emotions +1.15 [+0.46,+1.85] with case kept = lowercasing alone.
-results/bpe: hybrid below LexFront alone on all 3 datasets (17/24 CIs exclude 0, all down). results/subword2: no accuracy gain over NLTK+LR; 16/30 CIs exclude 0.
-COLLECTION: `experiments/{clean,data_extra,tuning,run_collection}.py`, `results/collection/REPORT.md` (generated; CI checks it with `run_collection --stats-only`). Tuning: 44 up / 16 down / 4 equal of 64 cells, mean +1.63 pts; LexFront-NLTK (LR) CIs excluding 0: 4 of 8 default, 0 of 8 tuned. NB `alpha` often sat at a grid edge (a wider grid was not run in the committed results).
-LARGE (done, 2026-10-18): `results/large/` from the owner's Colab run (CI checks it with `run_large --stats-only`); LexFront-NLTK differences are within the +-0.5 pt margin; H1 observed (weak), H2 observed for default LR only, H3 not observed; summary in FINAL_SUMMARY, numbers only from `results/large/REPORT.md`.
-NEXT: `docs/NEXT_PLAN.md` (phases A-D: accuracy levers, classifier families, transformer baseline, more datasets; protocol first).
-OPEN: one training run per cell, no multiplicity correction; Unigram rounding margin ~5x noise (AUDIT_6); why differences appear = hypotheses only.
-OUT OF SCOPE (not done): transformers/DistilBERT (needs torch), Hinglish, more seeds.
-NOT VERIFIED: the owner's Colab traceback was never supplied; the notebook failure fixed is the one reproduced by simulation (stale dirty clone). Other
-simulations (3.12, newest and Colab-era older libraries, empty dir) ran clean.
-CHECK: `pytest -q`, `python notebooks/make_notebook.py --check`, `python -m experiments.render_docs && git diff --exit-code`, CI stats step, `python -m experiments.compare_results`.
+# HANDOFF (updated 2026-10-18, phase A session, status: STOPPED, PR not opened, nothing merged)
+PHASE A (docs/BOOST_PROTOCOL.md, results/boost_sentiment140/, REPORT.md generated; branch claude/fix-lexfront-notebook-setup-brk26t, protocol commit precedes results commit).
+STOP REASON: self-check (h) FAILED. Re-running the committed default setting reproduces Naive Bayes predictions exactly (4/4) but not Logistic Regression (0/4): 766-1457 of 78278 test
+predictions differ, accuracy differs by <= 0.07 pt (e.g. LexFront 79.84 vs committed 79.85). Tried 2 environments (3.11 lock; 3.13 with the Colab library versions, LexFront LR 79.86): neither matches,
+so the cause looks like hardware / BLAS-dependent lbfgs, but that is a hypothesis. The protocol required exact reproduction and was not changed after seeing results (rule: a mismatch = stop).
+DECISION NEEDED FROM OWNER: accept a tolerance for LR anchors (then amend protocol in DECISIONS.md, re-verify, open PR) or keep it as a fail. All other checks (a, c-g, i) PASS; check b not run (no PR text written).
+RESULT SUMMARY: see results/boost_sentiment140/REPORT.md (HA2 observed; HA1, HA3, HA5 not observed; HA4 opposite: char n-grams 2.7 pts below LexFront LR).
+NOT DONE: D1-D3 (civil_comments, amazon_polarity, yelp_full): scaffolding (loader, D protocol, notebook generator) was drafted in a scratch worktree only and is NOT pushed; redo after the owner's decision.
+CHECK: `pytest -q`, `python -m experiments.run_boost --stats-only --out results/boost_sentiment140`, `python -m experiments.verify_boost --out results/boost_sentiment140 --ref results/large --protocol docs/BOOST_PROTOCOL.md --base origin/main`.
+OLDER (unchanged): results/large done (LexFront-NLTK within +-0.5 pt; H1 weak, H2 default-LR only, H3 not observed); transformers, Hinglish, more seeds out of scope.
+CI: .github/workflows/ci.yml has a new stats-only step for results/boost_sentiment140 (unmerged).
