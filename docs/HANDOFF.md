@@ -5,3 +5,4 @@ RESULT SUMMARY: see results/boost_sentiment140/REPORT.md (HA2 observed; HA1, HA3
 CHECK: `pytest -q`, `python -m experiments.run_boost --stats-only --out results/boost_sentiment140`, `python -m experiments.verify_boost --out results/boost_sentiment140 --ref results/large --protocol docs/BOOST_PROTOCOL.md --base origin/main`.
 OLDER (unchanged): results/large done (LexFront-NLTK within +-0.5 pt; H1 weak, H2 default-LR only, H3 not observed); transformers, Hinglish, more seeds out of scope.
 CI: .github/workflows/ci.yml has a new stats-only step for results/boost_sentiment140 (phase A).
+YELP COST: yelp_full LR wide units took ~30 min each even on the 27k dry-run sample, so no CI dry run and a full run of a day or more; see docs/D_PROTOCOL.md cost note. Reduced grid needs a protocol amendment first.

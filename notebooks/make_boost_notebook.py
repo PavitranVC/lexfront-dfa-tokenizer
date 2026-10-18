@@ -19,6 +19,8 @@ md, code = nbf.v4.new_markdown_cell, nbf.v4.new_code_cell
 
 def cells(name: str) -> list:
     spec = datasets_big.SPECS[name]
+    cost = ("**Slow dataset:** five-class Logistic Regression over the protocol grid took about 30 minutes per fit set even on a 27 000-example dry run; "
+            "expect a full run to take a day or more. Consider asking for a reduced grid (a protocol amendment) before starting.\n") if name == "yelp_full" else ""
     return [
         md(f"""# LexFront — phase D: `{spec.hf_id}`
 
@@ -28,7 +30,7 @@ and a wider validation-selected setting (selection uses a slice of the training 
 
 **How to run it.** CPU runtime. Run all cells, once. The real run takes **hours** (up to {spec.max_train or 'all'} training examples per fit). Every finished fit is saved; if Colab disconnects,
 reopen the notebook and run all cells again: finished fits are skipped. With `USE_DRIVE = True` they are saved on your Google Drive (access is asked once).
-The character baseline needs much memory; if the runtime runs out of memory on it, the report simply has no character row (the protocol says to report it as not run).
+{cost}The character baseline needs much memory; if the runtime runs out of memory on it, the report simply has no character row (the protocol says to report it as not run).
 
 **First time?** Set `QUICK_MODE = True` in the next cell for a dry run of a few minutes on a small streamed sample."""),
         code(SETUP),

@@ -72,3 +72,27 @@ def test_yelp_full_keeps_five_star_classes():
     texts, labels = datasets_big.extract("yelp_full", Table({"text": ["meh", "great"], "label": [2, 4]}))
     assert texts == ["meh", "great"] and labels == [2, 4]
     assert len(datasets_big.SPECS["yelp_full"].label_names) == 5
+
+
+def test_five_class_run_produces_stats_and_a_report(tmp_path):
+    import json
+
+    import numpy as np
+
+    from experiments import boost, large
+    from experiments.data import Dataset
+    rng = np.random.default_rng(0)
+    words = [["awful", "bad", "poor"], ["meh", "weak", "slow"], ["okay", "fine", "average"], ["good", "nice", "solid"], ["great", "love", "superb"]]
+    def make(n):
+        ys = rng.integers(0, 5, n).tolist()
+        return [" ".join(rng.choice(words[y], 3).tolist() + ["filler", f"w{i % 5}"]) for i, y in enumerate(ys)], ys
+
+    (tx, ty), (ex, ey) = make(400), make(100)
+    ds = Dataset("toy5", "toy", None, tx, ty, ex, ey, ["1", "2", "3", "4", "5"], {})
+    boost.run_units(ds, ["whitespace"], tmp_path / "w", log=lambda *_: None)
+    out = tmp_path / "out"
+    large.consolidate(tmp_path / "w", out)
+    run_boost.write_outputs(out, None, "toy5", n_boot=30)
+    s = json.loads((out / "stats.json").read_text())
+    assert s["config"]["n_classes"] == 5 and len(s["test_class_counts"]) == 5
+    assert 0 < s["accuracy"]["whitespace|wide|lr"]["macro_f1"] <= 1

@@ -31,3 +31,8 @@ and the anchor row (default settings) is the only reference.
 ## What this does not show
 Review and comment text, English, one run per cell; the noise features of tweets (emoticons, elongation, mentions) are rare here, so these datasets mostly test the clean-text case.
 No transformer, no classifier family beyond NB and LR, no author-grouped split.
+
+## Cost note (added 2026-10-18, before any result of this phase)
+A local dry run of `yelp_full` on a 27 000-example streamed sample needed about 30 minutes per Logistic Regression unit (five classes, 12 vectorizers x 5 values of `C`), so the full run is expected to take a day or more
+and is not part of the CI dry run. The grid is unchanged; shrinking it for this dataset would need an explicit amendment here first.
+
