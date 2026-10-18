@@ -2,6 +2,10 @@
 
 Newest first. Dates are the day the change was made (IST workday).
 
+## 2026-10-18 (phase D1: Civil Comments loader, protocol, notebook)
+- `docs/D_PROTOCOL.md` (covers civil_comments, amazon_polarity, yelp_full; written before any run), `experiments/datasets_big.py` (civil_comments only so far), `notebooks/make_boost_notebook.py` and
+  `notebooks/LexFront_Boost_civil_comments.ipynb` (generated, `--check` and a quick dry run in CI), `tests/test_datasets_big.py`. Primary metric for Civil Comments is macro-F1 (toxic is the rare class). No full-data result yet: the owner runs the notebook on Colab.
+
 ## 2026-10-18 (phase A: wider settings and character n-grams)
 - `docs/BOOST_PROTOCOL.md` (written first), `experiments/{boost,run_boost,verify_boost}.py`, `tests/test_boost.py`, `results/boost_sentiment140/` (14 resumable units, CI lock environment), CI stats-only step.
   Anchor: Naive Bayes re-runs reproduce the committed predictions exactly; Logistic Regression does not (accuracy within 0.1 point), accepted as a tolerance by the owner after the results were seen (`docs/DECISIONS.md`, protocol Amendment).

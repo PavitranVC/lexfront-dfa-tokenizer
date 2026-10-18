@@ -12,11 +12,12 @@ from pathlib import Path
 
 import numpy as np
 
-from . import boost, large, stats
+from . import boost, datasets_big, large, stats
 
 N_BOOT, SEED, MARGIN = 2000, 20261017, 0.005
 REFERENCE = {"sentiment140": "results/large"}       # committed full-data predictions of the same split, when they exist
-LOADERS = {"sentiment140": lambda quick, seed: _sentiment140(quick, seed)}
+LOADERS = {"sentiment140": lambda quick, seed: _sentiment140(quick, seed),
+           **{name: (lambda quick, seed, name=name: datasets_big.load(name, quick, seed)) for name in datasets_big.SPECS}}
 ALL = (*boost.WORD_TOKENIZERS, boost.CHAR)
 STAGE_LABEL = {"ref_default": "committed default", "anchor": "default (re-run)", "ref_tuned": "committed tuned", "wide": "wide-tuned"}
 CLASSIFIER_ORDER = ("lr", "nb")
