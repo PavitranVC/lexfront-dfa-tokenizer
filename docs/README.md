@@ -9,3 +9,4 @@
 | Learning | [`LEARN.md`](LEARN.md) (viva study guide), [`modules/`](modules/), [`versions/`](versions/) | you want the theory and design history |
 | Audits | [`AUDIT.md`](AUDIT.md) to [`AUDIT_6.md`](AUDIT_6.md) | you want what earlier reviews found |
 | Generated results | [`../results/large/REPORT.md`](../results/large/REPORT.md), [`../results/boost_sentiment140/REPORT.md`](../results/boost_sentiment140/REPORT.md), [`../results/collection/REPORT.md`](../results/collection/REPORT.md) | you want numbers (every number in the docs comes from these) |
+| How it was built | [`AI_ASSISTED_DEVELOPMENT.md`](AI_ASSISTED_DEVELOPMENT.md) | you want the AI-assisted workflow and its safeguards |

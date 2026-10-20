@@ -1,6 +1,6 @@
 # AUDIT 6 — P4 (WordPiece and Unigram): leakage, determinism, independent CIs
 
-Date: 2026-10-17. Auditor: one independent agent working on a copy of branch `claude/finish-3-p4` (HEAD d352e4a), no tracked
+Date: 2026-10-17. Auditor: one independent agent working on a copy of branch `feature/finish-3-p4` (HEAD d352e4a), no tracked
 file changed. Result: all three checks pass; one low-severity robustness note.
 
 ## 1. Leakage (train only): PASS

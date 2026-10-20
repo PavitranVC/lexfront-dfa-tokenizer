@@ -30,6 +30,7 @@ and one training run per cell; they do not say why any difference occurs. The re
 
 * Notebook (Colab, CPU): `notebooks/LexFront_Review1.ipynb`
 * Large-scale test on Sentiment140 (1.6 M tweets, Colab, CPU, resumable): [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/PavitranVC/lexfront-dfa-tokenizer/blob/main/notebooks/LexFront_Large.ipynb)  protocol: `docs/LARGE_PROTOCOL.md`, results: `results/large/REPORT.md`
+* How it was built (AI-assisted workflow and safeguards): `docs/AI_ASSISTED_DEVELOPMENT.md`
 * Study guide for the viva: `docs/LEARN.md`
 * One-page honest summary of the results: `docs/FINAL_SUMMARY.md`
 * Module write-ups: `docs/modules/module1.md`, `docs/modules/module2.md`
