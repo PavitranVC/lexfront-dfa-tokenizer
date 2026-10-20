@@ -2,6 +2,11 @@
 
 Newest first. Dates are the day the change was made (IST workday).
 
+## 2026-10-20 (repository tidy-up)
+- Branches renamed to a type/topic scheme (`audit/`, `docs/`, `feature/`, `fix/`); old names in the docs updated to match.
+- Review 1 and Review 2 reports (`report/`) merged to `main`. Review 2 report: `report/LexFront_Review2_Report.docx`.
+- `docs/AI_ASSISTED_DEVELOPMENT.md`: how the project was built with an AI coding assistant, and the safeguards used.
+
 ## 2026-10-18 (documentation pass)
 - README status table and headline numbers (copied from the generated reports), `docs/README.md` index, `notebooks/README.md`, `docs/RUNNING_ON_COLAB.md` (instructions for whoever runs the phase D notebooks). Docs only.
 
@@ -95,7 +100,7 @@ Newest first. Dates are the day the change was made (IST workday).
   Generated tables `subword_runs`, `subword_table`, observation `subword`; intrinsic metrics for both; REPORT_NOTES,
   module2.md, LEARN Q37-Q38, notebook section 8. Pre-existing metrics unchanged (checked by script against `main`).
 
-- P4 finished (`feature/finish-3-p4`): full-data runs for go_emotions and ag_news, stats (`results/subword2/stats/bootstrap.json`),
+- P4 finished (`feature/wordpiece-unigram`): full-data runs for go_emotions and ag_news, stats (`results/subword2/stats/bootstrap.json`),
   generated tables and observation in REPORT_NOTES and module2.md, LEARN Q37-Q38, QUICK results and notebook re-executed,
   independent audit `docs/AUDIT_6.md` (leakage, determinism, CI recomputation: pass; Unigram rounding margin noted).
   `experiments/compare_results.py` ignores the code hash and has `--additive` (new keys allowed in existing files); all pre-existing
@@ -196,6 +201,17 @@ Newest first. Dates are the day the change was made (IST workday).
 - Pinned `requirements.txt`, dropped pip `graphviz`; CI installs apt `graphviz`, has read-only permissions and checks
   that rendered docs and the generated notebook match the committed files.
 - Design: `docs/versions/v4-tokenizer-lineup.md` (tokenizers 5 -> 8); `docs/PIPELINE.md` "Overnight mode" section.
+
+## 2026-10-16 (report)
+- Review 1 report (Modules 1 and 2): `report/Review1_Report.md` and `report/Review1_Report.docx` (all figures embedded).
+  Built by `report/build_report.py` from `report/Review1_Report.template.md`: tables are copied verbatim from
+  `results/tables/` (re-generated from the JSON first and found identical), citations are numbered by `report/refs.py`.
+- Diagrams: v1, v2, v3 and a module-grouped "current architecture" rendered from Mermaid with `@mermaid-js/mermaid-cli`
+  (sources in `report/diagrams/`, PNGs in `report/figures/`).
+- 35 references, each checked by opening its ACL Anthology / arXiv / DOI-or-author / official-docs page this session.
+  Thompson (1968) and Reps (1998) were confirmed through secondary records because the ACM pages returned HTTP 403.
+- Open markers in the report: base-paper citation `[TEAM]`, course-textbook citation `[TEAM]` (twice),
+  reason for dropping Docker `[MISSING]`.
 
 ## 2026-10-16 (later)
 - PR #1 merged into `main` by the author; Colab badge now resolves.

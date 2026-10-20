@@ -1,0 +1,12 @@
+flowchart LR
+    T[Noisy text<br/>English + Hinglish] --> R
+    subgraph LEX[LexFront lexer]
+        R[Token regexes] --> N[Thompson NFA]
+        N --> D[Subset construction DFA]
+        D --> M[Minimized DFA]
+        M --> S[Longest-match scanner<br/>+ error recovery]
+        S --> ST[(Symbol table)]
+    end
+    ST --> V[TF-IDF features]
+    V --> C[Classifier<br/>fixed across tokenizers]
+    C --> E[Accuracy / macro-F1]

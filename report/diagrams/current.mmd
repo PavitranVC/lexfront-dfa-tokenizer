@@ -1,0 +1,45 @@
+flowchart LR
+    subgraph M1["Module 1: data pipeline + existing methodology (done)"]
+      direction TB
+      D1[TweetTopic single]
+      D2[GoEmotions simplified<br/>single-label only]
+      D3[AG News]
+      B1[whitespace]
+      B2[NLTK word_tokenize]
+      B3[NLTK TweetTokenizer]
+    end
+    subgraph M2["Module 2: LexFront lexical analyzer + DFA engine (done)"]
+      direction TB
+      SPEC[Token spec: 11 classes<br/>regex per class, priority order]
+      PLY[PLY lexer<br/>longest match, ties to earlier rule<br/>UNKNOWN error recovery]
+      NORM[Normalizer<br/>switchable rules + slang table]
+      SYM[(Symbol table)]
+      DFA[Own DFA engine<br/>regex parser, NFA, DFA, min DFA, scanner<br/>4 regular classes]
+      SPEC --> PLY --> NORM --> SYM
+      SPEC -.-> DFA
+      DFA -. agreement test .- PLY
+    end
+    subgraph EV["Shared evaluation (Module 1 + 2)"]
+      direction TB
+      TF[TF-IDF, tokenizer = fn]
+      C1[Majority baseline]
+      C2[Multinomial NB<br/>existing method]
+      C3[Logistic Regression]
+      MET[Accuracy + macro-F1<br/>results/*.json]
+      INT[Intrinsic metrics<br/>OOV, fertility, vocabulary, throughput]
+      TF --> C1 & C2 & C3 --> MET
+    end
+    subgraph M3["Module 3: LexFront + BPE hybrid (planned)"]
+      HYB[LexFront pre-tokenizer<br/>then BPE subwords]
+    end
+    subgraph M4["Module 4: ablation + statistical evaluation (planned)"]
+      ABL[Ablation of LexFront rules<br/>significance testing]
+    end
+    M1 --> EV
+    M2 --> EV
+    EV --> INT
+    M2 -.-> M3
+    EV -.-> M4
+    M3 -.-> M4
+    classDef planned stroke-dasharray: 5 5,fill:#f5f5f5,stroke:#888;
+    class HYB,ABL planned;
