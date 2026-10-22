@@ -6,7 +6,6 @@ its own JSON and prediction file under `<work>/`, so a dead session resumes; the
 """
 import hashlib
 import json
-import resource
 import time
 from datetime import datetime, timezone
 from pathlib import Path
@@ -18,6 +17,7 @@ from sklearn.model_selection import train_test_split
 from . import classifiers as clf_mod
 from . import large, pipeline, tuning
 from .metrics import classification_metrics
+from .peak_memory import peak_rss_gb
 from .tokenizers import build_tokenizer
 
 WORD_TOKENIZERS = large.TOKENIZERS
@@ -159,7 +159,7 @@ def run_units(ds, tokenizers, work_dir, seed: int = 0, force: bool = False, log=
                 records, preds = run_wide(ds, name, classifier, test_tokenizer, seed)
             record = {"run_id": uid, "tokenizer": name, "stage": stage, "n_train": len(ds.train_texts), "n_test": len(y_true),
                       "classifiers": records, "fingerprint": fingerprint, "wall_seconds": time.perf_counter() - start,
-                      "peak_rss_gb": resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 1e6,
+                      "peak_rss_gb": peak_rss_gb(),
                       "timestamp_utc": datetime.now(timezone.utc).isoformat(timespec="seconds"),
                       "environment": {**pipeline.environment(), "blas_threads": pipeline.BLAS_THREADS}}
             large.save_predictions(work / "predictions" / f"{uid}.json.gz", y_true, preds)

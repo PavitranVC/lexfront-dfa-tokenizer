@@ -2,6 +2,11 @@
 
 Newest first. Dates are the day the change was made (IST workday).
 
+## 2026-10-22 (local run support)
+- `feature/local-run`: `experiments/peak_memory.py` (portable peak-memory reading, no Unix-only `resource` import), `tests/test_peak_memory.py`,
+  `docs/LOCAL_RUN.md` (hardware, setup, commands, caveats). Found when a Windows dry run failed with `ModuleNotFoundError: No module named 'resource'`.
+  Checked on Linux only (the Windows branch of `peak_rss_gb` is untested); no metric or result changes, notebooks untouched.
+
 ## 2026-10-20 (repository tidy-up)
 - Branches renamed to a type/topic scheme (`audit/`, `docs/`, `feature/`, `fix/`); old names in the docs updated to match.
 - Review 1 and Review 2 reports (`report/`) merged to `main`. Review 2 report: `report/LexFront_Review2_Report.docx`.

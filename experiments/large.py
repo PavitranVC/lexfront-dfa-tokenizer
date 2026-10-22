@@ -13,7 +13,6 @@ import io
 import json
 import random
 import re
-import resource
 import time
 from dataclasses import dataclass
 from datetime import datetime, timezone
@@ -24,6 +23,7 @@ import numpy as np
 from . import classifiers as clf_mod
 from . import clean, data, pipeline, tuning
 from .metrics import classification_metrics
+from .peak_memory import peak_rss_gb
 from .tokenizers import build_tokenizer
 
 SENTIMENT140 = "bdanko/sentiment140"
@@ -289,7 +289,7 @@ def run_grid(ds: data.Dataset, tokenizers, ladder, work_dir, seed: int = 0, forc
                               "n_train": len(train_x), "n_test": len(y_true), "classifiers": records,
                               "throughput_test_docs": throughput, "fingerprint": fingerprint,
                               "wall_seconds": time.perf_counter() - start,
-                              "peak_rss_gb": resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 1e6,
+                              "peak_rss_gb": peak_rss_gb(),
                               "timestamp_utc": datetime.now(timezone.utc).isoformat(timespec="seconds"),
                               "environment": {**pipeline.environment(), "blas_threads": pipeline.BLAS_THREADS}}
                     if keep:
