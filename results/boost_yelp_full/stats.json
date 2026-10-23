@@ -1,0 +1,627 @@
+{
+ "config": {
+  "method": "percentile bootstrap over test examples, paired, chunked",
+  "n_boot": 2000,
+  "seed": 20261017,
+  "margin": 0.005,
+  "n_classes": 5,
+  "primary_metric": "accuracy",
+  "not_covered": "training randomness; selection noise on the validation slice; one run per cell"
+ },
+ "n_test": 49994,
+ "test_class_counts": [
+  9998,
+  9999,
+  10000,
+  9998,
+  9999
+ ],
+ "majority_accuracy": 0.20002400288034564,
+ "accuracy": {
+  "lexfront|anchor|nb": {
+   "accuracy": 0.5309237108453014,
+   "macro_f1": 0.5323744978815651,
+   "value": 0.5309237108453014,
+   "ci": [
+    0.526341660999,
+    0.535184722167
+   ]
+  },
+  "lexfront|anchor|lr": {
+   "accuracy": 0.5959915189822779,
+   "macro_f1": 0.594485926646058,
+   "value": 0.5959915189822779,
+   "ci": [
+    0.591730507661,
+    0.600333540025
+   ]
+  },
+  "lexfront|wide|lr": {
+   "accuracy": 0.6274552946353562,
+   "macro_f1": 0.6260032600035415,
+   "value": 0.6274552946353562,
+   "ci": [
+    0.623214785774,
+    0.631716305957
+   ]
+  },
+  "lexfront|wide|nb": {
+   "accuracy": 0.5911109333119975,
+   "macro_f1": 0.5921075747805233,
+   "value": 0.5911109333119975,
+   "ci": [
+    0.58682991959,
+    0.595671980638
+   ]
+  },
+  "nltk|anchor|nb": {
+   "accuracy": 0.5290634876185142,
+   "macro_f1": 0.5304541304018835,
+   "value": 0.5290634876185142,
+   "ci": [
+    0.524421930632,
+    0.533444013282
+   ]
+  },
+  "nltk|anchor|lr": {
+   "accuracy": 0.5956514781773813,
+   "macro_f1": 0.5939051650810018,
+   "value": 0.5956514781773813,
+   "ci": [
+    0.591270452454,
+    0.599932991959
+   ]
+  },
+  "nltk|wide|lr": {
+   "accuracy": 0.626735208224987,
+   "macro_f1": 0.6253323236672659,
+   "value": 0.626735208224987,
+   "ci": [
+    0.622594711365,
+    0.631196243549
+   ]
+  },
+  "nltk|wide|nb": {
+   "accuracy": 0.5919710365243829,
+   "macro_f1": 0.5928538938571931,
+   "value": 0.5919710365243829,
+   "ci": [
+    0.587610513262,
+    0.596313557627
+   ]
+  },
+  "tweet|anchor|nb": {
+   "accuracy": 0.5330239628755451,
+   "macro_f1": 0.5345436404808617,
+   "value": 0.5330239628755451,
+   "ci": [
+    0.528542925151,
+    0.537344981398
+   ]
+  },
+  "tweet|anchor|lr": {
+   "accuracy": 0.600132015841901,
+   "macro_f1": 0.5985586339444151,
+   "value": 0.600132015841901,
+   "ci": [
+    0.595951014122,
+    0.604294015282
+   ]
+  },
+  "tweet|wide|lr": {
+   "accuracy": 0.6289354722566708,
+   "macro_f1": 0.6276064250245835,
+   "value": 0.6289354722566708,
+   "ci": [
+    0.624714965796,
+    0.63335700284
+   ]
+  },
+  "tweet|wide|nb": {
+   "accuracy": 0.5941512981557787,
+   "macro_f1": 0.5950966026256681,
+   "value": 0.5941512981557787,
+   "ci": [
+    0.589849781974,
+    0.59859183102
+   ]
+  },
+  "whitespace|anchor|nb": {
+   "accuracy": 0.5310437252470297,
+   "macro_f1": 0.5328475506323815,
+   "value": 0.5310437252470297,
+   "ci": [
+    0.526443173181,
+    0.535464255711
+   ]
+  },
+  "whitespace|anchor|lr": {
+   "accuracy": 0.5903508421010522,
+   "macro_f1": 0.5883025770747323,
+   "value": 0.5903508421010522,
+   "ci": [
+    0.58613033564,
+    0.594571348562
+   ]
+  },
+  "whitespace|wide|lr": {
+   "accuracy": 0.6166940032803937,
+   "macro_f1": 0.6151300926062874,
+   "value": 0.6166940032803937,
+   "ci": [
+    0.612253470416,
+    0.621015021803
+   ]
+  },
+  "whitespace|wide|nb": {
+   "accuracy": 0.5853502420290435,
+   "macro_f1": 0.585972824298958,
+   "value": 0.5853502420290435,
+   "ci": [
+    0.581127235268,
+    0.589691262952
+   ]
+  }
+ },
+ "pairs": [
+  {
+   "name": "anchor: lexfront minus nltk",
+   "classifier": "lr",
+   "accuracy": {
+    "diff": 0.000340040805,
+    "ci": [
+     -0.002020242429,
+     0.002620314438
+    ],
+    "ci_excludes_zero": false,
+    "verdict": "within"
+   },
+   "macro_f1": {
+    "diff": 0.000580761565,
+    "ci": [
+     -0.001814194376,
+     0.002877091245
+    ],
+    "ci_excludes_zero": false,
+    "verdict": "within"
+   }
+  },
+  {
+   "name": "anchor: lexfront minus tweet",
+   "classifier": "lr",
+   "accuracy": {
+    "diff": -0.00414049686,
+    "ci": [
+     -0.005901208145,
+     -0.002319778373
+    ],
+    "ci_excludes_zero": true,
+    "verdict": "unclear"
+   },
+   "macro_f1": {
+    "diff": -0.004072707298,
+    "ci": [
+     -0.005886543645,
+     -0.002203333026
+    ],
+    "ci_excludes_zero": true,
+    "verdict": "unclear"
+   }
+  },
+  {
+   "name": "anchor: lexfront minus whitespace",
+   "classifier": "lr",
+   "accuracy": {
+    "diff": 0.005640676881,
+    "ci": [
+     0.002459795175,
+     0.008681041725
+    ],
+    "ci_excludes_zero": true,
+    "verdict": "unclear"
+   },
+   "macro_f1": {
+    "diff": 0.006183349571,
+    "ci": [
+     0.002979946352,
+     0.009290318775
+    ],
+    "ci_excludes_zero": true,
+    "verdict": "unclear"
+   }
+  },
+  {
+   "name": "wide: lexfront minus nltk",
+   "classifier": "lr",
+   "accuracy": {
+    "diff": 0.00072008641,
+    "ci": [
+     -0.001640196824,
+     0.003140376845
+    ],
+    "ci_excludes_zero": false,
+    "verdict": "within"
+   },
+   "macro_f1": {
+    "diff": 0.000670936336,
+    "ci": [
+     -0.001687384339,
+     0.003113813142
+    ],
+    "ci_excludes_zero": false,
+    "verdict": "within"
+   }
+  },
+  {
+   "name": "wide: lexfront minus tweet",
+   "classifier": "lr",
+   "accuracy": {
+    "diff": -0.001480177621,
+    "ci": [
+     -0.003720446454,
+     0.000740088811
+    ],
+    "ci_excludes_zero": false,
+    "verdict": "within"
+   },
+   "macro_f1": {
+    "diff": -0.001603165021,
+    "ci": [
+     -0.003856572248,
+     0.000626301902
+    ],
+    "ci_excludes_zero": false,
+    "verdict": "within"
+   }
+  },
+  {
+   "name": "wide: lexfront minus whitespace",
+   "classifier": "lr",
+   "accuracy": {
+    "diff": 0.010761291355,
+    "ci": [
+     0.007600912109,
+     0.013822158659
+    ],
+    "ci_excludes_zero": true,
+    "verdict": "beyond (up)"
+   },
+   "macro_f1": {
+    "diff": 0.010873167397,
+    "ci": [
+     0.007692109366,
+     0.013963552476
+    ],
+    "ci_excludes_zero": true,
+    "verdict": "beyond (up)"
+   }
+  },
+  {
+   "name": "gain of wide over default: whitespace",
+   "classifier": "lr",
+   "accuracy": {
+    "diff": 0.026343161179,
+    "ci": [
+     0.022681221747,
+     0.029984098092
+    ],
+    "ci_excludes_zero": true,
+    "verdict": "beyond (up)"
+   },
+   "macro_f1": {
+    "diff": 0.026827515532,
+    "ci": [
+     0.023090746931,
+     0.030533626478
+    ],
+    "ci_excludes_zero": true,
+    "verdict": "beyond (up)"
+   }
+  },
+  {
+   "name": "gain of wide over default: nltk",
+   "classifier": "lr",
+   "accuracy": {
+    "diff": 0.031083730048,
+    "ci": [
+     0.027483297996,
+     0.034945193423
+    ],
+    "ci_excludes_zero": true,
+    "verdict": "beyond (up)"
+   },
+   "macro_f1": {
+    "diff": 0.031427158586,
+    "ci": [
+     0.027823825029,
+     0.035312151223
+    ],
+    "ci_excludes_zero": true,
+    "verdict": "beyond (up)"
+   }
+  },
+  {
+   "name": "gain of wide over default: tweet",
+   "classifier": "lr",
+   "accuracy": {
+    "diff": 0.028803456415,
+    "ci": [
+     0.024942993159,
+     0.032683922071
+    ],
+    "ci_excludes_zero": true,
+    "verdict": "beyond (up)"
+   },
+   "macro_f1": {
+    "diff": 0.02904779108,
+    "ci": [
+     0.025143481691,
+     0.032898172879
+    ],
+    "ci_excludes_zero": true,
+    "verdict": "beyond (up)"
+   }
+  },
+  {
+   "name": "gain of wide over default: lexfront",
+   "classifier": "lr",
+   "accuracy": {
+    "diff": 0.031463775653,
+    "ci": [
+     0.027723326799,
+     0.035284234108
+    ],
+    "ci_excludes_zero": true,
+    "verdict": "beyond (up)"
+   },
+   "macro_f1": {
+    "diff": 0.031517333357,
+    "ci": [
+     0.027734343067,
+     0.035320018582
+    ],
+    "ci_excludes_zero": true,
+    "verdict": "beyond (up)"
+   }
+  },
+  {
+   "name": "anchor: lexfront minus nltk",
+   "classifier": "nb",
+   "accuracy": {
+    "diff": 0.001860223227,
+    "ci": [
+     -0.000360543265,
+     0.003960475257
+    ],
+    "ci_excludes_zero": false,
+    "verdict": "within"
+   },
+   "macro_f1": {
+    "diff": 0.00192036748,
+    "ci": [
+     -0.000301089136,
+     0.004005769985
+    ],
+    "ci_excludes_zero": false,
+    "verdict": "within"
+   }
+  },
+  {
+   "name": "anchor: lexfront minus tweet",
+   "classifier": "nb",
+   "accuracy": {
+    "diff": -0.00210025203,
+    "ci": [
+     -0.003600432052,
+     -0.000580069608
+    ],
+    "ci_excludes_zero": true,
+    "verdict": "within"
+   },
+   "macro_f1": {
+    "diff": -0.002169142599,
+    "ci": [
+     -0.003668989561,
+     -0.000665051608
+    ],
+    "ci_excludes_zero": true,
+    "verdict": "within"
+   }
+  },
+  {
+   "name": "anchor: lexfront minus whitespace",
+   "classifier": "nb",
+   "accuracy": {
+    "diff": -0.000120014402,
+    "ci": [
+     -0.003140376845,
+     0.002860343241
+    ],
+    "ci_excludes_zero": false,
+    "verdict": "within"
+   },
+   "macro_f1": {
+    "diff": -0.000473052751,
+    "ci": [
+     -0.003447922461,
+     0.002489503131
+    ],
+    "ci_excludes_zero": false,
+    "verdict": "within"
+   }
+  },
+  {
+   "name": "wide: lexfront minus nltk",
+   "classifier": "nb",
+   "accuracy": {
+    "diff": -0.000860103212,
+    "ci": [
+     -0.00278033364,
+     0.001101132136
+    ],
+    "ci_excludes_zero": false,
+    "verdict": "within"
+   },
+   "macro_f1": {
+    "diff": -0.000746319077,
+    "ci": [
+     -0.00263613438,
+     0.001238994406
+    ],
+    "ci_excludes_zero": false,
+    "verdict": "within"
+   }
+  },
+  {
+   "name": "wide: lexfront minus tweet",
+   "classifier": "nb",
+   "accuracy": {
+    "diff": -0.003040364844,
+    "ci": [
+     -0.004420530464,
+     -0.001700204024
+    ],
+    "ci_excludes_zero": true,
+    "verdict": "within"
+   },
+   "macro_f1": {
+    "diff": -0.002989027845,
+    "ci": [
+     -0.004355076401,
+     -0.001649640501
+    ],
+    "ci_excludes_zero": true,
+    "verdict": "within"
+   }
+  },
+  {
+   "name": "wide: lexfront minus whitespace",
+   "classifier": "nb",
+   "accuracy": {
+    "diff": 0.005760691283,
+    "ci": [
+     0.003160379246,
+     0.008461015322
+    ],
+    "ci_excludes_zero": true,
+    "verdict": "unclear"
+   },
+   "macro_f1": {
+    "diff": 0.006134750482,
+    "ci": [
+     0.00355081965,
+     0.00881896416
+    ],
+    "ci_excludes_zero": true,
+    "verdict": "unclear"
+   }
+  },
+  {
+   "name": "gain of wide over default: whitespace",
+   "classifier": "nb",
+   "accuracy": {
+    "diff": 0.054306516782,
+    "ci": [
+     0.050326039125,
+     0.058267492099
+    ],
+    "ci_excludes_zero": true,
+    "verdict": "beyond (up)"
+   },
+   "macro_f1": {
+    "diff": 0.053125273667,
+    "ci": [
+     0.04913757147,
+     0.057076378899
+    ],
+    "ci_excludes_zero": true,
+    "verdict": "beyond (up)"
+   }
+  },
+  {
+   "name": "gain of wide over default: nltk",
+   "classifier": "nb",
+   "accuracy": {
+    "diff": 0.062907548906,
+    "ci": [
+     0.05904608553,
+     0.066567988159
+    ],
+    "ci_excludes_zero": true,
+    "verdict": "beyond (up)"
+   },
+   "macro_f1": {
+    "diff": 0.062399763455,
+    "ci": [
+     0.058571571804,
+     0.06611708333
+    ],
+    "ci_excludes_zero": true,
+    "verdict": "beyond (up)"
+   }
+  },
+  {
+   "name": "gain of wide over default: tweet",
+   "classifier": "nb",
+   "accuracy": {
+    "diff": 0.06112733528,
+    "ci": [
+     0.057446893627,
+     0.064887786534
+    ],
+    "ci_excludes_zero": true,
+    "verdict": "beyond (up)"
+   },
+   "macro_f1": {
+    "diff": 0.060552962145,
+    "ci": [
+     0.056864834257,
+     0.064297281789
+    ],
+    "ci_excludes_zero": true,
+    "verdict": "beyond (up)"
+   }
+  },
+  {
+   "name": "gain of wide over default: lexfront",
+   "classifier": "nb",
+   "accuracy": {
+    "diff": 0.060187222467,
+    "ci": [
+     0.056446273553,
+     0.064107692923
+    ],
+    "ci_excludes_zero": true,
+    "verdict": "beyond (up)"
+   },
+   "macro_f1": {
+    "diff": 0.059733076899,
+    "ci": [
+     0.056003275859,
+     0.063630523644
+    ],
+    "ci_excludes_zero": true,
+    "verdict": "beyond (up)"
+   }
+  }
+ ],
+ "anchor_matches_committed": {},
+ "anchor_n_different_predictions": {},
+ "hypotheses": {
+  "HA2": {
+   "rule": "wide-tuned LR, lexfront minus nltk and minus tweet both 'within'",
+   "verdicts": {
+    "nltk": "within",
+    "tweet": "within"
+   },
+   "observed": true,
+   "opposite": false
+  },
+  "HA3": {
+   "rule": "spread (max - min over the 4 tokenizers, LR) smaller wide-tuned than default",
+   "wide_spread": 0.012241468976277092,
+   "default_spread": 0.009781173740848859,
+   "observed": false
+  }
+ }
+}

@@ -14,7 +14,7 @@ existing tokenizers with the classifier held fixed. Compiler Design course proje
 | Eight-dataset collection with fair tuning | done | `results/collection/REPORT.md` |
 | Sentiment140, 1.6 M tweets | done | `results/large/REPORT.md` |
 | Phase A: wider settings and character n-grams (Sentiment140) | done | `results/boost_sentiment140/REPORT.md` |
-| Phase D: Civil Comments, Amazon polarity, Yelp | code, protocol and notebooks ready; **full runs not yet done** | `docs/D_PROTOCOL.md`, `notebooks/README.md` |
+| Phase D: Civil Comments, Amazon polarity, Yelp | done (run on a local machine, see branch `feature/local-run` and `docs/LOCAL_RUN.md` there; Colab was too small for Yelp) | `results/boost_civil_comments/REPORT.md`, `results/boost_amazon_polarity/REPORT.md`, `results/boost_yelp_full/REPORT.md`, `docs/D_PROTOCOL.md` |
 
 Headline numbers (Sentiment140, Logistic Regression, test accuracy %; from the two reports above): at default settings whitespace 79.60, NLTK 79.88,
 TweetTokenizer 79.96, LexFront 79.85; with the wider validation-selected settings whitespace 81.68, NLTK 82.73, TweetTokenizer 82.50, LexFront 82.84; a

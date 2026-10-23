@@ -1,0 +1,69 @@
+{
+ "split": {
+  "hf_id": "google/civil_comments",
+  "repo_sha": "f2970eb3a55777454c94069077cc8d9b5866312d",
+  "n_rows_before_cap": {
+   "train": 1804874,
+   "test": 97320
+  },
+  "caps": {
+   "train": 500000,
+   "test": null
+  },
+  "seed": 0,
+  "author_grouped": false,
+  "label_note": "label = toxicity score >= 0.5 (the Jigsaw / Civil Comments convention: at least half of the raters called the comment toxic); toxic is the rare class"
+ },
+ "cleaning": {
+  "dataset": "civil_comments",
+  "rules": "empty -> conflicting -> duplicate -> test_in_train (see experiments/clean.py)",
+  "text_key": "lower-cased, whitespace collapsed; kept texts are the original strings",
+  "n_before": {
+   "train": 500000,
+   "test": 97320
+  },
+  "n_after": {
+   "train": 495469,
+   "test": 95942
+  },
+  "removed": {
+   "empty": {
+    "train": 0,
+    "test": 0
+   },
+   "conflicting": {
+    "train": 310,
+    "test": 54
+   },
+   "duplicate": {
+    "train": 4221,
+    "test": 540
+   },
+   "test_in_train": 784
+  },
+  "class_counts_before": {
+   "train": {
+    "0": 460219,
+    "1": 39781
+   },
+   "test": {
+    "0": 89543,
+    "1": 7777
+   }
+  },
+  "class_counts_after": {
+   "train": {
+    "0": 456048,
+    "1": 39421
+   },
+   "test": {
+    "0": 88284,
+    "1": 7658
+   }
+  },
+  "classes_missing_after": {
+   "train": [],
+   "test": []
+  }
+ }
+}

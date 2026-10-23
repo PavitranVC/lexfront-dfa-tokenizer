@@ -78,6 +78,7 @@ rows = [  # label, diff, lo, hi
  ("tweet_eval sentiment (tuned)", 0.36, -0.28, 0.98), ("tweet_eval emotion (tuned)", 0.00, -1.97, 1.83), ("tweet_eval irony (tuned)", 3.06, 0.00, 6.25),
  ("tweet_eval hate (tuned)", -0.66, -1.68, 0.29), ("tweet_eval offensive (tuned)", -0.24, -1.54, 1.07),
  ("Sentiment140 1.6M (wide)", 0.11, -0.04, 0.25), ("Civil Comments (wide)", -0.00, -0.08, 0.07), ("Amazon polarity (wide)", 0.46, 0.34, 0.57),
+ ("Yelp 5 classes (wide)", 0.07, -0.16, 0.31),
 ]
 fig, ax = plt.subplots(figsize=(9, 5))
 y = np.arange(len(rows))
