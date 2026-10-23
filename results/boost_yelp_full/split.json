@@ -1,0 +1,81 @@
+{
+ "split": {
+  "hf_id": "Yelp/yelp_review_full",
+  "repo_sha": "c1f9ee939b7d05667af864ee1cb066393154bf85",
+  "n_rows_before_cap": {
+   "train": 650000,
+   "test": 50000
+  },
+  "caps": {
+   "train": 300000,
+   "test": 50000
+  },
+  "seed": 0,
+  "author_grouped": false,
+  "label_note": "five classes = star rating, balanced; the official Yelp license is 'other' (academic use) - check before reuse"
+ },
+ "cleaning": {
+  "dataset": "yelp_full",
+  "rules": "empty -> conflicting -> duplicate -> test_in_train (see experiments/clean.py)",
+  "text_key": "lower-cased, whitespace collapsed; kept texts are the original strings",
+  "n_before": {
+   "train": 300000,
+   "test": 50000
+  },
+  "n_after": {
+   "train": 299979,
+   "test": 49994
+  },
+  "removed": {
+   "empty": {
+    "train": 0,
+    "test": 0
+   },
+   "conflicting": {
+    "train": 12,
+    "test": 0
+   },
+   "duplicate": {
+    "train": 9,
+    "test": 0
+   },
+   "test_in_train": 6
+  },
+  "class_counts_before": {
+   "train": {
+    "0": 59805,
+    "1": 60055,
+    "2": 59883,
+    "3": 60099,
+    "4": 60158
+   },
+   "test": {
+    "0": 10000,
+    "1": 10000,
+    "2": 10000,
+    "3": 10000,
+    "4": 10000
+   }
+  },
+  "class_counts_after": {
+   "train": {
+    "0": 59796,
+    "1": 60052,
+    "2": 59880,
+    "3": 60095,
+    "4": 60156
+   },
+   "test": {
+    "0": 9998,
+    "1": 9999,
+    "2": 10000,
+    "3": 9998,
+    "4": 9999
+   }
+  },
+  "classes_missing_after": {
+   "train": [],
+   "test": []
+  }
+ }
+}
