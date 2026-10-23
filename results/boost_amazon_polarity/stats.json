@@ -1,0 +1,624 @@
+{
+ "config": {
+  "method": "percentile bootstrap over test examples, paired, chunked",
+  "n_boot": 2000,
+  "seed": 20261017,
+  "margin": 0.005,
+  "n_classes": 2,
+  "primary_metric": "accuracy",
+  "not_covered": "training randomness; selection noise on the validation slice; one run per cell"
+ },
+ "n_test": 99996,
+ "test_class_counts": [
+  49955,
+  50041
+ ],
+ "majority_accuracy": 0.500430017200688,
+ "accuracy": {
+  "lexfront|anchor|nb": {
+   "accuracy": 0.8466838673546941,
+   "macro_f1": 0.8466309745971301,
+   "value": 0.8466838673546941,
+   "ci": [
+    0.844453528141,
+    0.848834203368
+   ]
+  },
+  "lexfront|anchor|lr": {
+   "accuracy": 0.905966238649546,
+   "macro_f1": 0.9059662352546556,
+   "value": 0.905966238649546,
+   "ci": [
+    0.904056162246,
+    0.907746309852
+   ]
+  },
+  "lexfront|wide|lr": {
+   "accuracy": 0.937707508300332,
+   "macro_f1": 0.9377072149463686,
+   "value": 0.937707508300332,
+   "ci": [
+    0.936217198688,
+    0.939277821113
+   ]
+  },
+  "lexfront|wide|nb": {
+   "accuracy": 0.9131065242609704,
+   "macro_f1": 0.9130946064836962,
+   "value": 0.9131065242609704,
+   "ci": [
+    0.911456458258,
+    0.914766590664
+   ]
+  },
+  "nltk|anchor|nb": {
+   "accuracy": 0.8449837993519741,
+   "macro_f1": 0.8449362529880008,
+   "value": 0.8449837993519741,
+   "ci": [
+    0.842813462539,
+    0.847163886555
+   ]
+  },
+  "nltk|anchor|lr": {
+   "accuracy": 0.9050962038481539,
+   "macro_f1": 0.90509620248143,
+   "value": 0.9050962038481539,
+   "ci": [
+    0.903155876235,
+    0.906896275851
+   ]
+  },
+  "nltk|wide|lr": {
+   "accuracy": 0.9331573262930517,
+   "macro_f1": 0.9331572791250544,
+   "value": 0.9331573262930517,
+   "ci": [
+    0.931577013081,
+    0.934727389096
+   ]
+  },
+  "nltk|wide|nb": {
+   "accuracy": 0.9124264970598824,
+   "macro_f1": 0.9124202431459905,
+   "value": 0.9124264970598824,
+   "ci": [
+    0.910756430257,
+    0.914116564663
+   ]
+  },
+  "tweet|anchor|nb": {
+   "accuracy": 0.8463738549541981,
+   "macro_f1": 0.8463202252744855,
+   "value": 0.8463738549541981,
+   "ci": [
+    0.844183767351,
+    0.848553942158
+   ]
+  },
+  "tweet|anchor|lr": {
+   "accuracy": 0.9047561902476099,
+   "macro_f1": 0.9047561734452547,
+   "value": 0.9047561902476099,
+   "ci": [
+    0.902846113845,
+    0.906656516261
+   ]
+  },
+  "tweet|wide|lr": {
+   "accuracy": 0.93778751150046,
+   "macro_f1": 0.9377873696380927,
+   "value": 0.93778751150046,
+   "ci": [
+    0.936307202288,
+    0.939277821113
+   ]
+  },
+  "tweet|wide|nb": {
+   "accuracy": 0.9135165406616265,
+   "macro_f1": 0.9135072566873808,
+   "value": 0.9135165406616265,
+   "ci": [
+    0.911816222649,
+    0.915226859074
+   ]
+  },
+  "whitespace|anchor|nb": {
+   "accuracy": 0.8534441377655106,
+   "macro_f1": 0.8533958391925385,
+   "value": 0.8534441377655106,
+   "ci": [
+    0.851333803352,
+    0.855634725389
+   ]
+  },
+  "whitespace|anchor|lr": {
+   "accuracy": 0.9037161486459458,
+   "macro_f1": 0.9037161467586314,
+   "value": 0.9037161486459458,
+   "ci": [
+    0.901856074243,
+    0.905476469059
+   ]
+  },
+  "whitespace|wide|lr": {
+   "accuracy": 0.9327673106924277,
+   "macro_f1": 0.932767180781505,
+   "value": 0.9327673106924277,
+   "ci": [
+    0.93120724829,
+    0.934307622305
+   ]
+  },
+  "whitespace|wide|nb": {
+   "accuracy": 0.9100864034561382,
+   "macro_f1": 0.9100830463988755,
+   "value": 0.9100864034561382,
+   "ci": [
+    0.908296081843,
+    0.911796971879
+   ]
+  }
+ },
+ "pairs": [
+  {
+   "name": "anchor: lexfront minus nltk",
+   "classifier": "lr",
+   "accuracy": {
+    "diff": 0.000870034801,
+    "ci": [
+     5.975239e-05,
+     0.001660066403
+    ],
+    "ci_excludes_zero": true,
+    "verdict": "within"
+   },
+   "macro_f1": {
+    "diff": 0.000870032773,
+    "ci": [
+     5.9478978e-05,
+     0.001660035798
+    ],
+    "ci_excludes_zero": true,
+    "verdict": "within"
+   }
+  },
+  {
+   "name": "anchor: lexfront minus tweet",
+   "classifier": "lr",
+   "accuracy": {
+    "diff": 0.001210048402,
+    "ci": [
+     0.0003100124,
+     0.002030331213
+    ],
+    "ci_excludes_zero": true,
+    "verdict": "within"
+   },
+   "macro_f1": {
+    "diff": 0.001210061809,
+    "ci": [
+     0.000310257162,
+     0.002030625327
+    ],
+    "ci_excludes_zero": true,
+    "verdict": "within"
+   }
+  },
+  {
+   "name": "anchor: lexfront minus whitespace",
+   "classifier": "lr",
+   "accuracy": {
+    "diff": 0.002250090004,
+    "ci": [
+     0.001030041202,
+     0.003490389616
+    ],
+    "ci_excludes_zero": true,
+    "verdict": "within"
+   },
+   "macro_f1": {
+    "diff": 0.002250088496,
+    "ci": [
+     0.00103003356,
+     0.003491175516
+    ],
+    "ci_excludes_zero": true,
+    "verdict": "within"
+   }
+  },
+  {
+   "name": "wide: lexfront minus nltk",
+   "classifier": "lr",
+   "accuracy": {
+    "diff": 0.004550182007,
+    "ci": [
+     0.003409886395,
+     0.005670476819
+    ],
+    "ci_excludes_zero": true,
+    "verdict": "unclear"
+   },
+   "macro_f1": {
+    "diff": 0.004549935821,
+    "ci": [
+     0.003409642581,
+     0.005670717632
+    ],
+    "ci_excludes_zero": true,
+    "verdict": "unclear"
+   }
+  },
+  {
+   "name": "wide: lexfront minus tweet",
+   "classifier": "lr",
+   "accuracy": {
+    "diff": -8.00032e-05,
+    "ci": [
+     -0.000870034801,
+     0.000680027201
+    ],
+    "ci_excludes_zero": false,
+    "verdict": "within"
+   },
+   "macro_f1": {
+    "diff": -8.0154692e-05,
+    "ci": [
+     -0.000870095817,
+     0.000679554967
+    ],
+    "ci_excludes_zero": false,
+    "verdict": "within"
+   }
+  },
+  {
+   "name": "wide: lexfront minus whitespace",
+   "classifier": "lr",
+   "accuracy": {
+    "diff": 0.004940197608,
+    "ci": [
+     0.003870154806,
+     0.00602049082
+    ],
+    "ci_excludes_zero": true,
+    "verdict": "unclear"
+   },
+   "macro_f1": {
+    "diff": 0.004940034165,
+    "ci": [
+     0.00387034091,
+     0.006020559227
+    ],
+    "ci_excludes_zero": true,
+    "verdict": "unclear"
+   }
+  },
+  {
+   "name": "gain of wide over default: whitespace",
+   "classifier": "lr",
+   "accuracy": {
+    "diff": 0.029051162046,
+    "ci": [
+     0.027441097644,
+     0.030641225649
+    ],
+    "ci_excludes_zero": true,
+    "verdict": "beyond (up)"
+   },
+   "macro_f1": {
+    "diff": 0.029051034023,
+    "ci": [
+     0.027441084806,
+     0.030641219274
+    ],
+    "ci_excludes_zero": true,
+    "verdict": "beyond (up)"
+   }
+  },
+  {
+   "name": "gain of wide over default: nltk",
+   "classifier": "lr",
+   "accuracy": {
+    "diff": 0.028061122445,
+    "ci": [
+     0.026440807632,
+     0.029591433657
+    ],
+    "ci_excludes_zero": true,
+    "verdict": "beyond (up)"
+   },
+   "macro_f1": {
+    "diff": 0.028061076644,
+    "ci": [
+     0.026441584321,
+     0.029591792804
+    ],
+    "ci_excludes_zero": true,
+    "verdict": "beyond (up)"
+   }
+  },
+  {
+   "name": "gain of wide over default: tweet",
+   "classifier": "lr",
+   "accuracy": {
+    "diff": 0.033031321253,
+    "ci": [
+     0.03136125445,
+     0.034651636065
+    ],
+    "ci_excludes_zero": true,
+    "verdict": "beyond (up)"
+   },
+   "macro_f1": {
+    "diff": 0.033031196193,
+    "ci": [
+     0.031362194901,
+     0.034652549056
+    ],
+    "ci_excludes_zero": true,
+    "verdict": "beyond (up)"
+   }
+  },
+  {
+   "name": "gain of wide over default: lexfront",
+   "classifier": "lr",
+   "accuracy": {
+    "diff": 0.031741269651,
+    "ci": [
+     0.030171206848,
+     0.033421836873
+    ],
+    "ci_excludes_zero": true,
+    "verdict": "beyond (up)"
+   },
+   "macro_f1": {
+    "diff": 0.031740979692,
+    "ci": [
+     0.030171872901,
+     0.033421735329
+    ],
+    "ci_excludes_zero": true,
+    "verdict": "beyond (up)"
+   }
+  },
+  {
+   "name": "anchor: lexfront minus nltk",
+   "classifier": "nb",
+   "accuracy": {
+    "diff": 0.001700068003,
+    "ci": [
+     0.000799781991,
+     0.002610104404
+    ],
+    "ci_excludes_zero": true,
+    "verdict": "within"
+   },
+   "macro_f1": {
+    "diff": 0.001694721609,
+    "ci": [
+     0.000790555728,
+     0.002602409355
+    ],
+    "ci_excludes_zero": true,
+    "verdict": "within"
+   }
+  },
+  {
+   "name": "anchor: lexfront minus tweet",
+   "classifier": "nb",
+   "accuracy": {
+    "diff": 0.0003100124,
+    "ci": [
+     -0.000480019201,
+     0.001060292412
+    ],
+    "ci_excludes_zero": false,
+    "verdict": "within"
+   },
+   "macro_f1": {
+    "diff": 0.000310749323,
+    "ci": [
+     -0.000479526858,
+     0.001064347925
+    ],
+    "ci_excludes_zero": false,
+    "verdict": "within"
+   }
+  },
+  {
+   "name": "anchor: lexfront minus whitespace",
+   "classifier": "nb",
+   "accuracy": {
+    "diff": -0.006760270411,
+    "ci": [
+     -0.008080323213,
+     -0.005440217609
+    ],
+    "ci_excludes_zero": true,
+    "verdict": "beyond (down)"
+   },
+   "macro_f1": {
+    "diff": -0.006764864595,
+    "ci": [
+     -0.008083583187,
+     -0.005442142191
+    ],
+    "ci_excludes_zero": true,
+    "verdict": "beyond (down)"
+   }
+  },
+  {
+   "name": "wide: lexfront minus nltk",
+   "classifier": "nb",
+   "accuracy": {
+    "diff": 0.000680027201,
+    "ci": [
+     -0.000150006,
+     0.001500060002
+    ],
+    "ci_excludes_zero": false,
+    "verdict": "within"
+   },
+   "macro_f1": {
+    "diff": 0.000674363338,
+    "ci": [
+     -0.000154526348,
+     0.001493168286
+    ],
+    "ci_excludes_zero": false,
+    "verdict": "within"
+   }
+  },
+  {
+   "name": "wide: lexfront minus tweet",
+   "classifier": "nb",
+   "accuracy": {
+    "diff": -0.000410016401,
+    "ci": [
+     -0.001040291612,
+     0.00024025961
+    ],
+    "ci_excludes_zero": false,
+    "verdict": "within"
+   },
+   "macro_f1": {
+    "diff": -0.000412650204,
+    "ci": [
+     -0.001044710401,
+     0.000238190723
+    ],
+    "ci_excludes_zero": false,
+    "verdict": "within"
+   }
+  },
+  {
+   "name": "wide: lexfront minus whitespace",
+   "classifier": "nb",
+   "accuracy": {
+    "diff": 0.003020120805,
+    "ci": [
+     0.002020080803,
+     0.004060162406
+    ],
+    "ci_excludes_zero": true,
+    "verdict": "within"
+   },
+   "macro_f1": {
+    "diff": 0.003011560085,
+    "ci": [
+     0.002012661968,
+     0.004045191742
+    ],
+    "ci_excludes_zero": true,
+    "verdict": "within"
+   }
+  },
+  {
+   "name": "gain of wide over default: whitespace",
+   "classifier": "nb",
+   "accuracy": {
+    "diff": 0.056642265691,
+    "ci": [
+     0.054812192488,
+     0.058492589704
+    ],
+    "ci_excludes_zero": true,
+    "verdict": "beyond (up)"
+   },
+   "macro_f1": {
+    "diff": 0.056687207206,
+    "ci": [
+     0.054863392905,
+     0.058541860831
+    ],
+    "ci_excludes_zero": true,
+    "verdict": "beyond (up)"
+   }
+  },
+  {
+   "name": "gain of wide over default: nltk",
+   "classifier": "nb",
+   "accuracy": {
+    "diff": 0.067442697708,
+    "ci": [
+     0.065522370895,
+     0.069242769711
+    ],
+    "ci_excludes_zero": true,
+    "verdict": "beyond (up)"
+   },
+   "macro_f1": {
+    "diff": 0.067483990158,
+    "ci": [
+     0.065566163196,
+     0.06928725783
+    ],
+    "ci_excludes_zero": true,
+    "verdict": "beyond (up)"
+   }
+  },
+  {
+   "name": "gain of wide over default: tweet",
+   "classifier": "nb",
+   "accuracy": {
+    "diff": 0.067142685707,
+    "ci": [
+     0.065222608904,
+     0.06885325413
+    ],
+    "ci_excludes_zero": true,
+    "verdict": "beyond (up)"
+   },
+   "macro_f1": {
+    "diff": 0.067187031413,
+    "ci": [
+     0.065271866975,
+     0.068905225272
+    ],
+    "ci_excludes_zero": true,
+    "verdict": "beyond (up)"
+   }
+  },
+  {
+   "name": "gain of wide over default: lexfront",
+   "classifier": "nb",
+   "accuracy": {
+    "diff": 0.066422656906,
+    "ci": [
+     0.064612584503,
+     0.068213228529
+    ],
+    "ci_excludes_zero": true,
+    "verdict": "beyond (up)"
+   },
+   "macro_f1": {
+    "diff": 0.066463631887,
+    "ci": [
+     0.064658930824,
+     0.068258416363
+    ],
+    "ci_excludes_zero": true,
+    "verdict": "beyond (up)"
+   }
+  }
+ ],
+ "anchor_matches_committed": {},
+ "anchor_n_different_predictions": {},
+ "hypotheses": {
+  "HA2": {
+   "rule": "wide-tuned LR, lexfront minus nltk and minus tweet both 'within'",
+   "verdicts": {
+    "nltk": "unclear",
+    "tweet": "within"
+   },
+   "observed": false,
+   "opposite": false
+  },
+  "HA3": {
+   "rule": "spread (max - min over the 4 tokenizers, LR) smaller wide-tuned than default",
+   "wide_spread": 0.005020200808032338,
+   "default_spread": 0.0022500900036001026,
+   "observed": false
+  }
+ }
+}
