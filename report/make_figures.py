@@ -21,7 +21,7 @@ box(22, 6, 40, 14, "Module 3: normalizer + symbol table\nsix switchable rules\n(
 box(68, 6, 28, 14, "Module 4: subword stage\nBPE | LexFront+BPE hybrid\nWordPiece | Unigram", fc="#efdcf0")
 box(68, 28, 18, 10, "TF-IDF\n(min_df=2)", fc="#f2f2f2")
 box(90, 28, 19, 10, "Classifier\nNaive Bayes /\nLogistic Regression", fc="#f2f2f2")
-box(68, 46, 41, 12, "Evaluation: accuracy, macro-F1,\nbootstrap CIs, McNemar, OOV, vocabulary", fc="#f2f2f2")
+box(68, 46, 41, 12, "Module 5 + evaluation: tuned grids, size ladder,\nnoise test; accuracy, macro-F1, bootstrap CIs, OOV", fc="#f2f2f2", fs=8.5)
 
 arrow(17, 33, 22, 52)      # raw -> M1
 arrow(17, 31, 22, 33)      # raw -> M2
@@ -71,3 +71,20 @@ for ax, (ds, v) in zip(axs, data.items()):
     ax.set_title(ds); ax.set_ylabel("accuracy (%)")
 plt.tight_layout(); plt.savefig("figures/subword.png", dpi=200); plt.close()
 print("ok")
+
+# ---------- forest plot: LexFront minus NLTK (LR) across datasets ----------
+rows = [  # label, diff, lo, hi
+ ("tweet_topic (tuned)", -0.32, -1.15, 0.47), ("go_emotions (tuned)", 0.04, -0.44, 0.55), ("ag_news (tuned)", 0.07, -0.21, 0.34),
+ ("tweet_eval sentiment (tuned)", 0.36, -0.28, 0.98), ("tweet_eval emotion (tuned)", 0.00, -1.97, 1.83), ("tweet_eval irony (tuned)", 3.06, 0.00, 6.25),
+ ("tweet_eval hate (tuned)", -0.66, -1.68, 0.29), ("tweet_eval offensive (tuned)", -0.24, -1.54, 1.07),
+ ("Sentiment140 1.6M (wide)", 0.11, -0.04, 0.25), ("Civil Comments (wide)", -0.00, -0.08, 0.07), ("Amazon polarity (wide)", 0.46, 0.34, 0.57),
+]
+fig, ax = plt.subplots(figsize=(9, 5))
+y = np.arange(len(rows))
+d = np.array([r[1] for r in rows]); lo = np.array([r[2] for r in rows]); hi = np.array([r[3] for r in rows])
+ax.axvspan(-0.5, 0.5, color="#dfeedd", alpha=.7, label="practical margin (+-0.5 points)")
+ax.errorbar(d, y, xerr=[d-lo, hi-d], fmt="o", color="#1f5fa8", ecolor="#7aa6d6", capsize=3)
+ax.axvline(0, color="#888888", lw=1)
+ax.set_yticks(y); ax.set_yticklabels([r[0] for r in rows]); ax.invert_yaxis()
+ax.set_xlabel("LexFront+LR minus NLTK+LR, accuracy points [95% CI]"); ax.legend(loc="lower right", fontsize=8); ax.grid(axis="x", alpha=.3)
+plt.tight_layout(); plt.savefig("figures/forest.png", dpi=200); plt.close()
