@@ -255,7 +255,7 @@ The system is written in Python and every number below was read from the JSON re
 \subsection{Dataset description}\label{sec:4.1}
 We used English datasets that differ in style and size, in three groups. The core group has three datasets used in Modules 1 to 4: tweet\_topic \cite{r40} has tweets labelled with six topics, go\_emotions \cite{r41} has Reddit comments labelled with 28 emotion classes (we kept only the single-label examples), and ag\_news \cite{r42} has news articles in four categories. The first two are noisy and informal, while ag\_news is relatively clean, which gives a useful contrast. The collection group adds five tweet\_eval tasks (sentiment, emotion, irony, hate and offensive language), so that together with the core datasets there are eight cleaned datasets. The large group has Sentiment140 (1.6 million tweets, split by user), Civil Comments (comments with a toxicity label, where the toxic class is rare), Amazon polarity (product reviews) and Yelp (reviews with five star classes, which tests a many-class problem). Table~\ref{tab:1} lists the core and large datasets, and the last column is the share of the largest class in the test set, which is also the accuracy of the majority baseline. For the large datasets the sizes are after cleaning and, for Civil Comments and Amazon polarity, after taking a seeded random sample of about 500,000 training examples (300,000 training and 50,000 test examples for Yelp).
 
-\begin{table*}[!t]
+\begin{table*}[!tb]
 \caption{Datasets used}\label{tab:1}
 \centering
 \scriptsize
@@ -282,7 +282,7 @@ Table~\ref{tab:2} gives accuracy and macro-F1 for the three existing tokenizers 
 \par\noindent\textit{Automaton sizes.}
 Table~\ref{tab:3} shows how big each automaton is. The four classes are small. The combined automaton goes from 43 NFA states to 12 DFA states, and minimization brings it down to 10. WORD shrinks from 3 DFA states to 2 and EMOTICON from 6 to 5, so minimization does remove real redundancy. We also compiled ELONGATED by spelling it out as 26 separate branches, only to see what happens. It is not part of LexFront, but it shows how fast the construction can grow, from 221 NFA states to 157 DFA states and 54 after minimization.
 
-\begin{table*}[!t]
+\begin{table*}[!tb]
 \caption{Automaton sizes}\label{tab:3}
 \centering
 \scriptsize
@@ -341,7 +341,7 @@ The first question about the earlier results is whether they depend on the defau
 \subsection{Module 5: Large-scale test on Sentiment140}\label{sec:4.7}
 Sentiment140 has 1.6 million tweets, which is enough to separate small differences from noise. We split by user (5\% of users held out, none in both splits), cleaned the data, and ran every tokenizer at default, validation-tuned and wide-tuned settings. The first part of Table~\ref{tab:10} is Logistic Regression and the second is Naive Bayes. At default settings the four tokenizers are close, with LexFront at 79.85 against 79.88 for NLTK. With tuned settings every tokenizer gains about 2 to 3 points, and LexFront is highest by a small amount (82.84 against 82.73 for NLTK with the wide setting). The paired differences are small. For Logistic Regression, LexFront minus NLTK is $-$0.03 [$-$0.16, +0.10] at default settings, +0.17 [0.00, +0.34] tuned and +0.11 [$-$0.04, +0.25] wide, all inside the 0.5-point margin. The size ladder shows the same: the mean LexFront minus NLTK gap is +0.12 at 10,000 training examples, +0.10 at 100,000, +0.09 at one million and $-$0.03 on the full set, so it shrinks toward zero as data grows.
 
-\begin{table*}[!t]
+\begin{table*}[!tb]
 \caption{Sentiment140 test accuracy (\%), word tokenizers and the character n-gram baseline}\label{tab:10}
 \centering
 \scriptsize
@@ -371,7 +371,7 @@ To see whether Sentiment140 is typical, we ran the same protocol on three more l
 
 Yelp has five star classes (balanced, so the majority class gives 20.00\%), which makes it the one many-class large test. The result is again the same. With wide settings and Logistic Regression, LexFront minus NLTK is +0.07 points [$-$0.16, +0.31] and LexFront minus TweetTokenizer is $-$0.15 [$-$0.37, +0.07], both inside the margin, while LexFront is +1.08 [+0.76, +1.38] ahead of whitespace splitting, which is beyond the margin. With Naive Bayes, LexFront minus NLTK is $-$0.09 [$-$0.28, +0.11]. Wide settings add +2.63 to +3.15 points for Logistic Regression and +5.4 to +6.3 for Naive Bayes compared with default settings, again much more than any difference between the word tokenizers.
 
-\begin{table*}[!t]
+\begin{table*}[!tb]
 \caption{Wide-tuned test results, accuracy / macro-F1 (\%)}\label{tab:12}
 \centering
 \scriptsize
@@ -411,7 +411,7 @@ This section pulls the comparison together. We use two metrics, accuracy and mac
 Fig.~\ref{fig:6} shows the headline comparison, which is the same one as in Table~\ref{tab:5}. The proposed setup is higher on go\_emotions and ag\_news and about level on tweet\_topic in accuracy. In macro-F1 it is higher on all three, by 7.62 points on tweet\_topic and 29.09 on go\_emotions. The tokenizer-only comparison in Table~\ref{tab:13} shows where that comes from.
 
 \subsection{Separating the tokenizer from the classifier}\label{sec:5.2}
-\begin{table*}[!t]
+\begin{table*}[!tb]
 \caption{Paired differences, accuracy points [95\% CI]}\label{tab:13}
 \centering
 \scriptsize
@@ -447,7 +447,7 @@ On the intrinsic side, LexFront has the lowest OOV rate and the smallest vocabul
 \subsection{Where the accuracy comes from}\label{sec:5.5}
 Table~\ref{tab:14} compares the size of the different changes we tried. The pattern is consistent across datasets. The classifier and its tuning move accuracy by several points, and the tokenizer moves it by a fraction of a point once the classifier is tuned. This is the main finding of the project, and it is more useful than a single headline number.
 
-\begin{table*}[!t]
+\begin{table*}[!tb]
 \caption{Size of each change in accuracy points (from the tables above)}\label{tab:14}
 \centering
 \footnotesize
@@ -469,7 +469,7 @@ Character n-grams versus LexFront (Sentiment140) & $-$2.74 (Logistic Regression)
 \subsection{Hypotheses written before the runs}\label{sec:5.6}
 Because we wrote hypotheses and a decision rule before each large run, we can say which ones held. Table~\ref{tab:15} lists them. Several of our own expectations were not supported, and we report them as such. For example, we expected wider tuning to push every tokenizer beyond the earlier tuned setting (HA1), and it did not, and we expected the character n-gram baseline to be at least as good as LexFront (HA4), and it was clearly worse.
 
-\begin{table*}[!t]
+\begin{table*}[!tb]
 \caption{Outcome of the pre-registered hypotheses}\label{tab:15}
 \centering
 \footnotesize
@@ -503,21 +503,12 @@ On the question we started with, the answer is that a compiler-style lexer is co
 
 The main limits are one training run per cell, English-only data, and no transformer baseline. Natural next steps are repeating the large runs with other random seeds, running the character baseline on the two newer datasets, testing across domains (training on one source and testing on another), and trying a tweet-trained transformer model, which would use its own tokenizer and therefore test a different question.
 
-\appendices
-\section{Additional results}\label{sec:app}
-The tables and figures below give the full numbers behind the results discussed in the main text.
-
-\begin{figure*}[!tbp]
+\begin{table*}[!t]
 \centering
-\includegraphics[width=\textwidth]{hq_module1_accuracy}
-\caption{Accuracy of the existing tokenizers}\label{fig:2}
-\end{figure*}
-
-\begin{figure*}[!tbp]
-\centering
-\includegraphics[width=\textwidth]{hq_intrinsic_metrics}
-\caption{OOV rate, fertility and vocabulary size by tokenizer}\label{fig:8}
-\end{figure*}
+{\footnotesize APPENDIX A}\\[1pt]{\footnotesize\textsc{Additional results}}\par\vspace{6pt}
+\includegraphics[width=0.74\textwidth]{hq_module1_accuracy}\par\refstepcounter{figure}\label{fig:2}{\footnotesize Fig.~\thefigure.\ Accuracy of the existing tokenizers}\par\vspace{6pt}
+\includegraphics[width=0.74\textwidth]{hq_intrinsic_metrics}\par\refstepcounter{figure}\label{fig:8}{\footnotesize Fig.~\thefigure.\ OOV rate, fertility and vocabulary size by tokenizer}\par\vspace{6pt}
+\end{table*}
 
 \begin{table*}[!t]
 \centering
