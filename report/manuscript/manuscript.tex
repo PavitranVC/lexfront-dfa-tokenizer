@@ -507,9 +507,22 @@ The main limits are one training run per cell, English-only data, and no transfo
 \section{Additional results}\label{sec:app}
 The tables and figures below give the full numbers behind the results discussed in the main text.
 
-\begin{table}[!tbp]
-\caption{Accuracy / macro-F1 (\%), existing tokenizers}\label{tab:2}
+\begin{figure*}[!tbp]
 \centering
+\includegraphics[width=\textwidth]{hq_module1_accuracy}
+\caption{Accuracy of the existing tokenizers}\label{fig:2}
+\end{figure*}
+
+\begin{figure*}[!tbp]
+\centering
+\includegraphics[width=\textwidth]{hq_intrinsic_metrics}
+\caption{OOV rate, fertility and vocabulary size by tokenizer}\label{fig:8}
+\end{figure*}
+
+\begin{table*}[!t]
+\centering
+\begin{minipage}[t]{0.485\textwidth}
+\refstepcounter{table}\label{tab:2}\begin{center}{\footnotesize TABLE~\thetable}\\[1pt]{\footnotesize\textsc{Accuracy / macro-F1 (\%), existing tokenizers}}\\[3pt]
 \scriptsize
 \setlength{\tabcolsep}{3pt}
 \adjustbox{max width=\columnwidth}{%
@@ -529,17 +542,8 @@ ag\_news & tweet & 25.00 / 10.00 & 90.22 / 90.20 & 91.84 / 91.83 \\
 \bottomrule
 \end{tabular}
 }
-\end{table}
-
-\begin{figure*}[!tbp]
-\centering
-\includegraphics[width=\textwidth]{hq_module1_accuracy}
-\caption{Accuracy of the existing tokenizers}\label{fig:2}
-\end{figure*}
-
-\begin{table}[!tbp]
-\caption{Intrinsic metrics of the word-level tokenizers}\label{tab:4}
-\centering
+\end{center}\vspace{4pt}
+\refstepcounter{table}\label{tab:4}\begin{center}{\footnotesize TABLE~\thetable}\\[1pt]{\footnotesize\textsc{Intrinsic metrics of the word-level tokenizers}}\\[3pt]
 \scriptsize
 \setlength{\tabcolsep}{3pt}
 \adjustbox{max width=\columnwidth}{%
@@ -562,11 +566,8 @@ ag\_news & lexfront & 0.48 & 1.207 & 65,337 \\
 \bottomrule
 \end{tabular}
 }
-\end{table}
-
-\begin{table}[!tbp]
-\caption{Proposed (LexFront+LR) versus existing (NLTK+NB), accuracy / macro-F1 (\%)}\label{tab:5}
-\centering
+\end{center}\vspace{4pt}
+\refstepcounter{table}\label{tab:5}\begin{center}{\footnotesize TABLE~\thetable}\\[1pt]{\footnotesize\textsc{Proposed (LexFront+LR) versus existing (NLTK+NB), accuracy / macro-F1 (\%)}}\\[3pt]
 \scriptsize
 \setlength{\tabcolsep}{3pt}
 \adjustbox{max width=\columnwidth}{%
@@ -580,11 +581,8 @@ ag\_news & 90.38 / 90.35 & 91.88 / 91.86 & +1.50 & 90.08 / 90.05 & 91.88 / 91.87
 \bottomrule
 \end{tabular}
 }
-\end{table}
-
-\begin{table}[!tbp]
-\caption{Per-rule ablation, accuracy change versus full LexFront+LR (points, 95\% CI), main setting}\label{tab:6}
-\centering
+\end{center}\vspace{4pt}
+\refstepcounter{table}\label{tab:6}\begin{center}{\footnotesize TABLE~\thetable}\\[1pt]{\footnotesize\textsc{Per-rule ablation, accuracy change versus full LexFront+LR (points, 95\% CI), main setting}}\\[3pt]
 \scriptsize
 \setlength{\tabcolsep}{3pt}
 \adjustbox{max width=\columnwidth}{%
@@ -601,11 +599,9 @@ all rules off & +1.09 [+0.50, +1.71] & $-$0.17 [$-$0.41, +0.07] & +0.11 [$-$0.04
 \bottomrule
 \end{tabular}
 }
-\end{table}
-
-\begin{table}[!tbp]
-\caption{Case kept (TF-IDF lowercase=False): LexFront+LR minus NLTK+LR, accuracy points [95\% CI]}\label{tab:7}
-\centering
+\end{center}\vspace{4pt}
+\end{minipage}\hfill\begin{minipage}[t]{0.485\textwidth}
+\refstepcounter{table}\label{tab:7}\begin{center}{\footnotesize TABLE~\thetable}\\[1pt]{\footnotesize\textsc{Case kept (TF-IDF lowercase=False): LexFront+LR minus NLTK+LR, accuracy points [95\% CI]}}\\[3pt]
 \footnotesize
 \setlength{\tabcolsep}{3pt}
 \adjustbox{max width=\columnwidth}{%
@@ -619,11 +615,8 @@ ag\_news & $-$0.18 [$-$0.55, +0.20] & +0.00 [$-$0.32, +0.33] \\
 \bottomrule
 \end{tabular}
 }
-\end{table}
-
-\begin{table}[!tbp]
-\caption{Subword runs, Logistic Regression, accuracy / macro-F1 (\%), vocabulary 8000}\label{tab:8}
-\centering
+\end{center}\vspace{4pt}
+\refstepcounter{table}\label{tab:8}\begin{center}{\footnotesize TABLE~\thetable}\\[1pt]{\footnotesize\textsc{Subword runs, Logistic Regression, accuracy / macro-F1 (\%), vocabulary 8000}}\\[3pt]
 \scriptsize
 \setlength{\tabcolsep}{3pt}
 \adjustbox{max width=\columnwidth}{%
@@ -637,11 +630,8 @@ ag\_news & 91.88 / 91.87 & 91.88 / 91.86 & 91.13 / 91.12 & 91.03 / 91.01 & 91.47
 \bottomrule
 \end{tabular}
 }
-\end{table}
-
-\begin{table}[!tbp]
-\caption{LexFront+LR minus NLTK+LR, accuracy points [95\% CI]; * = interval excludes 0}\label{tab:9}
-\centering
+\end{center}\vspace{4pt}
+\refstepcounter{table}\label{tab:9}\begin{center}{\footnotesize TABLE~\thetable}\\[1pt]{\footnotesize\textsc{LexFront+LR minus NLTK+LR, accuracy points [95\% CI]; * = interval excludes 0}}\\[3pt]
 \footnotesize
 \setlength{\tabcolsep}{3pt}
 \adjustbox{max width=\columnwidth}{%
@@ -660,11 +650,8 @@ tweet\_eval offensive & $-$0.12 [$-$1.31, +1.07] & $-$0.24 [$-$1.54, +1.07] \\
 \bottomrule
 \end{tabular}
 }
-\end{table}
-
-\begin{table}[!tbp]
-\caption{Sentiment140, Logistic Regression, default settings, accuracy (\%) with added test noise}\label{tab:11}
-\centering
+\end{center}\vspace{4pt}
+\refstepcounter{table}\label{tab:11}\begin{center}{\footnotesize TABLE~\thetable}\\[1pt]{\footnotesize\textsc{Sentiment140, Logistic Regression, default settings, accuracy (\%) with added test noise}}\\[3pt]
 \scriptsize
 \setlength{\tabcolsep}{3pt}
 \adjustbox{max width=\columnwidth}{%
@@ -679,13 +666,9 @@ lexfront & 79.85 & 79.30 & 78.01 \\
 \bottomrule
 \end{tabular}
 }
-\end{table}
-
-\begin{figure*}[!tbp]
-\centering
-\includegraphics[width=\textwidth]{hq_intrinsic_metrics}
-\caption{OOV rate, fertility and vocabulary size by tokenizer}\label{fig:8}
-\end{figure*}
+\end{center}\vspace{4pt}
+\end{minipage}
+\end{table*}
 
 \clearpage
 \balance
