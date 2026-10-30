@@ -39,6 +39,8 @@ def save_hq(fig, out_path) -> bool:
     return True
 
 
+# Existing tokenizers in grey and orange shades, the proposed LexFront in a clearly different deep red.
+figures.COLORS.update({"whitespace": "#8A8F98", "nltk": "#F28E2B", "tweet": "#F4C95D", "lexfront": "#C62828"})
 figures._save = save_hq
 out = Path(__file__).resolve().parent / "figures"
 for name, fn in figures.FIGURES.items():
