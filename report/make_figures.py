@@ -1,10 +1,11 @@
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+plt.rcParams.update({'font.size': 10.5})
 from matplotlib.patches import FancyBboxPatch, FancyArrowPatch
 
 # ---------- architecture ----------
-fig, ax = plt.subplots(figsize=(11, 6.2))
+fig, ax = plt.subplots(figsize=(9.5, 5.4))
 ax.set_xlim(-2, 110); ax.set_ylim(0, 62); ax.axis("off")
 def box(x, y, w, h, text, fc="#ffffff", ec="#333333", fs=9, bold=False):
     ax.add_patch(FancyBboxPatch((x, y), w, h, boxstyle="round,pad=0.3,rounding_size=1.2", fc=fc, ec=ec, lw=1.2))
@@ -33,7 +34,7 @@ arrow(82, 20, 77, 28)      # M4 -> tfidf
 arrow(86, 33, 90, 33)      # tfidf -> clf
 arrow(99, 38, 99, 46)      # clf -> eval
 ax.text(55, 60.5, "Tokenizer is the only part that changes; TF-IDF, classifiers and metrics stay fixed", ha="center", fontsize=9, style="italic")
-plt.savefig("figures/architecture.png", dpi=200, bbox_inches="tight"); plt.close()
+plt.savefig("figures/architecture.png", dpi=300, bbox_inches="tight"); plt.close()
 
 # ---------- ablation chart (LR acc change vs full, case kept = main grid values) ----------
 import numpy as np
@@ -43,16 +44,16 @@ main = {  # main setting (TF-IDF lowercases): acc change pts, ci lo, hi
  "go_emotions": [(0.00,0.00,0.00),(-0.02,-0.13,0.07),(-0.11,-0.26,0.04),(0.00,-0.11,0.13),(-0.04,-0.24,0.15),(-0.17,-0.41,0.07)],
  "ag_news":     [(0.00,0.00,0.00),(0.00,0.00,0.00),(0.07,-0.07,0.20),(0.04,-0.04,0.12),(0.03,-0.03,0.09),(0.11,-0.04,0.25)],
 }
-fig, axs = plt.subplots(1, 3, figsize=(12, 3.8), sharex=True)
+fig, axs = plt.subplots(1, 3, figsize=(9.5, 3.6), sharex=True)
 for ax, (ds, vals) in zip(axs, main.items()):
     y = np.arange(len(rules))
     d = np.array([v[0] for v in vals]); lo = np.array([v[1] for v in vals]); hi = np.array([v[2] for v in vals])
     ax.errorbar(d, y, xerr=[d-lo, hi-d], fmt="o", color="#1f5fa8", ecolor="#7aa6d6", capsize=3)
     ax.axvline(0, color="#999999", lw=1)
     ax.set_yticks(y); ax.set_yticklabels(rules if ds == "tweet_topic" else [""]*len(rules)); ax.invert_yaxis()
-    ax.set_title(ds); ax.set_xlabel("accuracy change vs full LexFront (points)")
+    ax.set_title(ds); ax.set_xlabel("accuracy change (points)")
     ax.grid(axis="x", alpha=.3)
-plt.tight_layout(); plt.savefig("figures/ablation.png", dpi=200); plt.close()
+plt.tight_layout(); plt.savefig("figures/ablation.png", dpi=300); plt.close()
 
 # ---------- subword accuracy chart ----------
 labels = ["NLTK+LR", "LexFront+LR", "BPE+LR", "LexFront+BPE+LR", "WordPiece+LR", "Unigram+LR"]
@@ -61,15 +62,15 @@ data = {
  "go_emotions": [55.27, 55.36, 55.23, 54.64, 55.12, 55.71],
  "ag_news":     [91.88, 91.88, 91.13, 91.03, 91.47, 90.97],
 }
-fig, axs = plt.subplots(1, 3, figsize=(12, 3.8))
+fig, axs = plt.subplots(1, 3, figsize=(9.5, 3.9))
 cols = ["#e8833a", "#f2b233", "#4a86c5", "#7b5ea7", "#4c9f70", "#b0b0b0"]
 for ax, (ds, v) in zip(axs, data.items()):
     b = ax.bar(range(len(v)), v, color=cols)
     lo = min(v) - 2.0; hi = max(v) + 1.2
-    ax.set_ylim(lo, hi); ax.set_xticks(range(len(v))); ax.set_xticklabels(labels, rotation=55, ha="right", fontsize=8)
-    for r, val in zip(b, v): ax.text(r.get_x()+r.get_width()/2, val+0.1, f"{val:.2f}", ha="center", fontsize=7)
+    ax.set_ylim(lo, hi); ax.set_xticks(range(len(v))); ax.set_xticklabels(labels, rotation=55, ha="right", fontsize=9)
+    for r, val in zip(b, v): ax.text(r.get_x()+r.get_width()/2, val+0.1, f"{val:.2f}", ha="center", fontsize=8)
     ax.set_title(ds); ax.set_ylabel("accuracy (%)")
-plt.tight_layout(); plt.savefig("figures/subword.png", dpi=200); plt.close()
+plt.tight_layout(); plt.savefig("figures/subword.png", dpi=300); plt.close()
 print("ok")
 
 # ---------- forest plot: LexFront minus NLTK (LR) across datasets ----------
@@ -80,7 +81,7 @@ rows = [  # label, diff, lo, hi
  ("Sentiment140 1.6M (wide)", 0.11, -0.04, 0.25), ("Civil Comments (wide)", -0.00, -0.08, 0.07), ("Amazon polarity (wide)", 0.46, 0.34, 0.57),
  ("Yelp 5 classes (wide)", 0.07, -0.16, 0.31),
 ]
-fig, ax = plt.subplots(figsize=(9, 5))
+fig, ax = plt.subplots(figsize=(8, 4.8))
 y = np.arange(len(rows))
 d = np.array([r[1] for r in rows]); lo = np.array([r[2] for r in rows]); hi = np.array([r[3] for r in rows])
 ax.axvspan(-0.5, 0.5, color="#dfeedd", alpha=.7, label="practical margin (+-0.5 points)")
@@ -88,4 +89,4 @@ ax.errorbar(d, y, xerr=[d-lo, hi-d], fmt="o", color="#1f5fa8", ecolor="#7aa6d6",
 ax.axvline(0, color="#888888", lw=1)
 ax.set_yticks(y); ax.set_yticklabels([r[0] for r in rows]); ax.invert_yaxis()
 ax.set_xlabel("LexFront+LR minus NLTK+LR, accuracy points [95% CI]"); ax.legend(loc="lower right", fontsize=8); ax.grid(axis="x", alpha=.3)
-plt.tight_layout(); plt.savefig("figures/forest.png", dpi=200); plt.close()
+plt.tight_layout(); plt.savefig("figures/forest.png", dpi=300); plt.close()
