@@ -88,13 +88,14 @@ for package in ["punkt_tab"]:                      # what word_tokenize needs; a
         nltk.data.find(f"tokenizers/{package}")    # raises LookupError with the download hint if it is still missing'''
 
 CELLS = [
-    md("""# LexFront — Review 1 (Modules 1 and 2)
+    md("""# LexFront — demo notebook (Modules 1 to 4)
 
 **Question.** Can a compiler-style lexical analyzer (token classes as regexes → Thompson NFA → DFA → minimized DFA,
 with a symbol table and error recovery) work as a *pre-tokenizer* for noisy English text classification,
 compared with existing tokenizers when everything downstream is held fixed?
 
-**This notebook.** Module 1 = data + existing tokenizers + classifiers. Module 2 = LexFront itself.
+**This notebook.** Module 1 = data + existing tokenizers + classifiers. Module 2 = LexFront itself. Modules 3 and 4 = the rule ablation
+and the subword tokenizers (sections 6 to 8). The large-scale tests (Module 5) have their own notebooks and committed reports in `results/`.
 It contains no logic: all code lives in `experiments/` and `lexer/`; the notebook calls it and shows results.
 Every number shown is read from a JSON file written by a script that ran.
 
