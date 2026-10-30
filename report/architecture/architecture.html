@@ -1,0 +1,114 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<style>
+@font-face{font-family:'Inter';font-weight:400;src:url('node_modules/@fontsource/inter/files/inter-latin-400-normal.woff2')}
+@font-face{font-family:'Inter';font-weight:500;src:url('node_modules/@fontsource/inter/files/inter-latin-500-normal.woff2')}
+@font-face{font-family:'Inter';font-weight:600;src:url('node_modules/@fontsource/inter/files/inter-latin-600-normal.woff2')}
+@font-face{font-family:'Serif4';font-weight:600;src:url('node_modules/@fontsource/source-serif-4/files/source-serif-4-latin-600-normal.woff2')}
+@font-face{font-family:'Serif4';font-weight:700;src:url('node_modules/@fontsource/source-serif-4/files/source-serif-4-latin-700-normal.woff2')}
+@font-face{font-family:'FAS';font-weight:900;src:url('node_modules/@fortawesome/fontawesome-free/webfonts/fa-solid-900.woff2')}
+@font-face{font-family:'FAB';font-weight:400;src:url('node_modules/@fortawesome/fontawesome-free/webfonts/fa-brands-400.woff2')}
+*{box-sizing:border-box;margin:0;padding:0}
+body{width:1600px;height:720px;background:#fff;position:relative;font-family:'Inter',sans-serif;color:#1f2a44;overflow:hidden}
+.fas{font-family:'FAS';font-weight:900;font-style:normal}
+.fab{font-family:'FAB';font-weight:400;font-style:normal}
+.box{position:absolute;border-radius:24px;border:2px solid var(--bd);background:linear-gradient(135deg,rgba(255,255,255,.65),var(--bg) 55%),var(--bg);
+     box-shadow:0 10px 28px rgba(30,41,90,.10),0 1px 0 rgba(255,255,255,.9) inset}
+.badge{position:absolute;left:-16px;top:-16px;width:46px;height:46px;border-radius:50%;background:linear-gradient(145deg,var(--a1),var(--a2));color:#fff;
+       font:700 24px/46px 'Serif4',serif;text-align:center;border:3px solid #fff;box-shadow:0 4px 10px rgba(30,41,90,.25)}
+.ttl{position:absolute;left:68px;top:16px;font:700 29px/1.15 'Serif4',serif;color:#1e2a5a;letter-spacing:.1px}
+.sub{position:absolute;left:68px;font:400 19px/1.35 'Inter',sans-serif;color:#33415c}
+.ico{position:absolute;right:26px;top:20px;font-size:40px;color:var(--a1);opacity:.92}
+.chips{position:absolute;left:24px;right:20px;bottom:18px;display:flex;align-items:center;gap:10px}
+.chip{padding:7px 15px;border-radius:12px;font:500 16.5px/1.2 'Inter',sans-serif;color:#26324d;background:rgba(255,255,255,.72);border:1.5px solid var(--cb);white-space:nowrap}
+.chip.lab{background:rgba(255,255,255,.9);border-color:rgba(100,116,139,.45)}
+.chips.tight{gap:7px}.chips.tight .chip{padding:6px 10px;font-size:15.5px}.chip{flex-shrink:0}
+.chips .ar{font-size:15px;color:var(--a1);opacity:.9}
+.b1{--bg:rgba(59,130,246,.10);--bd:rgba(59,130,246,.55);--a1:#3b82f6;--a2:#1d4ed8;--cb:rgba(59,130,246,.45)}
+.b2{--bg:rgba(249,115,22,.11);--bd:rgba(249,115,22,.58);--a1:#f97316;--a2:#c2410c;--cb:rgba(249,115,22,.5)}
+.b3{--bg:rgba(34,197,94,.11);--bd:rgba(34,197,94,.55);--a1:#22c55e;--a2:#15803d;--cb:rgba(34,197,94,.5)}
+.b4{--bg:rgba(139,92,246,.11);--bd:rgba(139,92,246,.55);--a1:#8b5cf6;--a2:#6d28d9;--cb:rgba(139,92,246,.5)}
+.b5{--bg:rgba(20,184,166,.11);--bd:rgba(20,184,166,.55);--a1:#14b8a6;--a2:#0f766e;--cb:rgba(20,184,166,.5)}
+.bt{--bg:rgba(99,102,241,.10);--bd:rgba(99,102,241,.55);--a1:#6366f1;--a2:#4338ca}
+.bc{--bg:rgba(244,63,94,.10);--bd:rgba(244,63,94,.55);--a1:#f43f5e;--a2:#be123c}
+.bi{--bg:rgba(100,116,139,.10);--bd:rgba(100,116,139,.5);--a1:#64748b;--a2:#334155}
+.center{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.center .t{font:700 30px/1.1 'Serif4',serif;color:#1e2a5a}
+.center .s{font:400 18px/1.35 'Inter',sans-serif;color:#33415c;margin-top:6px}
+.center .i{font-size:34px;color:var(--a1);margin-bottom:8px}
+.inl{position:absolute;left:30px;font:500 20px/1 'Inter',sans-serif;color:#26324d;display:flex;align-items:center;gap:16px}
+.inl i{font-size:28px;width:34px;text-align:center;color:var(--a2)}
+svg{position:absolute;left:0;top:0}
+</style></head><body>
+
+<svg width="1600" height="720" viewBox="0 0 1600 720">
+ <defs>
+  <marker id="mb" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#4a63a8"/></marker>
+  <marker id="mr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#e11d48"/></marker>
+ </defs>
+ <g fill="none" stroke="#4a63a8" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity=".9">
+  <path d="M255 262 H298 Q312 262 312 248 V126 Q312 112 326 112 H341" marker-end="url(#mb)"/>
+  <path d="M255 350 H341" marker-end="url(#mb)"/>
+  <path d="M650 200 V234" marker-end="url(#mb)"/>
+  <path d="M650 440 V464" marker-end="url(#mb)"/>
+  <path d="M948 112 H1046 Q1062 112 1062 128 V248" marker-end="url(#mb)"/>
+  <path d="M948 340 H1021" marker-end="url(#mb)"/>
+  <path d="M1145 385 V462" marker-start="url(#mb)" marker-end="url(#mb)"/>
+  <path d="M995 575 H1031" marker-end="url(#mb)"/>
+  <path d="M1265 320 H1321" stroke="#e11d48" marker-end="url(#mr)"/>
+  <path d="M1455 250 V180" marker-end="url(#mb)"/>
+ </g>
+</svg>
+
+<div class="box bi" style="left:15px;top:150px;width:240px;height:395px">
+  <div class="center" style="position:absolute;left:0;right:0;top:16px"><div class="t" style="font-size:27px">Input Data</div></div>
+  <div class="inl" style="top:92px"><i class="fas">&#xf15c;</i>Raw text</div>
+  <div class="inl" style="top:158px"><i class="fab">&#xf099;</i>Tweets</div>
+  <div class="inl" style="top:224px"><i class="fas">&#xf4ad;</i>Comments</div>
+  <div class="inl" style="top:290px"><i class="fas">&#xf1ea;</i>News articles</div>
+  <div class="inl" style="top:346px;left:44px;font-size:24px;letter-spacing:3px;color:#64748b">&#8230;</div>
+</div>
+
+<div class="box b1" style="left:345px;top:25px;width:603px;height:175px">
+  <div class="badge">1</div><div class="ttl">Module 1: Existing Tokenizers</div>
+  <div class="sub" style="top:62px">Whitespace &nbsp;|&nbsp; NLTK &nbsp;|&nbsp; TweetTokenizer</div>
+  <i class="fas ico">&#xf085;</i>
+  <div class="chips"><span class="chip lab">Raw text</span><i class="fas ar">&#xf061;</i><span class="chip">Token 1</span><span class="chip">Token 2</span><span class="chip">Token 3</span><span class="chip">&#8230;</span></div>
+</div>
+
+<div class="box b2" style="left:345px;top:240px;width:603px;height:200px">
+  <div class="badge">2</div><div class="ttl">Module 2: LexFront Lexer</div>
+  <div class="sub" style="top:62px">11 token classes, longest match<br>own regex&#8211;NFA&#8211;DFA engine</div>
+  <i class="fas ico">&#xf1c9;</i>
+  <div class="chips"><span class="chip lab">Text stream</span><i class="fas ar">&#xf061;</i><span class="chip">TOKEN</span><span class="chip">NUMBER</span><span class="chip">URL</span><span class="chip">&#8230;</span></div>
+</div>
+
+<div class="box b3" style="left:345px;top:470px;width:650px;height:210px">
+  <div class="badge">3</div><div class="ttl" style="font-size:28px">Module 3: Normalizer + Symbol Table</div>
+  <div class="sub" style="top:62px">Six switchable rules<br>(placeholders, collapse, lowercase, slang)</div>
+  <i class="fas ico" style="top:66px">&#xf1c0;</i>
+  <div class="chips tight"><span class="chip lab">Tokens</span><i class="fas ar">&#xf061;</i><span class="chip">clean_token1</span><span class="chip">clean_token2</span><span class="chip">clean_token3</span><span class="chip">&#8230;</span></div>
+</div>
+
+<div class="box bt center" style="left:1025px;top:250px;width:240px;height:135px">
+  <i class="fas i">&#xe0e3;</i><div class="t">TF-IDF</div><div class="s">(min_df = 2)</div>
+</div>
+
+<div class="box bc center" style="left:1325px;top:245px;width:260px;height:150px">
+  <i class="fas i">&#xf140;</i><div class="t">Classifier</div><div class="s">Naive Bayes /<br>Logistic Regression</div>
+</div>
+
+<div class="box b5" style="left:1105px;top:25px;width:480px;height:150px">
+  <div class="badge">5</div><div class="ttl">Module 5: Evaluation</div>
+  <div class="sub" style="top:62px;right:16px;font-size:18px">Tuned grids, size ladder, noise test,<br>accuracy, macro-F1, bootstrap CIs, OOV</div>
+  <i class="fas ico">&#xf201;</i>
+</div>
+
+<div class="box b4" style="left:1035px;top:465px;width:550px;height:215px">
+  <div class="badge">4</div><div class="ttl">Module 4: Subword Stage</div>
+  <div class="sub" style="top:62px">BPE &nbsp;|&nbsp; LexFront&#8211;BPE hybrid<br>WordPiece &nbsp;|&nbsp; Unigram</div>
+  <i class="fas ico">&#xf542;</i>
+  <div class="chips tight"><span class="chip lab">Normalized tokens</span><i class="fas ar">&#xf061;</i><span class="chip">sub_1</span><span class="chip">sub_2</span><span class="chip">sub_3</span><span class="chip">&#8230;</span></div>
+</div>
+
+</body></html>

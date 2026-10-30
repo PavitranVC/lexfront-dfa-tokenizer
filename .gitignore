@@ -6,3 +6,5 @@ __pycache__/
 *.pyc
 .pytest_cache/
 .venv/
+report/architecture/node_modules/
+report/architecture/_dfa.html

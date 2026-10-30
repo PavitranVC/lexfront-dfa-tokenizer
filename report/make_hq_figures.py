@@ -1,4 +1,4 @@
-"""Redraw the repo's result figures from the committed JSON at 300 dpi with larger text, for the reports.
+"""Redraw the repo's result figures from the committed JSON at 600 dpi (plus SVG and PDF vector copies) with larger text, for the reports.
 
 Writes to report/figures/hq_*.png only; results/figures is not touched. Run from the repository root:
     python report/make_hq_figures.py
@@ -34,7 +34,11 @@ def save_hq(fig, out_path) -> bool:
         for text in ax.texts:                      # value labels on the bars
             text.set_fontsize(max(text.get_fontsize(), 9))
     fig.tight_layout()
-    fig.savefig(out_path, dpi=300, facecolor="white")
+    fig.savefig(out_path, dpi=600, facecolor="white")                         # lossless PNG for the Word reports
+    vec = Path(out_path).parent / "vector"
+    vec.mkdir(exist_ok=True)
+    for ext in ("svg", "pdf"):                                                # vector copies
+        fig.savefig(vec / (Path(out_path).stem + "." + ext), facecolor="white")
     plt.close(fig)
     return True
 

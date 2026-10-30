@@ -2,6 +2,16 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 plt.rcParams.update({'font.size': 10.5})
+
+
+def save(name):
+    """Lossless PNG at 600 dpi for the Word reports, plus vector SVG and PDF copies."""
+    import os
+    os.makedirs("figures/vector", exist_ok=True)
+    plt.savefig(f"figures/{name}.png", dpi=600)
+    plt.savefig(f"figures/vector/{name}.svg")
+    plt.savefig(f"figures/vector/{name}.pdf")
+
 from matplotlib.patches import FancyBboxPatch, FancyArrowPatch
 
 # architecture figure: see make_architecture.py
@@ -23,7 +33,7 @@ for ax, (ds, vals) in zip(axs, main.items()):
     ax.set_yticks(y); ax.set_yticklabels(rules if ds == "tweet_topic" else [""]*len(rules)); ax.invert_yaxis()
     ax.set_title(ds); ax.set_xlabel("accuracy change (points)")
     ax.grid(axis="x", alpha=.3)
-plt.tight_layout(); plt.savefig("figures/ablation.png", dpi=300); plt.close()
+plt.tight_layout(); save("ablation"); plt.close()
 
 # ---------- subword accuracy chart ----------
 labels = ["NLTK+LR", "LexFront+LR", "BPE+LR", "LexFront+BPE+LR", "WordPiece+LR", "Unigram+LR"]
@@ -40,7 +50,7 @@ for ax, (ds, v) in zip(axs, data.items()):
     ax.set_ylim(lo, hi); ax.set_xticks(range(len(v))); ax.set_xticklabels(labels, rotation=55, ha="right", fontsize=9)
     for r, val in zip(b, v): ax.text(r.get_x()+r.get_width()/2, val+0.1, f"{val:.2f}", ha="center", fontsize=8)
     ax.set_title(ds); ax.set_ylabel("accuracy (%)")
-plt.tight_layout(); plt.savefig("figures/subword.png", dpi=300); plt.close()
+plt.tight_layout(); save("subword"); plt.close()
 print("ok")
 
 # ---------- forest plot: LexFront minus NLTK (LR) across datasets ----------
@@ -59,4 +69,4 @@ ax.errorbar(d, y, xerr=[d-lo, hi-d], fmt="o", color="#C62828", ecolor="#E49A9A",
 ax.axvline(0, color="#888888", lw=1)
 ax.set_yticks(y); ax.set_yticklabels([r[0] for r in rows]); ax.invert_yaxis()
 ax.set_xlabel("LexFront+LR minus NLTK+LR, accuracy points [95% CI]"); ax.legend(loc="lower right", fontsize=8); ax.grid(axis="x", alpha=.3)
-plt.tight_layout(); plt.savefig("figures/forest.png", dpi=300); plt.close()
+plt.tight_layout(); save("forest"); plt.close()
