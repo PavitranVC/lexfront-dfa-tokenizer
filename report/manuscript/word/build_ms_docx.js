@@ -175,7 +175,7 @@ function algoPair(a, b) {
 // ---- walk the blocks into sections ----
 const MAIN_FIGS = new Set([1, 3, 4, 5, 6, 7]);
 const MAIN_TABS = new Set([1, 3, 10, 12, 13, 14, 15]);
-const WIDE_FIG = new Set(['architecture.png', 'hq_module1_accuracy.png', 'hq_existing_vs_proposed.png', 'hq_intrinsic_metrics.png', 'ablation.png', 'subword.png']);
+const WIDE_FIG = new Set(['architecture.png', 'architecture_nomod.png', 'tokenizers_accuracy.png', 'hq_module1_accuracy.png', 'hq_existing_vs_proposed.png', 'hq_intrinsic_metrics.png', 'ablation.png', 'subword.png']);
 const FIGFILE = (f) => f;                                  // PNG names in content.json are already the PNG files
 
 const B = D.blocks;
@@ -212,8 +212,8 @@ while (i < B.length) {
     const cp = B[i + 1], n = capNum(cp.text), file = b.file;
     const wide = WIDE_FIG.has(file);
     let w = TWO ? (wide ? TEXT_W : COL_W) : (wide ? TEXT_W : Math.floor(TEXT_W * 0.7));
-    if (!TWO && file === 'architecture.png') w = TEXT_W;
-    if (TWO && file === 'architecture.png') w = TEXT_W;
+    if (!TWO && (file === 'architecture.png' || file === 'architecture_nomod.png')) w = TEXT_W;
+    if (TWO && (file === 'architecture.png' || file === 'architecture_nomod.png')) w = TEXT_W;
     const items = [imageBlock(file, w), figCaption(n, stripCaption(cp.text))];
     push(MAIN_FIGS.has(n) ? body : appendix, wide && TWO ? 'wide' : 'flow', items);
     i += 2; continue;

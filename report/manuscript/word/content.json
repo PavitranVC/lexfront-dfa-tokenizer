@@ -67,7 +67,7 @@
    "type": "p",
    "runs": [
     {
-     "t": "The work in this report makes four contributions. First, we built LexFront, a lexer with a priority-ordered token specification, a normalizer and a symbol table, together with our own regex-to-DFA engine that implements Thompson construction, subset construction and Moore minimization. Second, we set up a controlled comparison in which the tokenizer is the only thing that changes, with confidence intervals and significance tests so that small differences are not over-read. Third, we ran ablations that switch each normalization rule off separately, and a subword extension that combines LexFront with BPE and compares it with WordPiece and Unigram [4]. Fourth, we checked how far the results hold up with a fair tuning protocol, a collection of eight cleaned datasets, and four large datasets with hypotheses written down before the runs. Section 2 reviews the literature, Section 3 describes the proposed system and its five modules, Section 4 gives the implementation and results, Section 5 compares performance, and Section 6 concludes.",
+     "t": "The work in this report makes four contributions. First, we built LexFront, a lexer with a priority-ordered token specification, a normalizer and a symbol table, together with our own regex-to-DFA engine that implements Thompson construction, subset construction and Moore minimization. Second, we set up a controlled comparison in which the tokenizer is the only thing that changes, with confidence intervals and significance tests so that small differences are not over-read. Third, we ran ablations that switch each normalization rule off separately, and a subword extension that combines LexFront with BPE and compares it with WordPiece and Unigram [4]. Fourth, we checked how far the results hold up with a fair tuning protocol, a collection of eight cleaned datasets, and four large datasets with hypotheses written down before the runs. Section 2 reviews the literature, Section 3 describes the proposed system and its five parts, Section 4 gives the implementation and results, Section 5 compares performance, and Section 6 concludes.",
      "b": false,
      "i": false
     }
@@ -233,7 +233,7 @@
    "type": "p",
    "runs": [
     {
-     "t": "We organised the work into five modules. Module 1 is the existing methodology that serves as the baseline. Module 2 is the LexFront lexer and the DFA engine. Module 3 is the normalizer and symbol table together with the ablation of its rules. Module 4 is the subword stage, which includes the LexFront + BPE hybrid and the comparison with WordPiece and Unigram. Module 5 is the protocol for tuning, scale and robustness: fair classifier tuning, larger datasets, and a noise test. Modules 2, 3, 4 and 5 are the new contribution, and we give pseudocode for each of them.",
+     "t": "We organised the work into five parts. The first is the existing methodology that serves as the baseline. The second is the LexFront lexer and the DFA engine. The third is the normalizer and symbol table together with the ablation of its rules. The fourth is the subword stage, which includes the LexFront + BPE hybrid and the comparison with WordPiece and Unigram. The fifth is the protocol for tuning, scale and robustness: fair classifier tuning, larger datasets, and a noise test. The last four are the new contribution, and we give pseudocode for each of them.",
      "b": false,
      "i": false
     }
@@ -245,23 +245,23 @@
   },
   {
    "type": "img",
-   "file": "architecture.png",
+   "file": "architecture_nomod.png",
    "w": 6400,
    "h": 2880
   },
   {
    "type": "cap",
-   "text": "Figure 1. Architecture of the proposed system and its five modules"
+   "text": "Figure 1. Architecture of the proposed system and its five components"
   },
   {
    "type": "h2",
-   "text": "3.3 Module 1: Existing methodology (baseline)"
+   "text": "3.3 Existing methodology (baseline)"
   },
   {
    "type": "p",
    "runs": [
     {
-     "t": "Module 1 holds the setup that LexFront is compared against. It has three existing tokenizers, which are whitespace splitting, the NLTK word tokenizer and NLTK's TweetTokenizer [13]. Their tokens go into TF-IDF with min_df=2, and the features go into a majority-class baseline, Multinomial Naive Bayes (the existing method) and Logistic Regression with max_iter=1000 and seed 0. All fits run on a single thread, because we saw that the BLAS thread count changed some Logistic Regression metrics in the last digits. Every run writes a JSON file with its configuration, a fingerprint and the metrics, and stores its test predictions so that the confidence intervals can be computed without refitting.",
+     "t": "The baseline holds the setup that LexFront is compared against. It has three existing tokenizers, which are whitespace splitting, the NLTK word tokenizer and NLTK's TweetTokenizer [13]. Their tokens go into TF-IDF with min_df=2, and the features go into a majority-class baseline, Multinomial Naive Bayes (the existing method) and Logistic Regression with max_iter=1000 and seed 0. All fits run on a single thread, because we saw that the BLAS thread count changed some Logistic Regression metrics in the last digits. Every run writes a JSON file with its configuration, a fingerprint and the metrics, and stores its test predictions so that the confidence intervals can be computed without refitting.",
      "b": false,
      "i": false
     }
@@ -271,7 +271,7 @@
    "type": "p",
    "runs": [
     {
-     "t": "The evaluation loop shared by all modules is short, and we give it as Algorithm 1 below.",
+     "t": "The evaluation loop shared by all experiments is short, and we give it as Algorithm 1 below.",
      "b": false,
      "i": false
     }
@@ -279,7 +279,7 @@
   },
   {
    "type": "algo",
-   "title": "Evaluation loop shared by all modules",
+   "title": "Evaluation loop shared by all experiments",
    "lines": [
     "for dataset in [tweet_topic, go_emotions, ag_news]:",
     "    train, test <- load(dataset)",
@@ -295,13 +295,13 @@
   },
   {
    "type": "h2",
-   "text": "3.4 Module 2: LexFront lexer and DFA engine"
+   "text": "3.4 LexFront lexer and DFA engine"
   },
   {
    "type": "p",
    "runs": [
     {
-     "t": "This is the main new module. LexFront defines eleven token classes in priority order (in ",
+     "t": "This is the main new component. LexFront defines eleven token classes in priority order (in ",
      "b": false,
      "i": false
     },
@@ -396,7 +396,7 @@
   },
   {
    "type": "h2",
-   "text": "3.5 Module 3: Normalizer, symbol table and rule ablation"
+   "text": "3.5 Normalizer, symbol table and rule ablation"
   },
   {
    "type": "p",
@@ -456,13 +456,13 @@
   },
   {
    "type": "h2",
-   "text": "3.6 Module 4: Subword stage and the LexFront + BPE hybrid"
+   "text": "3.6 Subword stage and the LexFront + BPE hybrid"
   },
   {
    "type": "p",
    "runs": [
     {
-     "t": "Module 4 adds learned vocabularies on top of, and next to, the word-level tokenizers. We trained BPE, WordPiece and Unigram models with the Hugging Face tokenizers library on the training split only, lowercased, with a vocabulary of 8000 pieces (BPE was also run at 32000). Pieces that continue a word carry the ## marker in BPE and WordPiece. We also built a two-stage hybrid that follows the compiler idea of passing different token types to different handlers. LexFront decides the class of each token first. Structural tokens such as placeholders, hashtags, emoticons, emoji, punctuation and error tokens are passed through whole, and only the word-like tokens are handed to a BPE model that was trained on the word-like tokens of the training texts.",
+     "t": "The subword stage adds learned vocabularies on top of, and next to, the word-level tokenizers. We trained BPE, WordPiece and Unigram models with the Hugging Face tokenizers library on the training split only, lowercased, with a vocabulary of 8000 pieces (BPE was also run at 32000). Pieces that continue a word carry the ## marker in BPE and WordPiece. We also built a two-stage hybrid that follows the compiler idea of passing different token types to different handlers. LexFront decides the class of each token first. Structural tokens such as placeholders, hashtags, emoticons, emoji, punctuation and error tokens are passed through whole, and only the word-like tokens are handed to a BPE model that was trained on the word-like tokens of the training texts.",
      "b": false,
      "i": false
     }
@@ -502,13 +502,13 @@
   },
   {
    "type": "h2",
-   "text": "3.7 Module 5: Tuning, scale and robustness protocol"
+   "text": "3.7 Tuning, scale and robustness protocol"
   },
   {
    "type": "p",
    "runs": [
     {
-     "t": "Module 5 is about how far the results of Modules 1 to 4 can be trusted. It has three parts. The first is a fair tuning protocol. For every tokenizer we choose the TF-IDF settings (word n-grams up to length 3, plain or sublinear term frequency, minimum document frequency 2 or 5) and the classifier parameter (C from 0.3 to 30 for Logistic Regression, alpha from 0.03 to 1 for Naive Bayes) on a validation slice taken from the training data only. The grid is the same for every tokenizer, and the test set is scored once at the end. This matters because a tokenizer comparison at default settings can simply favour whichever tokenizer happens to suit those defaults.",
+     "t": "The last part of the system is about how far the results above can be trusted. It has three parts. The first is a fair tuning protocol. For every tokenizer we choose the TF-IDF settings (word n-grams up to length 3, plain or sublinear term frequency, minimum document frequency 2 or 5) and the classifier parameter (C from 0.3 to 30 for Logistic Regression, alpha from 0.03 to 1 for Naive Bayes) on a validation slice taken from the training data only. The grid is the same for every tokenizer, and the test set is scored once at the end. This matters because a tokenizer comparison at default settings can simply favour whichever tokenizer happens to suit those defaults.",
      "b": false,
      "i": false
     }
@@ -571,7 +571,7 @@
    "type": "p",
    "runs": [
     {
-     "t": "We used English datasets that differ in style and size, in three groups. The core group has three datasets used in Modules 1 to 4: tweet_topic [40] has tweets labelled with six topics, go_emotions [41] has Reddit comments labelled with 28 emotion classes (we kept only the single-label examples), and ag_news [42] has news articles in four categories. The first two are noisy and informal, while ag_news is relatively clean, which gives a useful contrast. The collection group adds five tweet_eval tasks (sentiment, emotion, irony, hate and offensive language), so that together with the core datasets there are eight cleaned datasets. The large group has Sentiment140 (1.6 million tweets, split by user), Civil Comments (comments with a toxicity label, where the toxic class is rare), Amazon polarity (product reviews) and Yelp (reviews with five star classes, which tests a many-class problem). Table 1 lists the core and large datasets, and the last column is the share of the largest class in the test set, which is also the accuracy of the majority baseline. For the large datasets the sizes are after cleaning and, for Civil Comments and Amazon polarity, after taking a seeded random sample of about 500,000 training examples (300,000 training and 50,000 test examples for Yelp).",
+     "t": "We used English datasets that differ in style and size, in three groups. The core group has three datasets used in the core experiments: tweet_topic [40] has tweets labelled with six topics, go_emotions [41] has Reddit comments labelled with 28 emotion classes (we kept only the single-label examples), and ag_news [42] has news articles in four categories. The first two are noisy and informal, while ag_news is relatively clean, which gives a useful contrast. The collection group adds five tweet_eval tasks (sentiment, emotion, irony, hate and offensive language), so that together with the core datasets there are eight cleaned datasets. The large group has Sentiment140 (1.6 million tweets, split by user), Civil Comments (comments with a toxicity label, where the toxic class is rare), Amazon polarity (product reviews) and Yelp (reviews with five star classes, which tests a many-class problem). Table 1 lists the core and large datasets, and the last column is the share of the largest class in the test set, which is also the accuracy of the majority baseline. For the large datasets the sizes are after cleaning and, for Civil Comments and Amazon polarity, after taking a seeded random sample of about 500,000 training examples (300,000 training and 50,000 test examples for Yelp).",
      "b": false,
      "i": false
     }
@@ -655,7 +655,7 @@
   },
   {
    "type": "h2",
-   "text": "4.2 Module 1: existing tokenizers"
+   "text": "4.2 Existing tokenizers"
   },
   {
    "type": "p",
@@ -751,7 +751,7 @@
   },
   {
    "type": "img",
-   "file": "hq_module1_accuracy.png",
+   "file": "tokenizers_accuracy.png",
    "w": 5610,
    "h": 2040
   },
@@ -761,7 +761,7 @@
   },
   {
    "type": "h2",
-   "text": "4.3 Module 2: LexFront lexer and DFA engine"
+   "text": "4.3 LexFront lexer and DFA engine"
   },
   {
    "type": "h3",
@@ -1025,7 +1025,7 @@
   },
   {
    "type": "h2",
-   "text": "4.4 Module 3: Normalizer and rule ablation"
+   "text": "4.4 Normalizer and rule ablation"
   },
   {
    "type": "p",
@@ -1145,7 +1145,7 @@
   },
   {
    "type": "h2",
-   "text": "4.5 Module 4: Subword stage"
+   "text": "4.5 Subword stage"
   },
   {
    "type": "p",
@@ -1227,7 +1227,7 @@
   },
   {
    "type": "h2",
-   "text": "4.6 Module 5: Tuned classifiers on the eight-dataset collection"
+   "text": "4.6 Tuned classifiers on the eight-dataset collection"
   },
   {
    "type": "p",
@@ -1298,7 +1298,7 @@
   },
   {
    "type": "h2",
-   "text": "4.7 Module 5: Large-scale test on Sentiment140"
+   "text": "4.7 Large-scale test on Sentiment140"
   },
   {
    "type": "p",
@@ -1440,7 +1440,7 @@
   },
   {
    "type": "h2",
-   "text": "4.8 Module 5: Wider settings and the character baseline"
+   "text": "4.8 Wider settings and the character baseline"
   },
   {
    "type": "p",
@@ -1454,7 +1454,7 @@
   },
   {
    "type": "h2",
-   "text": "4.9 Module 5: Civil Comments, Amazon polarity and Yelp"
+   "text": "4.9 Civil Comments, Amazon polarity and Yelp"
   },
   {
    "type": "p",

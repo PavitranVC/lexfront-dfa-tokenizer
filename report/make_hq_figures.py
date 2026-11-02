@@ -39,6 +39,12 @@ def save_hq(fig, out_path) -> bool:
     vec.mkdir(exist_ok=True)
     for ext in ("svg", "pdf"):                                                # vector copies
         fig.savefig(vec / (Path(out_path).stem + "." + ext), facecolor="white")
+    if Path(out_path).stem == "hq_module1_accuracy":            # copy without the module numbering, for the manuscript
+        for ax in fig.axes:
+            ax.set_title(ax.get_title(loc="left").replace("Module 1: accuracy", "Accuracy"), loc="left")
+        fig.savefig(Path(out_path).with_name("tokenizers_accuracy.png"), dpi=600, facecolor="white")
+        for ext in ("svg", "pdf"):
+            fig.savefig(vec / ("tokenizers_accuracy." + ext), facecolor="white")
     plt.close(fig)
     return True
 
