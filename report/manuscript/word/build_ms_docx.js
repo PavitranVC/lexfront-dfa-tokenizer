@@ -51,7 +51,7 @@ function runsOf(rs, size = S.body, extra = {}) {
   }));
 }
 const para = (rs) => new Paragraph({
-  alignment: AlignmentType.JUSTIFIED, spacing: { after: 0, line: TWO ? 228 : 276 }, indent: { firstLine: 245 },
+  widowControl: true, alignment: AlignmentType.JUSTIFIED, spacing: { after: 0, line: TWO ? 228 : 276 }, indent: { firstLine: 245 },
   children: runsOf(rs),
 });
 const sectionHead = (text) => {
@@ -104,7 +104,7 @@ function tableBlock(rows, widthTw) {
         width: { size: cols[j], type: WidthType.DXA }, verticalAlign: VerticalAlign.CENTER,
         borders: { top: i === 0 ? thick : none, bottom: i === 0 ? thin : (i === rows.length - 1 ? thick : none), left: none, right: none },
         margins: { top: 20, bottom: 20, left: 50, right: 50 },
-        children: [new Paragraph({ keepNext: rows.length <= 6 ? i < rows.length - 1 : i < 2, children: [new TextRun({ text: fixText(String(c)), font: FONT, size: S.tab, bold: i === 0 })] })],
+        children: [new Paragraph({ keepNext: i < rows.length - 1, keepLines: true, children: [new TextRun({ text: fixText(String(c)), font: FONT, size: S.tab, bold: i === 0 })] })],
       })),
     })),
   });
@@ -183,7 +183,10 @@ const DEFER = { 'tab2': 'Existing tokenizers', 'fig2': 'Existing tokenizers', 't
 const pending = {};
 let curSub = null;
 function flushPending() { for (const blk of pending[curSub] || []) body.push(blk); delete pending[curSub]; }
-function pushTo(kind, n, blkKind, items) { const t = DEFER[kind + n]; if (t) (pending[t] = pending[t] || []).push({ kind: blkKind, items }); else body.push({ kind: blkKind, items }); }
+const MOVE_AFTER = { 13: 2 };   // report table number -> number of following paragraphs to place before it (fills page space)
+let held = null;
+function pushTo(kind, n, blkKind, items) {
+  if (kind === 'tab' && MOVE_AFTER[n] && !DEFER['tab' + n]) { held = { left: MOVE_AFTER[n], blk: { kind: blkKind, items } }; return; } const t = DEFER[kind + n]; if (t) (pending[t] = pending[t] || []).push({ kind: blkKind, items }); else body.push({ kind: blkKind, items }); }
 const WIDE_FIG = new Set(['architecture.png', 'architecture_nomod.png', 'tokenizers_accuracy.png', 'hq_module1_accuracy.png', 'hq_existing_vs_proposed.png', 'hq_intrinsic_metrics.png', 'ablation.png', 'subword.png']);
 const FIGFILE = (f) => f;                                  // PNG names in content.json are already the PNG files
 
@@ -208,7 +211,7 @@ while (i < B.length) {
   if (b.type === 'gap') { i++; continue; }
   if (b.type === 'h2') { flushPending(); curSub = b.text.replace(/^\d+\.\d+ /, ''); push(body, 'flow', [subHead(b.text)]); i++; continue; }
   if (b.type === 'h3') { push(body, 'flow', [new Paragraph({ keepNext: true, spacing: { before: 60, after: 20 }, children: [new TextRun({ text: fixText(b.text) + '.', font: FONT, size: S.body, italics: true })] })]); i++; continue; }
-  if (b.type === 'p') { push(body, 'flow', [para(b.runs)]); i++; continue; }
+  if (b.type === 'p') { push(body, 'flow', [para(b.runs)]); if (held && --held.left <= 0) { body.push(held.blk); held = null; } i++; continue; }
   if (b.type === 'tcap') {
     const n = capNum(b.text), tb = B[i + 1];
     const ncol = tb.rows[0].length, chars = Array.from({ length: ncol }, (_, j) => Math.max(...tb.rows.map((r) => String(r[j]).length))).reduce((a, c) => a + c, 0);
