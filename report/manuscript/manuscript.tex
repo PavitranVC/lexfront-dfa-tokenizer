@@ -94,8 +94,8 @@ The baseline holds the setup that LexFront is compared against. It has three exi
 
 The evaluation loop shared by all experiments is short, and we give it as Algorithm~\ref{alg:1} below.
 
-\begin{algorithm*}[!tb]
-\footnotesize
+\begin{algorithm}[!tb]
+\scriptsize
 \caption{Evaluation loop shared by all experiments}\label{alg:1}
 \begin{algorithmic}[1]
 \State \textbf{for} dataset \textbf{in} [tweet\_topic, go\_emotions, ag\_news]:
@@ -109,17 +109,16 @@ The evaluation loop shared by all experiments is short, and we give it as Algori
 \State \hspace*{3.0em}save record (with config + code fingerprint) and test predictions
 \State tables, figures and statistics are built only from the saved files
 \end{algorithmic}
-\end{algorithm*}
+\end{algorithm}
 
 \subsection{LexFront lexer and DFA engine}\label{sec:3.4}
 This is the main new component. LexFront defines eleven token classes in priority order (in \texttt{lexer/\allowbreak{}token\_\allowbreak{}spec.py}): URL, MENTION, HASHTAG, EMOTICON, EMOJI, NUMBER, CONTRACTION, ELONGATED, WORD, PUNCT, and UNKNOWN as the fallback. A PLY-based scanner takes the longest match at each position, ties go to the earlier class, and a character that matches nothing becomes an UNKNOWN token so scanning continues, which is panic-mode recovery.
 
 Our own regex-to-DFA engine and its table-driven scanner are given as Algorithms~\ref{alg:2} and~\ref{alg:3}, shown side by side: Algorithm~\ref{alg:2} builds the automaton and Algorithm~\ref{alg:3} scans with it.
 
-\begin{figure*}[!tb]
-\centering
-\begin{minipage}[t]{0.485\textwidth}
-\hrule\vspace{2pt}\scriptsize\refstepcounter{algorithm}\label{alg:2}\textbf{Algorithm 2} Regex to minimized DFA\vspace{2pt}\hrule\vspace{1pt}
+\begin{algorithm}[!tb]
+\scriptsize
+\caption{Regex to minimized DFA}\label{alg:2}
 \begin{algorithmic}[1]
 \State \hspace*{1.0em}\textbf{input} : rules [(name\_i, regex\_i)], \textbf{in} priority order
 \State \hspace*{1.0em}asts  $\leftarrow$ [parse(regex\_i) \textbf{for} each rule]
@@ -144,11 +143,11 @@ Our own regex-to-DFA engine and its table-driven scanner are given as Algorithms
 \State \hspace*{1.0em}\textbf{until} the number of blocks stops growing
 \State \hspace*{1.0em}merge states with equal block
 \end{algorithmic}
-\hrule
-\end{minipage}
-\hfill
-\begin{minipage}[t]{0.485\textwidth}
-\hrule\vspace{2pt}\scriptsize\refstepcounter{algorithm}\label{alg:3}\textbf{Algorithm 3} Longest-match scanner with error recovery\vspace{2pt}\hrule\vspace{1pt}
+\end{algorithm}
+
+\begin{algorithm}[!tb]
+\scriptsize
+\caption{Longest-match scanner with error recovery}\label{alg:3}
 \begin{algorithmic}[1]
 \State \hspace*{1.0em}pos $\leftarrow$ 0
 \State \hspace*{1.0em}\textbf{while} pos \textless{} len(text):
@@ -165,9 +164,7 @@ Our own regex-to-DFA engine and its table-driven scanner are given as Algorithms
 \State \hspace*{2.0em}\textbf{else}:
 \State \hspace*{3.0em}emit (class[rule], text[pos:end]) ; pos $\leftarrow$ end
 \end{algorithmic}
-\hrule
-\end{minipage}
-\end{figure*}
+\end{algorithm}
 
 Besides the PLY lexer we wrote our own engine in \texttt{lexer/\allowbreak{}dfa/\allowbreak{}}. A recursive-descent parser turns each regular expression into an AST, Thompson construction \cite{r5} gives an NFA, subset construction \cite{r6} gives a DFA over an alphabet that is split into atoms, and Moore's partition refinement \cite{r7} minimizes it. The engine covers four classes (EMOTICON, HASHTAG, MENTION and WORD). The tokenizer used in the experiments is the PLY-based one, and our engine is a separate implementation that a test checks against it: it produces the same tokens on those four classes. ELONGATED is not part of the engine because its usual regex, (.)\textbackslash{}1\{2,\}, needs a back-reference, which regular expressions cannot express.
 
@@ -176,8 +173,8 @@ After a token has been scanned, a semantic action maps it to its canonical form,
 
 Because every rule has its own switch, we can run an ablation in which one rule is removed at a time, and a case-sensitivity check in which TF-IDF's own lowercasing is turned off. That is how we find out which rules actually help. Pseudocode for the normalizer follows.
 
-\begin{algorithm*}[!tb]
-\footnotesize
+\begin{algorithm}[!tb]
+\scriptsize
 \caption{Token normalization, tokenization and rule ablation}\label{alg:4}
 \begin{algorithmic}[1]
 \State normalize\_token(cls, lexeme, config):
@@ -200,15 +197,15 @@ Because every rule has its own switch, we can run an ablation in which one rule 
 \State \hspace*{6.0em}lowercase, slang, all]:
 \State \hspace*{3.0em}run the full pipeline with that rule switched off
 \end{algorithmic}
-\end{algorithm*}
+\end{algorithm}
 
 \subsection{Subword stage and the LexFront + BPE hybrid}\label{sec:3.6}
 The subword stage adds learned vocabularies on top of, and next to, the word-level tokenizers. We trained BPE, WordPiece and Unigram models with the Hugging Face tokenizers library on the training split only, lowercased, with a vocabulary of 8000 pieces (BPE was also run at 32000). Pieces that continue a word carry the \#\# marker in BPE and WordPiece. We also built a two-stage hybrid that follows the compiler idea of passing different token types to different handlers. LexFront decides the class of each token first. Structural tokens such as placeholders, hashtags, emoticons, emoji, punctuation and error tokens are passed through whole, and only the word-like tokens are handed to a BPE model that was trained on the word-like tokens of the training texts.
 
 Making the training deterministic took some care. The trainer assigns ids to the \#\# alphabet in hash-map order, so two trainings on the same text could merge in a different order. We fixed this by passing a sorted alphabet as special tokens and removing them from the added-token list afterwards. We also checked that texts from the test split do not leak into the trained vocabularies. The hybrid is described in the pseudocode below.
 
-\begin{algorithm*}[!tb]
-\footnotesize
+\begin{algorithm}[!tb]
+\scriptsize
 \caption{LexFront + BPE hybrid tokenizer}\label{alg:5}
 \begin{algorithmic}[1]
 \State train\_hybrid(train\_texts):
@@ -227,15 +224,15 @@ Making the training deterministic took some care. The trainer assigns ids to the
 \State \hspace*{4.0em}out.append(form) \hfill{\scriptsize$\triangleright$ \textit{structural: pass through}}
 \State \hspace*{1.0em}\textbf{return} out
 \end{algorithmic}
-\end{algorithm*}
+\end{algorithm}
 
 \subsection{Tuning, scale and robustness protocol}\label{sec:3.7}
 The last part of the system is about how far the results above can be trusted. It has three parts. The first is a fair tuning protocol. For every tokenizer we choose the TF-IDF settings (word n-grams up to length 3, plain or sublinear term frequency, minimum document frequency 2 or 5) and the classifier parameter (C from 0.3 to 30 for Logistic Regression, alpha from 0.03 to 1 for Naive Bayes) on a validation slice taken from the training data only. The grid is the same for every tokenizer, and the test set is scored once at the end. This matters because a tokenizer comparison at default settings can simply favour whichever tokenizer happens to suit those defaults.
 
 The second part is scale. We cleaned each dataset with fixed rules (empty texts, texts with conflicting labels, duplicates, and test texts that also occur in the training set) and, for Sentiment140, we split by user so that no user appears in both train and test. On Sentiment140 we also ran a size ladder from 10,000 to the full training set. The third part is a noise test: seeded synthetic noise is added to the test text only (a light level, where 10\% of the eligible words are corrupted, and a heavy level with 30\%), to see which tokenizer loses less accuracy. Hypotheses and a practical margin of plus or minus 0.5 points were written down before the runs in protocol documents (\path{docs/LARGE_PROTOCOL.md}, \path{docs/BOOST_PROTOCOL.md} and \path{docs/D_PROTOCOL.md}). Each difference is then reported as within, beyond or unclear relative to that margin. Algorithm~\ref{alg:6} below summarizes the tuning and comparison steps.
 
-\begin{algorithm*}[!tb]
-\footnotesize
+\begin{algorithm}[!tb]
+\scriptsize
 \caption{Tuning, paired comparison and noise test}\label{alg:6}
 \begin{algorithmic}[1]
 \State tune\_and\_test(tokenizer, classifier, train, test):
@@ -256,7 +253,7 @@ The second part is scale. We cleaned each dataset with fixed rules (empty texts,
 \State \hspace*{1.0em}verdict $\leftarrow$ within | beyond | unclear   against the +-0.5 point margin
 \State noise\_test(tokenizer): add seeded noise to the test text only; accuracy lost = clean - noisy
 \end{algorithmic}
-\end{algorithm*}
+\end{algorithm}
 
 \section{Results and Implementation}\label{sec:4}
 The system is written in Python and every number below was read from the JSON result files in the repository, which are written by the scripts we ran. The core datasets use full data with no subsampling. For Civil Comments and Amazon polarity we took a seeded random sample of about 500,000 training examples, for Yelp 300,000 training and 50,000 test examples, and Sentiment140 is used in full after cleaning. Each cell is a single training run. The 95\% confidence intervals are paired percentile bootstraps over the test examples, with McNemar's test for accuracy on the core datasets. They cover the draw of the test set, not training randomness.

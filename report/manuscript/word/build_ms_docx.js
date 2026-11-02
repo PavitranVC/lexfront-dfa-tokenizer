@@ -218,10 +218,10 @@ while (i < B.length) {
     push(MAIN_FIGS.has(n) ? body : appendix, wide && TWO ? 'wide' : 'flow', items);
     i += 2; continue;
   }
-  if (b.type === 'algo') { algoNo += 1; push(body, TWO ? 'wide' : 'flow', [...algoParas(algoNo, fixText(b.title), b.lines, S.algo), new Paragraph({ spacing: { after: 100 }, children: [] })]); i++; continue; }
+  if (b.type === 'algo') { algoNo += 1; push(body, 'flow', [...algoParas(algoNo, fixText(b.title), b.lines, S.algo), new Paragraph({ spacing: { after: 100 }, children: [] })]); i++; continue; }
   if (b.type === 'algopair') {
     const n1 = algoNo + 1, n2 = algoNo + 2; algoNo += 2;
-    push(body, TWO ? 'wide' : 'flow', algoPair({ num: n1, title: fixText(b.a.title), lines: b.a.lines }, { num: n2, title: fixText(b.b.title), lines: b.b.lines }));
+    push(body, 'flow', [...algoParas(n1, fixText(b.a.title), b.a.lines, S.algo), new Paragraph({ spacing: { after: 100 }, children: [] }), ...algoParas(n2, fixText(b.b.title), b.b.lines, S.algo), new Paragraph({ spacing: { after: 100 }, children: [] })]);
     i++; continue;
   }
   i++;
