@@ -33,7 +33,10 @@ for ax, (ds, vals) in zip(axs, main.items()):
     ax.set_yticks(y); ax.set_yticklabels(rules if ds == "tweet_topic" else [""]*len(rules)); ax.invert_yaxis()
     ax.set_title(ds); ax.set_xlabel("accuracy change (points)")
     ax.grid(axis="x", alpha=.3)
-plt.tight_layout(); save("ablation"); plt.close()
+plt.tight_layout(); save("ablation")
+from panels import split_panels
+for _ax in fig.axes: _ax.set_yticklabels(rules)          # every stacked panel carries its own rule labels
+split_panels(fig, "ablation", "figures", 0.7); plt.close()
 
 # ---------- subword accuracy chart ----------
 labels = ["NLTK+LR", "LexFront+LR", "BPE+LR", "LexFront+BPE+LR", "WordPiece+LR", "Unigram+LR"]
@@ -50,7 +53,9 @@ for ax, (ds, v) in zip(axs, data.items()):
     ax.set_ylim(lo, hi); ax.set_xticks(range(len(v))); ax.set_xticklabels(labels, rotation=55, ha="right", fontsize=9)
     for r, val in zip(b, v): ax.text(r.get_x()+r.get_width()/2, val+0.1, f"{val:.2f}", ha="center", fontsize=8)
     ax.set_title(ds); ax.set_ylabel("accuracy (%)")
-plt.tight_layout(); save("subword"); plt.close()
+plt.tight_layout(); save("subword")
+from panels import split_panels
+split_panels(plt.gcf(), "subword", "figures", 0.8); plt.close()
 print("ok")
 
 # ---------- forest plot: LexFront minus NLTK (LR) across datasets ----------

@@ -10,6 +10,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import matplotlib.pyplot as plt
 
 from experiments import figures
+from report.panels import split_panels
 
 plt.rcParams.update({"font.size": 13, "axes.titlesize": 14, "axes.labelsize": 13, "xtick.labelsize": 11.5,
                      "ytick.labelsize": 11.5, "legend.fontsize": 11})
@@ -45,6 +46,9 @@ def save_hq(fig, out_path) -> bool:
         fig.savefig(Path(out_path).with_name("tokenizers_accuracy.png"), dpi=600, facecolor="white")
         for ext in ("svg", "pdf"):
             fig.savefig(vec / ("tokenizers_accuracy." + ext), facecolor="white")
+    stem = "tokenizers_accuracy" if Path(out_path).stem == "hq_module1_accuracy" else Path(out_path).stem
+    if len(fig.axes) > 1:
+        split_panels(fig, stem, Path(out_path).parent, 0.75)
     plt.close(fig)
     return True
 

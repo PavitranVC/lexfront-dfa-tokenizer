@@ -320,7 +320,7 @@
    "type": "p",
    "runs": [
     {
-     "t": "Our own regex-to-DFA engine and its table-driven scanner are given as Algorithms 2 and 3, shown side by side: Algorithm 2 builds the automaton and Algorithm 3 scans with it.",
+     "t": "Our own regex-to-DFA engine and its table-driven scanner are given as Algorithms 2 and 3: Algorithm 2 builds the automaton and Algorithm 3 scans with it.",
      "b": false,
      "i": false
     }

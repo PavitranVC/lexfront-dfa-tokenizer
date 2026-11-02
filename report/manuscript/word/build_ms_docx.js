@@ -214,8 +214,12 @@ while (i < B.length) {
     let w = TWO ? (wide ? TEXT_W : COL_W) : (wide ? TEXT_W : Math.floor(TEXT_W * 0.7));
     if (!TWO && (file === 'architecture.png' || file === 'architecture_nomod.png')) w = TEXT_W;
     if (TWO && (file === 'architecture.png' || file === 'architecture_nomod.png')) w = TEXT_W;
-    const items = [imageBlock(file, w), figCaption(n, stripCaption(cp.text))];
-    push(MAIN_FIGS.has(n) ? body : appendix, wide && TWO ? 'wide' : 'flow', items);
+    const PANELS = { 'hq_existing_vs_proposed.png': ['hq_existing_vs_proposed', 2], 'hq_intrinsic_metrics.png': ['hq_intrinsic_metrics', 3], 'ablation.png': ['ablation', 3], 'subword.png': ['subword', 3], 'tokenizers_accuracy.png': ['tokenizers_accuracy', 2] };
+    let imgs;
+    if (TWO && PANELS[file]) { const [stem, cnt] = PANELS[file]; imgs = Array.from({ length: cnt }, (_, k) => imageBlock(`${stem}_p${k + 1}.png`, COL_W)); }
+    else imgs = [imageBlock(file, TWO ? COL_W : w)];
+    const items = [...imgs, figCaption(n, stripCaption(cp.text))];
+    push(MAIN_FIGS.has(n) ? body : appendix, TWO ? 'flow' : (wide ? 'wide' : 'flow'), items);
     i += 2; continue;
   }
   if (b.type === 'algo') { algoNo += 1; push(body, 'flow', [...algoParas(algoNo, fixText(b.title), b.lines, S.algo), new Paragraph({ spacing: { after: 100 }, children: [] })]); i++; continue; }

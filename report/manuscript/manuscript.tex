@@ -83,11 +83,11 @@ The system is a text classification pipeline in which the tokenizer is the part 
 We organised the work into five parts. The first is the existing methodology that serves as the baseline. The second is the LexFront lexer and the DFA engine. The third is the normalizer and symbol table together with the ablation of its rules. The fourth is the subword stage, which includes the LexFront + BPE hybrid and the comparison with WordPiece and Unigram. The fifth is the protocol for tuning, scale and robustness: fair classifier tuning, larger datasets, and a noise test. The last four are the new contribution, and we give pseudocode for each of them.
 
 \subsection{Architecture diagram}\label{sec:3.2}
-\begin{figure*}[!tb]
+\begin{figure}[!tp]
 \centering
-\includegraphics[width=0.92\textwidth]{architecture_nomod}
+\includegraphics[width=\columnwidth]{architecture_nomod}
 \caption{Architecture of the proposed system and its five components}\label{fig:1}
-\end{figure*}
+\end{figure}
 
 \subsection{Existing methodology (baseline)}\label{sec:3.3}
 The baseline holds the setup that LexFront is compared against. It has three existing tokenizers, which are whitespace splitting, the NLTK word tokenizer and NLTK's TweetTokenizer \cite{r13}. Their tokens go into TF-IDF with min\_df=2, and the features go into a majority-class baseline, Multinomial Naive Bayes (the existing method) and Logistic Regression with max\_iter=1000 and seed 0. All fits run on a single thread, because we saw that the BLAS thread count changed some Logistic Regression metrics in the last digits. Every run writes a JSON file with its configuration, a fingerprint and the metrics, and stores its test predictions so that the confidence intervals can be computed without refitting.
@@ -114,7 +114,7 @@ The evaluation loop shared by all experiments is short, and we give it as Algori
 \subsection{LexFront lexer and DFA engine}\label{sec:3.4}
 This is the main new component. LexFront defines eleven token classes in priority order (in \texttt{lexer/\allowbreak{}token\_\allowbreak{}spec.py}): URL, MENTION, HASHTAG, EMOTICON, EMOJI, NUMBER, CONTRACTION, ELONGATED, WORD, PUNCT, and UNKNOWN as the fallback. A PLY-based scanner takes the longest match at each position, ties go to the earlier class, and a character that matches nothing becomes an UNKNOWN token so scanning continues, which is panic-mode recovery.
 
-Our own regex-to-DFA engine and its table-driven scanner are given as Algorithms~\ref{alg:2} and~\ref{alg:3}, shown side by side: Algorithm~\ref{alg:2} builds the automaton and Algorithm~\ref{alg:3} scans with it.
+Our own regex-to-DFA engine and its table-driven scanner are given as Algorithms~\ref{alg:2} and~\ref{alg:3}: Algorithm~\ref{alg:2} builds the automaton and Algorithm~\ref{alg:3} scans with it.
 
 \begin{algorithm}[!tb]
 \scriptsize
@@ -307,7 +307,7 @@ ELONGATED, 26 branches (extra) & 26 & 221 & 157 & 54 \\
 \end{tabular}
 \end{table*}
 
-\begin{figure}[!t]
+\begin{figure}[!tp]
 \centering
 \includegraphics[width=\columnwidth]{dfa_min}
 \caption{The minimized combined DFA}\label{fig:3}
@@ -322,22 +322,22 @@ Table~\ref{tab:5} gives the main comparison. We call LexFront with Logistic Regr
 \subsection{Normalizer and rule ablation}\label{sec:4.4}
 Table~\ref{tab:6} shows the effect of removing one rule at a time in the main setting, where TF-IDF still lowercases the text. In this setting no single-rule removal gives an accuracy interval that excludes 0, so none of the individual rules shows a clear effect on its own. One more thing explains part of this. The URL rule never fires on tweet\_topic and go\_emotions, and the mention rule never fires on ag\_news, because those datasets already mask URLs and handles. For those cases the removal is not a real test of the rule. The one setting that does stand out is removing every rule on tweet\_topic, which raises accuracy by 1.09 points [+0.50, +1.71]. In other words, on that dataset the normalization as a whole does not help.
 
-\begin{figure*}[!tb]
+\begin{figure}[!tp]
 \centering
-\includegraphics[width=\textwidth]{ablation}
+\includegraphics[width=\columnwidth]{ablation_p1}\par\vspace{2pt}\includegraphics[width=\columnwidth]{ablation_p2}\par\vspace{2pt}\includegraphics[width=\columnwidth]{ablation_p3}
 \caption{Rule ablation: accuracy change with 95\% intervals (main setting)}\label{fig:4}
-\end{figure*}
+\end{figure}
 
 The case-sensitivity check tells a clearer story. When TF-IDF's own lowercasing is switched off, the lowercase rule inside LexFront becomes the one that matters. Removing it lowers accuracy by 0.91 points on tweet\_topic [$-$1.71, $-$0.09] and by 1.07 on go\_emotions [$-$1.72, $-$0.44], while ag\_news does not change in a clear way (+0.14 [$-$0.17, +0.46]). The same check explains a result we noticed earlier. With case kept, LexFront barely moves, with Logistic Regression accuracy changing by only $-$0.03, $-$0.02 and +0.04 points on the three datasets, while the baseline tokenizers lose between 0.6 and 1.3 points on tweet\_topic and go\_emotions, because they leave capitalised words alone. With case kept, LexFront beats NLTK on go\_emotions by 1.15 points [+0.46, +1.85]. Our reading is that this advantage comes from the lowercase rule alone, and since TF-IDF lowercases by default, it disappears in the main setting.
 
 \subsection{Subword stage}\label{sec:4.5}
 Table~\ref{tab:8} lists the subword runs next to the two word-level references. BPE with a vocabulary of 8,000 shows no accuracy gain over NLTK with Logistic Regression. The intervals include 0 on tweet\_topic ($-$0.41 [$-$1.27, +0.44]) and go\_emotions ($-$0.04 [$-$0.68, +0.59]), and on ag\_news it is 0.75 points lower [$-$1.13, $-$0.37]. The LexFront + BPE hybrid is below LexFront alone on all three datasets, by 0.82, 0.72 and 0.86 points, and 17 of the 24 intervals in the hybrid comparison at vocabulary 8,000 exclude 0, all pointing down. A bigger vocabulary (32,000) reduced this, since 8 of 24 intervals exclude 0 there. Our guess, which we have not tested, is that the hybrid splits up words that the word-level scanner already handled well, so it adds noise. For WordPiece and Unigram, none is above NLTK with Logistic Regression in accuracy with an interval that excludes 0, and on ag\_news both are below it ($-$0.41 and $-$0.91). The one interval that is above NLTK is Unigram's macro-F1 on go\_emotions (+1.26 [+0.10, +2.39]), which is 1 of 30 comparisons and could easily be chance.
 
-\begin{figure*}[!tb]
+\begin{figure}[!tp]
 \centering
-\includegraphics[width=\textwidth]{subword}
+\includegraphics[width=\columnwidth]{subword_p1}\par\vspace{2pt}\includegraphics[width=\columnwidth]{subword_p2}\par\vspace{2pt}\includegraphics[width=\columnwidth]{subword_p3}
 \caption{Accuracy of the subword tokenizers with Logistic Regression}\label{fig:5}
-\end{figure*}
+\end{figure}
 
 The OOV rate of the subword tokenizers is close to zero, for example 0.44\% for BPE and 0.31\% for WordPiece on tweet\_topic, because rare words are split into pieces instead of being left unknown. That number is not comparable with the word-level OOV rates in Table~\ref{tab:4}, and the price is more tokens per word (fertility goes up to between 1.3 and 1.8).
 
@@ -408,11 +408,11 @@ A caution on how these three runs were made. They ran on a Windows laptop with P
 This section pulls the comparison together. We use two metrics, accuracy and macro-F1. Macro-F1 matters on tweet\_topic and go\_emotions, where the classes are unbalanced, because a model can have decent accuracy by favouring the large classes. We also report paired 95\% bootstrap intervals and McNemar's test, so that each difference comes with a statement of how large the test-set noise is.
 
 \subsection{Accuracy: existing versus proposed}\label{sec:5.1}
-\begin{figure*}[!tb]
+\begin{figure}[!tp]
 \centering
-\includegraphics[width=\textwidth]{hq_existing_vs_proposed}
+\includegraphics[width=\columnwidth]{hq_existing_vs_proposed_p1}\par\vspace{2pt}\includegraphics[width=\columnwidth]{hq_existing_vs_proposed_p2}
 \caption{Existing (NLTK+NB) versus proposed (LexFront+LR), accuracy and macro-F1}\label{fig:6}
-\end{figure*}
+\end{figure}
 
 Fig.~\ref{fig:6} shows the headline comparison, which is the same one as in Table~\ref{tab:5}. The proposed setup is higher on go\_emotions and ag\_news and about level on tweet\_topic in accuracy. In macro-F1 it is higher on all three, by 7.62 points on tweet\_topic and 29.09 on go\_emotions. The tokenizer-only comparison in Table~\ref{tab:13} shows where that comes from.
 
@@ -439,7 +439,7 @@ ag\_news & LexFront+LR minus NLTK+NB (proposed minus existing) & +1.50 [+1.00, +
 Reading Table~\ref{tab:13} row by row, the tokenizer-only differences are the fair test of LexFront. On go\_emotions and ag\_news the intervals include 0, so LexFront and NLTK are indistinguishable there. On tweet\_topic LexFront is 1.59 points lower and that difference is significant (McNemar p \textless{} 0.001). The proposed-minus-existing rows are large on go\_emotions and ag\_news, but almost all of that is the move from Naive Bayes to Logistic Regression: with NLTK held fixed, the classifier change alone is worth +17.49 on go\_emotions and +1.50 on ag\_news. So we do not claim that LexFront is better. What the data support is that it does about as well as NLTK on two of the datasets and somewhat worse on one, and that it gives a smaller vocabulary and a lower OOV rate.
 
 \subsection{Across all datasets}\label{sec:5.3}
-\begin{figure}[!t]
+\begin{figure}[!tp]
 \centering
 \includegraphics[width=\columnwidth]{forest}
 \caption{LexFront+LR minus NLTK+LR, accuracy points with 95\% intervals; the green band is the plus or minus 0.5 point practical margin}\label{fig:7}
@@ -509,12 +509,18 @@ On the question we started with, the answer is that a compiler-style lexer is co
 
 The main limits are one training run per cell, English-only data, and no transformer baseline. Natural next steps are repeating the large runs with other random seeds, running the character baseline on the two newer datasets, testing across domains (training on one source and testing on another), and trying a tweet-trained transformer model, which would use its own tokenizer and therefore test a different question.
 
-\begin{table*}[!t]
+\begin{figure}[!tbp]
 \centering
-{\footnotesize APPENDIX A}\\[1pt]{\footnotesize\textsc{Additional results}}\par\vspace{6pt}
-\includegraphics[width=0.74\textwidth]{tokenizers_accuracy}\par\refstepcounter{figure}\label{fig:2}{\footnotesize Fig.~\thefigure.\ Accuracy of the existing tokenizers}\par\vspace{6pt}
-\includegraphics[width=0.74\textwidth]{hq_intrinsic_metrics}\par\refstepcounter{figure}\label{fig:8}{\footnotesize Fig.~\thefigure.\ OOV rate, fertility and vocabulary size by tokenizer}\par\vspace{6pt}
-\end{table*}
+{\footnotesize APPENDIX A}\\[1pt]{\footnotesize\textsc{Additional results}}\par\vspace{4pt}
+\includegraphics[width=\columnwidth]{tokenizers_accuracy_p1}\par\vspace{2pt}\includegraphics[width=\columnwidth]{tokenizers_accuracy_p2}
+\caption{Accuracy of the existing tokenizers}\label{fig:2}
+\end{figure}
+
+\begin{figure}[!tbp]
+\centering
+\includegraphics[width=\columnwidth]{hq_intrinsic_metrics_p1}\par\vspace{2pt}\includegraphics[width=\columnwidth]{hq_intrinsic_metrics_p2}\par\vspace{2pt}\includegraphics[width=\columnwidth]{hq_intrinsic_metrics_p3}
+\caption{OOV rate, fertility and vocabulary size by tokenizer}\label{fig:8}
+\end{figure}
 
 \begin{table*}[!t]
 \centering
