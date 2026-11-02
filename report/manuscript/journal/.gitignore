@@ -1,0 +1,7 @@
+# IEEE Access template files (download them, see README.md); not redistributed here
+*
+!.gitignore
+!README.md
+!build_access.py
+!manuscript_access.tex
+!manuscript_access.pdf
