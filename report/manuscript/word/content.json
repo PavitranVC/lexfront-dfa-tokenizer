@@ -57,7 +57,7 @@
    "type": "p",
    "runs": [
     {
-     "t": "Compilers face a very similar problem in their first phase. A lexical analyzer reads a stream of characters and groups them into tokens, using regular expressions, a longest-match rule, a symbol table and some way of recovering from characters it cannot match [1]. That is close to what a tweet tokenizer has to do, so we wanted to see how far the compiler approach carries over. Our idea was to build a lexer in the compiler-design style, use it as a pre-tokenizer for text classification, and compare it with existing tokenizers while keeping everything else in the pipeline fixed. The question we try to answer is whether a compiler-style lexer classifies noisy text better than the tokenizers people already use.",
+     "t": "Compilers face a very similar problem in their first phase. A lexical analyzer reads a stream of characters and groups them into tokens, using regular expressions, a longest-match rule, a symbol table and some way of recovering from characters it cannot match [1]. That is close to what a tweet tokenizer has to do, so we wanted to see how far the compiler approach carries over. Our idea was to build a lexer in the compiler-design style, use it as a pre-tokenizer for text classification, and compare it with existing tokenizers while keeping everything else in the pipeline fixed. Throughout the paper the existing setup is the NLTK tokenizer with Naive Bayes, and the proposed setup is LexFront with Logistic Regression. The question we try to answer is whether a compiler-style lexer classifies noisy text better than the tokenizers people already use.",
      "b": false,
      "i": false
     }
@@ -261,7 +261,7 @@
    "type": "p",
    "runs": [
     {
-     "t": "The baseline holds the setup that LexFront is compared against. It has three existing tokenizers, which are whitespace splitting, the NLTK word tokenizer and NLTK's TweetTokenizer [13]. Their tokens go into TF-IDF with min_df=2, and the features go into a majority-class baseline, Multinomial Naive Bayes (the existing method) and Logistic Regression with max_iter=1000 and seed 0. All fits run on a single thread, because we saw that the BLAS thread count changed some Logistic Regression metrics in the last digits. Every run writes a JSON file with its configuration, a fingerprint and the metrics, and stores its test predictions so that the confidence intervals can be computed without refitting.",
+     "t": "The baseline holds the setup that LexFront is compared against. It has three existing tokenizers, which are whitespace splitting, the NLTK word tokenizer and NLTK's TweetTokenizer [13]. Their tokens go into TF-IDF with min_df=2, and the features go into a majority-class baseline, Multinomial Naive Bayes (the existing method) and Logistic Regression with max_iter=1000 and seed 0. Together, the NLTK tokenizer with Naive Bayes is what we call the existing setup. All fits run on a single thread, because we saw that the BLAS thread count changed some Logistic Regression metrics in the last digits. Every run writes a JSON file with its configuration, a fingerprint and the metrics, and stores its test predictions so that the confidence intervals can be computed without refitting.",
      "b": false,
      "i": false
     }
@@ -301,16 +301,7 @@
    "type": "p",
    "runs": [
     {
-     "t": "This is the main new component. LexFront defines eleven token classes in priority order (in ",
-     "b": false,
-     "i": false
-    },
-    {
-     "t": "lexer/token_spec.py",
-     "code": true
-    },
-    {
-     "t": "): URL, MENTION, HASHTAG, EMOTICON, EMOJI, NUMBER, CONTRACTION, ELONGATED, WORD, PUNCT, and UNKNOWN as the fallback. A PLY-based scanner takes the longest match at each position, ties go to the earlier class, and a character that matches nothing becomes an UNKNOWN token so scanning continues, which is panic-mode recovery.",
+     "t": "This is the main new component, and with Logistic Regression behind it, it forms the proposed setup. LexFront defines eleven token classes in priority order (in lexer/token_spec.py): URL, MENTION, HASHTAG, EMOTICON, EMOJI, NUMBER, CONTRACTION, ELONGATED, WORD, PUNCT, and UNKNOWN as the fallback. A PLY-based scanner takes the longest match at each position, ties go to the earlier class, and a character that matches nothing becomes an UNKNOWN token so scanning continues, which is panic-mode recovery.",
      "b": false,
      "i": false
     }
@@ -750,14 +741,14 @@
    "type": "gap"
   },
   {
-   "type": "img",
-   "file": "tokenizers_accuracy.png",
-   "w": 5610,
-   "h": 2040
-  },
-  {
-   "type": "cap",
-   "text": "Figure 2. Accuracy of the existing tokenizers (redrawn at 600 dpi from results/module1)"
+   "type": "p",
+   "runs": [
+    {
+     "t": "Reading Table 2 across the three datasets, the three existing tokenizers stay close together. With Naive Bayes the accuracy is 70.3, 71.0 and 70.8 on tweet_topic for whitespace, NLTK and TweetTokenizer, 37.7, 37.8 and 37.8 on go_emotions, and 90.1, 90.4 and 90.2 on ag_news. With Logistic Regression the same tokenizers reach 70.5, 72.3 and 72.0 on tweet_topic, 53.5, 55.3 and 55.5 on go_emotions, and 91.4, 91.9 and 91.8 on ag_news. Whitespace splitting is the lowest of the three in every Logistic Regression column, by about 2 points on the first two datasets and 0.4 to 0.5 points on ag_news, while changing the classifier moves the accuracy by up to 17 points.",
+     "b": false,
+     "i": false
+    }
+   ]
   },
   {
    "type": "h2",
@@ -1092,14 +1083,14 @@
    "type": "gap"
   },
   {
-   "type": "img",
-   "file": "ablation.png",
-   "w": 5700,
-   "h": 2160
-  },
-  {
-   "type": "cap",
-   "text": "Figure 4. Rule ablation: accuracy change with 95% intervals (main setting)"
+   "type": "p",
+   "runs": [
+    {
+     "t": "In the main setting the effect of removing a single rule is small. On tweet_topic the largest changes are +0.50 points for the number rule and +0.41 for the mention rule, on go_emotions the single-rule changes lie between -0.11 and 0.00, and on ag_news between 0.00 and +0.07, and none of these intervals excludes 0. Switching all rules off changes accuracy by +1.09 [+0.50, +1.71] on tweet_topic, by -0.17 [-0.41, +0.07] on go_emotions and by +0.11 [-0.04, +0.25] on ag_news, so only the tweet_topic interval excludes 0, and it points in the direction of the rules not helping.",
+     "b": false,
+     "i": false
+    }
+   ]
   },
   {
    "type": "p",
@@ -1206,14 +1197,14 @@
    "type": "gap"
   },
   {
-   "type": "img",
-   "file": "subword.png",
-   "w": 5700,
-   "h": 2340
-  },
-  {
-   "type": "cap",
-   "text": "Figure 5. Accuracy of the subword tokenizers with Logistic Regression"
+   "type": "p",
+   "runs": [
+    {
+     "t": "With Logistic Regression and a vocabulary of 8,000, the accuracy on tweet_topic is 72.32 for NLTK and 70.73 for LexFront, against 71.90 for BPE, 71.61 for WordPiece, 73.05 for Unigram and 69.90 for the LexFront + BPE hybrid. On go_emotions the six values lie between 54.64 (hybrid) and 55.71 (Unigram). On ag_news NLTK and LexFront both reach 91.88, while BPE, WordPiece, Unigram and the hybrid reach 91.13, 91.47, 90.97 and 91.03. The intervals given above show which of these differences are more than noise.",
+     "b": false,
+     "i": false
+    }
+   ]
   },
   {
    "type": "p",
@@ -1747,21 +1738,21 @@
    "type": "p",
    "runs": [
     {
-     "t": "On the intrinsic side, LexFront has the lowest OOV rate and the smallest vocabulary among the word-level tokenizers on the three core datasets, with fertility close to the others. On Sentiment140 it also gives the smallest feature set. Part of this is built in, because placeholders and collapsed letters shrink the vocabulary by design, so it is a description and not evidence of better classification. Speed is in the same range as the other tokenizers. On the core datasets it runs at about 0.84 to 1.48 times the speed of NLTK, and on Sentiment140 at 6,566 tweets per second against 4,845 for NLTK. The lexer is therefore not a bottleneck. The subword tokenizers (Figure 5 and Table 8) are not clearly better than NLTK in accuracy on the core datasets, and the character n-gram baseline is clearly worse on Sentiment140.",
+     "t": "On the intrinsic side, LexFront has the lowest OOV rate and the smallest vocabulary among the word-level tokenizers on the three core datasets, with fertility close to the others. On Sentiment140 it also gives the smallest feature set. Part of this is built in, because placeholders and collapsed letters shrink the vocabulary by design, so it is a description and not evidence of better classification. Speed is in the same range as the other tokenizers. On the core datasets it runs at about 0.84 to 1.48 times the speed of NLTK, and on Sentiment140 at 6,566 tweets per second against 4,845 for NLTK. The lexer is therefore not a bottleneck. The subword tokenizers (Table 8) are not clearly better than NLTK in accuracy on the core datasets, and the character n-gram baseline is clearly worse on Sentiment140.",
      "b": false,
      "i": false
     }
    ]
   },
   {
-   "type": "img",
-   "file": "hq_intrinsic_metrics.png",
-   "w": 7140,
-   "h": 2040
-  },
-  {
-   "type": "cap",
-   "text": "Figure 8. OOV rate, fertility and vocabulary size by tokenizer (redrawn at 600 dpi from results/module2)"
+   "type": "p",
+   "runs": [
+    {
+     "t": "Looking at the three core datasets in turn, the OOV rate for whitespace, NLTK, TweetTokenizer and LexFront is 18.5%, 8.7%, 9.9% and 8.2% on tweet_topic, 6.0%, 2.6%, 2.6% and 2.4% on go_emotions, and 1.9%, 1.0%, 0.8% and 0.5% on ag_news. Fertility is 1.00 for whitespace by definition and between 1.15 and 1.43 for the other three. The vocabulary of LexFront has 14.5 thousand entries on tweet_topic, 24.5 thousand on go_emotions and 65.3 thousand on ag_news, against 21.7, 44.5 and 158.7 thousand for whitespace splitting, 15.7, 26.4 and 99.0 thousand for NLTK, and 16.5, 25.9 and 86.1 thousand for TweetTokenizer.",
+     "b": false,
+     "i": false
+    }
+   ]
   },
   {
    "type": "h2",
