@@ -104,7 +104,7 @@ function tableBlock(rows, widthTw) {
         width: { size: cols[j], type: WidthType.DXA }, verticalAlign: VerticalAlign.CENTER,
         borders: { top: i === 0 ? thick : none, bottom: i === 0 ? thin : (i === rows.length - 1 ? thick : none), left: none, right: none },
         margins: { top: 20, bottom: 20, left: 50, right: 50 },
-        children: [new Paragraph({ keepNext: i < rows.length - 1 && rows.length <= 14, children: [new TextRun({ text: fixText(String(c)), font: FONT, size: S.tab, bold: i === 0 })] })],
+        children: [new Paragraph({ keepNext: rows.length <= 6 ? i < rows.length - 1 : i < 2, children: [new TextRun({ text: fixText(String(c)), font: FONT, size: S.tab, bold: i === 0 })] })],
       })),
     })),
   });
@@ -113,9 +113,10 @@ function pngSize(file) {
   const b = fs.readFileSync(file);
   return [b.readUInt32BE(16), b.readUInt32BE(20)];
 }
-function imageBlock(name, widthTw) {
+function imageBlock(name, widthTw, maxHIn) {
   const file = FIGDIR + name;
   const [w, h] = pngSize(file);
+  if (maxHIn && widthTw * h / w > maxHIn * 1440) widthTw = Math.floor(maxHIn * 1440 * w / h);   // cap the height, keep the aspect ratio
   const wpx = px(widthTw);
   return new Paragraph({
     alignment: AlignmentType.CENTER, keepNext: true, spacing: { before: 80, after: 20 },
@@ -224,8 +225,8 @@ while (i < B.length) {
     if (TWO && (file === 'architecture.png' || file === 'architecture_nomod.png')) w = TEXT_W;
     const PANELS = { 'hq_existing_vs_proposed.png': ['hq_existing_vs_proposed', 2], 'hq_intrinsic_metrics.png': ['hq_intrinsic_metrics', 3], 'ablation.png': ['ablation', 3], 'subword.png': ['subword', 3], 'tokenizers_accuracy.png': ['tokenizers_accuracy', 2] };
     let imgs;
-    if (TWO && PANELS[file]) { const [stem, cnt] = PANELS[file]; imgs = Array.from({ length: cnt }, (_, k) => imageBlock(`${stem}_p${k + 1}.png`, COL_W)); }
-    else imgs = [imageBlock(file, TWO ? COL_W : w)];
+    if (TWO && PANELS[file]) { const [stem, cnt] = PANELS[file]; imgs = Array.from({ length: cnt }, (_, k) => imageBlock(`${stem}_p${k + 1}.png`, COL_W, cnt >= 3 ? 1.35 : 1.7)); }
+    else imgs = [imageBlock(file, TWO ? COL_W : w, TWO ? 2.6 : 0)];
     const items = [...imgs, figCaption(n, stripCaption(cp.text))];
     pushTo('fig', n, TWO ? 'flow' : (wide ? 'wide' : 'flow'), items);
     i += 2; continue;
