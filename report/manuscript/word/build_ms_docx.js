@@ -181,13 +181,17 @@ const MAIN_TABS = new Set(Array.from({ length: 29 }, (_, k) => k + 1));
 // former appendix items: shown at the end of the subsection they belong to
 const DEFER = { 'tab2': 'Existing tokenizers', 'fig2': 'Existing tokenizers', 'tab6': 'Normalizer and rule ablation', 'tab7': 'Normalizer and rule ablation',
   'tab8': 'Subword stage', 'tab9': 'Tuned classifiers on the eight-dataset collection', 'tab11': 'Large-scale test on Sentiment140',
-  'tab5': 'Accuracy: existing versus proposed', 'tab4': 'Intrinsic measures and speed', 'fig8': 'Intrinsic measures and speed' };
+  'tab4': 'Intrinsic measures and speed', 'fig8': 'Intrinsic measures and speed' };
 const pending = {};
+const HEAD_TAB = { 5: 'Accuracy: existing versus proposed' };   // table placed directly under this subsection heading
+const pendingHead = {};
 let curSub = null;
 function flushPending() { for (const blk of pending[curSub] || []) body.push(blk); delete pending[curSub]; }
+const NARROW_TABS = new Set([]);   // short numeric table that fits one column
 const MOVE_AFTER = { 13: 2 };   // report table number -> number of following paragraphs to place before it (fills page space)
 let held = null;
 function pushTo(kind, n, blkKind, items) {
+  if (kind === 'tab' && HEAD_TAB[n]) { (pendingHead[HEAD_TAB[n]] = pendingHead[HEAD_TAB[n]] || []).push({ kind: blkKind, items }); return; }
   if (kind === 'tab' && MOVE_AFTER[n] && !DEFER['tab' + n]) { held = { left: MOVE_AFTER[n], blk: { kind: blkKind, items } }; return; } const t = DEFER[kind + n]; if (t) (pending[t] = pending[t] || []).push({ kind: blkKind, items }); else body.push({ kind: blkKind, items }); }
 const WIDE_FIG = new Set(['architecture.png', 'architecture_nomod.png', 'tokenizers_accuracy.png', 'hq_module1_accuracy.png', 'hq_existing_vs_proposed.png', 'hq_intrinsic_metrics.png', 'ablation.png', 'subword.png']);
 const FIGFILE = (f) => f;                                  // PNG names in content.json are already the PNG files
@@ -217,7 +221,7 @@ while (i < B.length) {
   if (b.type === 'tcap') {
     const n = capNum(b.text), tb = B[i + 1];
     const ncol = tb.rows[0].length, chars = Array.from({ length: ncol }, (_, j) => Math.max(...tb.rows.map((r) => String(r[j]).length))).reduce((a, c) => a + c, 0);
-    const wide = TWO ? (MAIN_TABS.has(n) ? (ncol >= 5 || chars > 60) : false) : true;
+    const wide = TWO ? (MAIN_TABS.has(n) ? ((ncol >= 5 || chars > 60) && !NARROW_TABS.has(n)) : false) : true;
     const items = [...tabCaption(n, stripCaption(b.text)), tableBlock(tb.rows, wide || !TWO ? (TWO ? TEXT_W : TEXT_W) : COL_W), new Paragraph({ spacing: { after: 100 }, children: [] })];
     pushTo('tab', n, wide ? 'wide' : 'flow', items);
     i += 2; continue;
@@ -228,12 +232,14 @@ while (i < B.length) {
     let w = TWO ? (wide ? TEXT_W : COL_W) : (wide ? TEXT_W : Math.floor(TEXT_W * 0.7));
     if (!TWO && (file === 'architecture.png' || file === 'architecture_nomod.png')) w = TEXT_W;
     if (TWO && (file === 'architecture.png' || file === 'architecture_nomod.png')) w = TEXT_W;
-    const PANELS = { 'hq_existing_vs_proposed.png': ['hq_existing_vs_proposed', 2], 'hq_intrinsic_metrics.png': ['hq_intrinsic_metrics', 3], 'ablation.png': ['ablation', 3], 'subword.png': ['subword', 3], 'tokenizers_accuracy.png': ['tokenizers_accuracy', 2] };
+    const PANELS = { 'hq_existing_vs_proposed.png': ['hq_existing_vs_proposed_compact', 2], 'hq_intrinsic_metrics.png': ['hq_intrinsic_metrics', 3], 'ablation.png': ['ablation', 3], 'subword.png': ['subword', 3], 'tokenizers_accuracy.png': ['tokenizers_accuracy', 2] };
     let imgs;
-    if (TWO && PANELS[file]) { const [stem, cnt] = PANELS[file]; imgs = Array.from({ length: cnt }, (_, k) => imageBlock(`${stem}_p${k + 1}.png`, COL_W, cnt >= 3 ? 1.35 : 1.7)); }
+    if (TWO && PANELS[file]) { const [stem, cnt] = PANELS[file]; imgs = Array.from({ length: cnt }, (_, k) => imageBlock(`${stem}_p${k + 1}.png`, COL_W, cnt >= 3 ? 1.35 : (stem.endsWith('_compact') ? 1.15 : 1.7))); }
     else imgs = [imageBlock(file, TWO ? COL_W : w, TWO ? 2.6 : 0)];
     const items = [...imgs, figCaption(n, stripCaption(cp.text))];
     pushTo('fig', n, TWO ? 'flow' : (wide ? 'wide' : 'flow'), items);
+    for (const blk of pendingHead[curSub] || []) body.push(blk);      // the proposed-vs-existing table follows its chart
+    delete pendingHead[curSub];
     i += 2; continue;
   }
   if (b.type === 'algo') { algoNo += 1; push(body, 'flow', [...algoParas(algoNo, fixText(b.title), b.lines, S.algo), new Paragraph({ spacing: { after: 100 }, children: [] })]); i++; continue; }

@@ -1625,7 +1625,7 @@
    "type": "p",
    "runs": [
     {
-     "t": "Figure 6 shows the headline comparison, which is the same one as in Table 5. The proposed setup is higher on go_emotions and ag_news and about level on tweet_topic in accuracy. In macro-F1 it is higher on all three, by 7.62 points on tweet_topic and 29.09 on go_emotions. The tokenizer-only comparison in Table 13 shows where that comes from.",
+     "t": "Table 5 and Figure 6 give the headline comparison. The proposed setup is higher on go_emotions and ag_news and about level on tweet_topic in accuracy, and higher on all three in macro-F1, by 7.62 points on tweet_topic and 29.09 on go_emotions. The tokenizer-only comparison in Table 13 shows where that comes from.",
      "b": false,
      "i": false
     }

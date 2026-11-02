@@ -49,6 +49,11 @@ def save_hq(fig, out_path) -> bool:
     stem = "tokenizers_accuracy" if Path(out_path).stem == "hq_module1_accuracy" else Path(out_path).stem
     if len(fig.axes) > 1:
         split_panels(fig, stem, Path(out_path).parent, 0.72 if stem == "hq_intrinsic_metrics" else 0.75)
+        if stem == "hq_existing_vs_proposed":        # flatter copy for the Word manuscript, where the chart sits between two tables
+            for _ax in fig.axes: _ax.set_title("", loc="left"); _ax.set_title("")                      # the caption names the panels
+            h, l = fig.axes[0].get_legend_handles_labels()
+            fig.axes[0].legend(h, l, loc="lower center", bbox_to_anchor=(0.5, 0.99), ncol=2, frameon=False, fontsize=9.5, columnspacing=1.0, handlelength=1.2)
+            split_panels(fig, stem + "_compact", Path(out_path).parent, 0.66)
     plt.close(fig)
     return True
 
