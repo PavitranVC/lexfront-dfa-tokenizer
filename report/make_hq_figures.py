@@ -48,7 +48,7 @@ def save_hq(fig, out_path) -> bool:
             fig.savefig(vec / ("tokenizers_accuracy." + ext), facecolor="white")
     stem = "tokenizers_accuracy" if Path(out_path).stem == "hq_module1_accuracy" else Path(out_path).stem
     if len(fig.axes) > 1:
-        split_panels(fig, stem, Path(out_path).parent, 0.75)
+        split_panels(fig, stem, Path(out_path).parent, 0.72 if stem == "hq_intrinsic_metrics" else 0.75)
     plt.close(fig)
     return True
 

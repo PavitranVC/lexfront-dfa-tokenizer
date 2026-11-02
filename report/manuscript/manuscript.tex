@@ -83,9 +83,9 @@ The system is a text classification pipeline in which the tokenizer is the part 
 We organised the work into five parts. The first is the existing methodology that serves as the baseline. The second is the LexFront lexer and the DFA engine. The third is the normalizer and symbol table together with the ablation of its rules. The fourth is the subword stage, which includes the LexFront + BPE hybrid and the comparison with WordPiece and Unigram. The fifth is the protocol for tuning, scale and robustness: fair classifier tuning, larger datasets, and a noise test. The last four are the new contribution, and we give pseudocode for each of them.
 
 \subsection{Architecture diagram}\label{sec:3.2}
-\begin{figure}[!tp]
+\begin{figure}[!tbp]
 \centering
-\includegraphics[width=\columnwidth]{architecture_nomod}
+\includegraphics[width=1\columnwidth]{architecture_nomod}
 \caption{Architecture of the proposed system and its five components}\label{fig:1}
 \end{figure}
 
@@ -284,6 +284,34 @@ Yelp reviews & \path{Yelp/yelp_review_full} & 299,979 & 49,994 & 5 & 20.00 \\
 \subsection{Existing tokenizers}\label{sec:4.2}
 Table~\ref{tab:2} gives accuracy and macro-F1 for the three existing tokenizers with each classifier. The first thing we notice is how little the tokenizer matters compared with the classifier. On go\_emotions, switching from Naive Bayes to Logistic Regression is worth around 17 points for every tokenizer, while the spread between tokenizers under Logistic Regression is about 2 points. NLTK and TweetTokenizer are slightly ahead of plain whitespace splitting in nearly every row. Naive Bayes on go\_emotions is close to the majority baseline in accuracy, and its macro-F1 is very low, which means it mostly predicts the large classes.
 
+\begin{table*}[!tb]
+\caption{Accuracy / macro-F1 (\%), existing tokenizers}\label{tab:2}
+\centering
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{lllll}
+\toprule
+\textbf{Dataset} & \textbf{Tokenizer} & \textbf{Majority} & \textbf{Naive Bayes} & \textbf{Logistic Reg.} \\
+\midrule
+tweet\_topic & whitespace & 40.01 / 9.53 & 70.26 / 28.83 & 70.49 / 35.76 \\
+tweet\_topic & nltk & 40.01 / 9.53 & 70.99 / 28.56 & 72.32 / 36.95 \\
+tweet\_topic & tweet & 40.01 / 9.53 & 70.79 / 28.31 & 72.02 / 36.70 \\
+go\_emotions & whitespace & 34.99 / 1.85 & 37.73 / 4.93 & 53.51 / 31.40 \\
+go\_emotions & nltk & 34.99 / 1.85 & 37.78 / 4.88 & 55.27 / 33.86 \\
+go\_emotions & tweet & 34.99 / 1.85 & 37.80 / 4.86 & 55.47 / 34.02 \\
+ag\_news & whitespace & 25.00 / 10.00 & 90.14 / 90.12 & 91.43 / 91.42 \\
+ag\_news & nltk & 25.00 / 10.00 & 90.38 / 90.35 & 91.88 / 91.87 \\
+ag\_news & tweet & 25.00 / 10.00 & 90.22 / 90.20 & 91.84 / 91.83 \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\begin{figure}[!tbp]
+\centering
+\includegraphics[width=1\columnwidth]{tokenizers_accuracy_p1}\par\vspace{2pt}\includegraphics[width=1\columnwidth]{tokenizers_accuracy_p2}
+\caption{Accuracy of the existing tokenizers}\label{fig:2}
+\end{figure}
+
 \subsection{LexFront lexer and DFA engine}\label{sec:4.3}
 \par\noindent\textit{Automaton sizes.}
 Table~\ref{tab:3} shows how big each automaton is. The four classes are small. The combined automaton goes from 43 NFA states to 12 DFA states, and minimization brings it down to 10. WORD shrinks from 3 DFA states to 2 and EMOTICON from 6 to 5, so minimization does remove real redundancy. We also compiled ELONGATED by spelling it out as 26 separate branches, only to see what happens. It is not part of LexFront, but it shows how fast the construction can grow, from 221 NFA states to 157 DFA states and 54 after minimization.
@@ -307,9 +335,9 @@ ELONGATED, 26 branches (extra) & 26 & 221 & 157 & 54 \\
 \end{tabular}
 \end{table*}
 
-\begin{figure}[!tp]
+\begin{figure}[!tbp]
 \centering
-\includegraphics[width=\columnwidth]{dfa_min}
+\includegraphics[width=1\columnwidth]{dfa_min}
 \caption{The minimized combined DFA}\label{fig:3}
 \end{figure}
 
@@ -322,27 +350,99 @@ Table~\ref{tab:5} gives the main comparison. We call LexFront with Logistic Regr
 \subsection{Normalizer and rule ablation}\label{sec:4.4}
 Table~\ref{tab:6} shows the effect of removing one rule at a time in the main setting, where TF-IDF still lowercases the text. In this setting no single-rule removal gives an accuracy interval that excludes 0, so none of the individual rules shows a clear effect on its own. One more thing explains part of this. The URL rule never fires on tweet\_topic and go\_emotions, and the mention rule never fires on ag\_news, because those datasets already mask URLs and handles. For those cases the removal is not a real test of the rule. The one setting that does stand out is removing every rule on tweet\_topic, which raises accuracy by 1.09 points [+0.50, +1.71]. In other words, on that dataset the normalization as a whole does not help.
 
-\begin{figure}[!tp]
+\begin{figure}[!tbp]
 \centering
-\includegraphics[width=\columnwidth]{ablation_p1}\par\vspace{2pt}\includegraphics[width=\columnwidth]{ablation_p2}\par\vspace{2pt}\includegraphics[width=\columnwidth]{ablation_p3}
+\includegraphics[width=0.88\columnwidth]{ablation_p1}\par\vspace{2pt}\includegraphics[width=0.88\columnwidth]{ablation_p2}\par\vspace{2pt}\includegraphics[width=0.88\columnwidth]{ablation_p3}
 \caption{Rule ablation: accuracy change with 95\% intervals (main setting)}\label{fig:4}
 \end{figure}
 
 The case-sensitivity check tells a clearer story. When TF-IDF's own lowercasing is switched off, the lowercase rule inside LexFront becomes the one that matters. Removing it lowers accuracy by 0.91 points on tweet\_topic [$-$1.71, $-$0.09] and by 1.07 on go\_emotions [$-$1.72, $-$0.44], while ag\_news does not change in a clear way (+0.14 [$-$0.17, +0.46]). The same check explains a result we noticed earlier. With case kept, LexFront barely moves, with Logistic Regression accuracy changing by only $-$0.03, $-$0.02 and +0.04 points on the three datasets, while the baseline tokenizers lose between 0.6 and 1.3 points on tweet\_topic and go\_emotions, because they leave capitalised words alone. With case kept, LexFront beats NLTK on go\_emotions by 1.15 points [+0.46, +1.85]. Our reading is that this advantage comes from the lowercase rule alone, and since TF-IDF lowercases by default, it disappears in the main setting.
 
+\begin{table*}[!tb]
+\caption{Per-rule ablation, accuracy change versus full LexFront+LR (points, 95\% CI), main setting}\label{tab:6}
+\centering
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{llll}
+\toprule
+\textbf{Variant removed} & \textbf{tweet\_topic} & \textbf{go\_emotions} & \textbf{ag\_news} \\
+\midrule
+url & +0.00 [+0.00, +0.00] & +0.00 [+0.00, +0.00] & +0.01 [$-$0.07, +0.09] \\
+mention & +0.41 [$-$0.03, +0.82] & $-$0.02 [$-$0.13, +0.07] & +0.00 [+0.00, +0.00] \\
+number & +0.50 [$-$0.03, +1.00] & $-$0.11 [$-$0.26, +0.04] & +0.07 [$-$0.07, +0.20] \\
+elongated & +0.09 [$-$0.09, +0.26] & +0.00 [$-$0.11, +0.13] & +0.04 [$-$0.04, +0.12] \\
+slang & $-$0.06 [$-$0.35, +0.24] & $-$0.04 [$-$0.24, +0.15] & +0.03 [$-$0.03, +0.09] \\
+all rules off & +1.09 [+0.50, +1.71] & $-$0.17 [$-$0.41, +0.07] & +0.11 [$-$0.04, +0.25] \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\begin{table}[!t]
+\caption{Case kept (TF-IDF lowercase=False): LexFront+LR minus NLTK+LR, accuracy points [95\% CI]}\label{tab:7}
+\centering
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{lll}
+\toprule
+\textbf{Dataset} & \textbf{Case kept} & \textbf{Main setting} \\
+\midrule
+tweet\_topic & $-$0.91 [$-$1.88, +0.09] & $-$1.59 [$-$2.38, $-$0.82] \\
+go\_emotions & +1.15 [+0.46, +1.85] & +0.09 [$-$0.35, +0.54] \\
+ag\_news & $-$0.18 [$-$0.55, +0.20] & +0.00 [$-$0.32, +0.33] \\
+\bottomrule
+\end{tabular}
+\end{table}
+
 \subsection{Subword stage}\label{sec:4.5}
 Table~\ref{tab:8} lists the subword runs next to the two word-level references. BPE with a vocabulary of 8,000 shows no accuracy gain over NLTK with Logistic Regression. The intervals include 0 on tweet\_topic ($-$0.41 [$-$1.27, +0.44]) and go\_emotions ($-$0.04 [$-$0.68, +0.59]), and on ag\_news it is 0.75 points lower [$-$1.13, $-$0.37]. The LexFront + BPE hybrid is below LexFront alone on all three datasets, by 0.82, 0.72 and 0.86 points, and 17 of the 24 intervals in the hybrid comparison at vocabulary 8,000 exclude 0, all pointing down. A bigger vocabulary (32,000) reduced this, since 8 of 24 intervals exclude 0 there. Our guess, which we have not tested, is that the hybrid splits up words that the word-level scanner already handled well, so it adds noise. For WordPiece and Unigram, none is above NLTK with Logistic Regression in accuracy with an interval that excludes 0, and on ag\_news both are below it ($-$0.41 and $-$0.91). The one interval that is above NLTK is Unigram's macro-F1 on go\_emotions (+1.26 [+0.10, +2.39]), which is 1 of 30 comparisons and could easily be chance.
 
-\begin{figure}[!tp]
+\begin{figure}[!tbp]
 \centering
-\includegraphics[width=\columnwidth]{subword_p1}\par\vspace{2pt}\includegraphics[width=\columnwidth]{subword_p2}\par\vspace{2pt}\includegraphics[width=\columnwidth]{subword_p3}
+\includegraphics[width=0.88\columnwidth]{subword_p1}\par\vspace{2pt}\includegraphics[width=0.88\columnwidth]{subword_p2}\par\vspace{2pt}\includegraphics[width=0.88\columnwidth]{subword_p3}
 \caption{Accuracy of the subword tokenizers with Logistic Regression}\label{fig:5}
 \end{figure}
 
 The OOV rate of the subword tokenizers is close to zero, for example 0.44\% for BPE and 0.31\% for WordPiece on tweet\_topic, because rare words are split into pieces instead of being left unknown. That number is not comparable with the word-level OOV rates in Table~\ref{tab:4}, and the price is more tokens per word (fertility goes up to between 1.3 and 1.8).
 
+\begin{table*}[!tb]
+\caption{Subword runs, Logistic Regression, accuracy / macro-F1 (\%), vocabulary 8000}\label{tab:8}
+\centering
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{lllllll}
+\toprule
+\textbf{Dataset} & \textbf{NLTK+LR} & \textbf{LexFront+LR} & \textbf{BPE+LR} & \textbf{LexFront+BPE+LR} & \textbf{WordPiece+LR} & \textbf{Unigram+LR} \\
+\midrule
+tweet\_topic & 72.32 / 36.95 & 70.73 / 36.18 & 71.90 / 35.09 & 69.90 / 33.56 & 71.61 / 34.88 & 73.05 / 36.49 \\
+go\_emotions & 55.27 / 33.86 & 55.36 / 33.97 & 55.23 / 33.29 & 54.64 / 32.59 & 55.12 / 33.12 & 55.71 / 35.12 \\
+ag\_news & 91.88 / 91.87 & 91.88 / 91.86 & 91.13 / 91.12 & 91.03 / 91.01 & 91.47 / 91.46 & 90.97 / 90.96 \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
 \subsection{Tuned classifiers on the eight-dataset collection}\label{sec:4.6}
 The first question about the earlier results is whether they depend on the default classifier settings. To check, we cleaned eight datasets and tuned the classifier equally for every tokenizer, choosing the TF-IDF setting and C or alpha on a validation slice of the training data. Tuning raised accuracy in 44 of 64 dataset, tokenizer and classifier cells, lowered it in 16 and left 4 equal, with a mean change of +1.63 points. The largest gains are for Naive Bayes, for example +8.12 points on average over the tokenizers on go\_emotions and +10.26 on tweet\_eval emotion. Table~\ref{tab:9} shows what this does to the tokenizer comparison. With default settings, LexFront differs clearly from NLTK on 4 of the 8 datasets (two up and two down). With tuned settings, none of the 8 intervals excludes 0. In other words, tuning removes most of the differences that were visible at default settings, and the test sets of the small datasets are too small to show anything else. The one large positive value, tweet\_eval irony, rests on only 784 test examples and its interval just touches 0.
+
+\begin{table*}[!tb]
+\caption{LexFront+LR minus NLTK+LR, accuracy points [95\% CI]; * = interval excludes 0}\label{tab:9}
+\centering
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{lll}
+\toprule
+\textbf{Dataset} & \textbf{Default settings} & \textbf{Tuned settings} \\
+\midrule
+tweet\_topic & $-$1.59 [$-$2.44, $-$0.79] * & $-$0.32 [$-$1.15, +0.47] \\
+go\_emotions & +0.18 [$-$0.29, +0.62] & +0.04 [$-$0.44, +0.55] \\
+ag\_news & $-$0.07 [$-$0.41, +0.28] & +0.07 [$-$0.21, +0.34] \\
+tweet\_eval sentiment & +0.59 [+0.08, +1.14] * & +0.36 [$-$0.28, +0.98] \\
+tweet\_eval emotion & $-$1.90 [$-$3.52, $-$0.35] * & +0.00 [$-$1.97, +1.83] \\
+tweet\_eval irony & +4.08 [+1.28, +6.89] * & +3.06 [+0.00, +6.25] \\
+tweet\_eval hate & $-$0.29 [$-$1.35, +0.73] & $-$0.66 [$-$1.68, +0.29] \\
+tweet\_eval offensive & $-$0.12 [$-$1.31, +1.07] & $-$0.24 [$-$1.54, +1.07] \\
+\bottomrule
+\end{tabular}
+\end{table*}
 
 \subsection{Large-scale test on Sentiment140}\label{sec:4.7}
 Sentiment140 has 1.6 million tweets, which is enough to separate small differences from noise. We split by user (5\% of users held out, none in both splits), cleaned the data, and ran every tokenizer at default, validation-tuned and wide-tuned settings. The first part of Table~\ref{tab:10} is Logistic Regression and the second is Naive Bayes. At default settings the four tokenizers are close, with LexFront at 79.85 against 79.88 for NLTK. With tuned settings every tokenizer gains about 2 to 3 points, and LexFront is highest by a small amount (82.84 against 82.73 for NLTK with the wide setting). The paired differences are small. For Logistic Regression, LexFront minus NLTK is $-$0.03 [$-$0.16, +0.10] at default settings, +0.17 [0.00, +0.34] tuned and +0.11 [$-$0.04, +0.25] wide, all inside the 0.5-point margin. The size ladder shows the same: the mean LexFront minus NLTK gap is +0.12 at 10,000 training examples, +0.10 at 100,000, +0.09 at one million and $-$0.03 on the full set, so it shrinks toward zero as data grows.
@@ -368,6 +468,23 @@ char n-grams & - & - & 80.11 & - & - & 75.22 \\
 Two other results from this run are worth reporting. First, in the noise test the tokenizers lose accuracy as expected, and LexFront loses the least (Table~\ref{tab:11}). With heavy noise, LexFront minus NLTK is +0.14 points, and the difference in accuracy lost is +0.16 [+0.02, +0.32], which is a small effect, well inside the margin, but its interval excludes 0. Second, the character n-gram baseline, which we expected to be a strong competitor for noisy text, is clearly worse here: with wide settings it is 2.74 points below LexFront for Logistic Regression and 5.26 points below for Naive Bayes.
 
 On the practical side, at default settings LexFront produced 104,503 features against 228,086 for NLTK and 226,995 for TweetTokenizer, and tokenized 6,566 test tweets per second, against 4,845 for NLTK, 10,542 for TweetTokenizer and about 1.08 million for whitespace splitting. So it is faster than NLTK and slower than TweetTokenizer on this machine.
+
+\begin{table}[!t]
+\caption{Sentiment140, Logistic Regression, default settings, accuracy (\%) with added test noise}\label{tab:11}
+\centering
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{llll}
+\toprule
+\textbf{Tokenizer} & \textbf{Clean} & \textbf{Light noise (10\%)} & \textbf{Heavy noise (30\%)} \\
+\midrule
+whitespace & 79.60 & 78.95 & 77.46 \\
+nltk & 79.88 & 79.27 & 77.87 \\
+tweet & 79.96 & 79.34 & 77.79 \\
+lexfront & 79.85 & 79.30 & 78.01 \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 \subsection{Wider settings and the character baseline}\label{sec:4.8}
 The wide setting in Table~\ref{tab:10} is a larger validated grid (word n-grams up to 3, plain or sublinear term frequency, minimum document frequency 2 or 5, and wider C and alpha ranges) that we applied equally to every tokenizer. Compared with default settings, it adds +2.01 points for whitespace, +2.86 for NLTK, +2.57 for TweetTokenizer and +3.00 for LexFront with Logistic Regression, and +3.2 to +3.7 points with Naive Bayes. Compared with the earlier tuned setting the extra gain is small (+0.24 to +0.37 for Logistic Regression). The gain from tuning therefore dwarfs any difference between the word tokenizers. Of the five hypotheses we wrote down for this phase, only one was observed: LexFront stayed within the margin of NLTK and TweetTokenizer. The others were not (Section~\ref{sec:5.6}).
@@ -408,13 +525,29 @@ A caution on how these three runs were made. They ran on a Windows laptop with P
 This section pulls the comparison together. We use two metrics, accuracy and macro-F1. Macro-F1 matters on tweet\_topic and go\_emotions, where the classes are unbalanced, because a model can have decent accuracy by favouring the large classes. We also report paired 95\% bootstrap intervals and McNemar's test, so that each difference comes with a statement of how large the test-set noise is.
 
 \subsection{Accuracy: existing versus proposed}\label{sec:5.1}
-\begin{figure}[!tp]
+\begin{figure}[!tbp]
 \centering
-\includegraphics[width=\columnwidth]{hq_existing_vs_proposed_p1}\par\vspace{2pt}\includegraphics[width=\columnwidth]{hq_existing_vs_proposed_p2}
+\includegraphics[width=1\columnwidth]{hq_existing_vs_proposed_p1}\par\vspace{2pt}\includegraphics[width=1\columnwidth]{hq_existing_vs_proposed_p2}
 \caption{Existing (NLTK+NB) versus proposed (LexFront+LR), accuracy and macro-F1}\label{fig:6}
 \end{figure}
 
 Fig.~\ref{fig:6} shows the headline comparison, which is the same one as in Table~\ref{tab:5}. The proposed setup is higher on go\_emotions and ag\_news and about level on tweet\_topic in accuracy. In macro-F1 it is higher on all three, by 7.62 points on tweet\_topic and 29.09 on go\_emotions. The tokenizer-only comparison in Table~\ref{tab:13} shows where that comes from.
+
+\begin{table*}[!tb]
+\caption{Proposed (LexFront+LR) versus existing (NLTK+NB), accuracy / macro-F1 (\%)}\label{tab:5}
+\centering
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{llllll}
+\toprule
+\textbf{Dataset} & \textbf{NLTK+NB} & \textbf{LexFront+LR} & \textbf{Delta acc (pts)} & \textbf{LexFront+NB} & \textbf{NLTK+LR} \\
+\midrule
+tweet\_topic & 70.99 / 28.56 & 70.73 / 36.18 & $-$0.26 & 70.43 / 27.84 & 72.32 / 36.95 \\
+go\_emotions & 37.78 / 4.88 & 55.36 / 33.97 & +17.58 & 37.78 / 4.81 & 55.27 / 33.86 \\
+ag\_news & 90.38 / 90.35 & 91.88 / 91.86 & +1.50 & 90.08 / 90.05 & 91.88 / 91.87 \\
+\bottomrule
+\end{tabular}
+\end{table*}
 
 \subsection{Separating the tokenizer from the classifier}\label{sec:5.2}
 \begin{table*}[!tb]
@@ -439,9 +572,9 @@ ag\_news & LexFront+LR minus NLTK+NB (proposed minus existing) & +1.50 [+1.00, +
 Reading Table~\ref{tab:13} row by row, the tokenizer-only differences are the fair test of LexFront. On go\_emotions and ag\_news the intervals include 0, so LexFront and NLTK are indistinguishable there. On tweet\_topic LexFront is 1.59 points lower and that difference is significant (McNemar p \textless{} 0.001). The proposed-minus-existing rows are large on go\_emotions and ag\_news, but almost all of that is the move from Naive Bayes to Logistic Regression: with NLTK held fixed, the classifier change alone is worth +17.49 on go\_emotions and +1.50 on ag\_news. So we do not claim that LexFront is better. What the data support is that it does about as well as NLTK on two of the datasets and somewhat worse on one, and that it gives a smaller vocabulary and a lower OOV rate.
 
 \subsection{Across all datasets}\label{sec:5.3}
-\begin{figure}[!tp]
+\begin{figure}[!tbp]
 \centering
-\includegraphics[width=\columnwidth]{forest}
+\includegraphics[width=1\columnwidth]{forest}
 \caption{LexFront+LR minus NLTK+LR, accuracy points with 95\% intervals; the green band is the plus or minus 0.5 point practical margin}\label{fig:7}
 \end{figure}
 
@@ -449,6 +582,37 @@ Fig.~\ref{fig:7} puts the tokenizer-only comparison for Logistic Regression on a
 
 \subsection{Intrinsic measures and speed}\label{sec:5.4}
 On the intrinsic side, LexFront has the lowest OOV rate and the smallest vocabulary among the word-level tokenizers on the three core datasets, with fertility close to the others. On Sentiment140 it also gives the smallest feature set. Part of this is built in, because placeholders and collapsed letters shrink the vocabulary by design, so it is a description and not evidence of better classification. Speed is in the same range as the other tokenizers. On the core datasets it runs at about 0.84 to 1.48 times the speed of NLTK, and on Sentiment140 at 6,566 tweets per second against 4,845 for NLTK. The lexer is therefore not a bottleneck. The subword tokenizers (Fig.~\ref{fig:5} and Table~\ref{tab:8}) are not clearly better than NLTK in accuracy on the core datasets, and the character n-gram baseline is clearly worse on Sentiment140.
+
+\begin{table*}[!tb]
+\caption{Intrinsic metrics of the word-level tokenizers}\label{tab:4}
+\centering
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{lllll}
+\toprule
+\textbf{Dataset} & \textbf{Tokenizer} & \textbf{OOV rate \% (tokens)} & \textbf{Fertility} & \textbf{Vocabulary size} \\
+\midrule
+tweet\_topic & whitespace & 18.45 & 1.000 & 21,653 \\
+tweet\_topic & nltk & 8.74 & 1.431 & 15,712 \\
+tweet\_topic & tweet & 9.86 & 1.376 & 16,524 \\
+tweet\_topic & lexfront & 8.25 & 1.391 & 14,483 \\
+go\_emotions & whitespace & 6.04 & 1.000 & 44,476 \\
+go\_emotions & nltk & 2.57 & 1.220 & 26,410 \\
+go\_emotions & tweet & 2.56 & 1.195 & 25,907 \\
+go\_emotions & lexfront & 2.45 & 1.195 & 24,459 \\
+ag\_news & whitespace & 1.90 & 1.000 & 158,733 \\
+ag\_news & nltk & 0.96 & 1.158 & 98,994 \\
+ag\_news & tweet & 0.75 & 1.154 & 86,096 \\
+ag\_news & lexfront & 0.48 & 1.207 & 65,337 \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\begin{figure}[!tbp]
+\centering
+\includegraphics[width=0.88\columnwidth]{hq_intrinsic_metrics_p1}\par\vspace{2pt}\includegraphics[width=0.88\columnwidth]{hq_intrinsic_metrics_p2}\par\vspace{2pt}\includegraphics[width=0.88\columnwidth]{hq_intrinsic_metrics_p3}
+\caption{OOV rate, fertility and vocabulary size by tokenizer}\label{fig:8}
+\end{figure}
 
 \subsection{Where the accuracy comes from}\label{sec:5.5}
 Table~\ref{tab:14} compares the size of the different changes we tried. The pattern is consistent across datasets. The classifier and its tuning move accuracy by several points, and the tokenizer moves it by a fraction of a point once the classifier is tuned. This is the main finding of the project, and it is more useful than a single headline number.
@@ -508,170 +672,6 @@ We built LexFront, a compiler-style lexer for noisy English text, with our own r
 On the question we started with, the answer is that a compiler-style lexer is competitive but not better. This held on the three core datasets, on the eight-dataset collection with fair tuning, and on four large datasets with about 300,000 to 1.5 million training examples, one of them with five classes. With the tokenizer as the only change, LexFront stays within about half a point of NLTK and TweetTokenizer on the large datasets, and its clear advantage is over plain whitespace splitting, especially in macro-F1 on Civil Comments and by about one point on Yelp. It gives a smaller vocabulary, a lower out-of-vocabulary rate and slightly smaller accuracy losses under added noise. Most of the accuracy comes from the classifier and its tuning. BPE, WordPiece, Unigram and the character n-gram baseline did not improve on the word-level tokenizers, and several of our own hypotheses were not supported, which we report as they came out.
 
 The main limits are one training run per cell, English-only data, and no transformer baseline. Natural next steps are repeating the large runs with other random seeds, running the character baseline on the two newer datasets, testing across domains (training on one source and testing on another), and trying a tweet-trained transformer model, which would use its own tokenizer and therefore test a different question.
-
-\begin{figure}[!tbp]
-\centering
-{\footnotesize APPENDIX A}\\[1pt]{\footnotesize\textsc{Additional results}}\par\vspace{4pt}
-\includegraphics[width=\columnwidth]{tokenizers_accuracy_p1}\par\vspace{2pt}\includegraphics[width=\columnwidth]{tokenizers_accuracy_p2}
-\caption{Accuracy of the existing tokenizers}\label{fig:2}
-\end{figure}
-
-\begin{figure}[!tbp]
-\centering
-\includegraphics[width=\columnwidth]{hq_intrinsic_metrics_p1}\par\vspace{2pt}\includegraphics[width=\columnwidth]{hq_intrinsic_metrics_p2}\par\vspace{2pt}\includegraphics[width=\columnwidth]{hq_intrinsic_metrics_p3}
-\caption{OOV rate, fertility and vocabulary size by tokenizer}\label{fig:8}
-\end{figure}
-
-\begin{table*}[!t]
-\centering
-\begin{minipage}[t]{0.485\textwidth}
-\refstepcounter{table}\label{tab:2}\begin{center}{\footnotesize TABLE~\thetable}\\[1pt]{\footnotesize\textsc{Accuracy / macro-F1 (\%), existing tokenizers}}\\[3pt]
-\scriptsize
-\setlength{\tabcolsep}{3pt}
-\adjustbox{max width=\columnwidth}{%
-\begin{tabular}{lllll}
-\toprule
-\textbf{Dataset} & \textbf{Tokenizer} & \textbf{Majority} & \textbf{Naive Bayes} & \textbf{Logistic Reg.} \\
-\midrule
-tweet\_topic & whitespace & 40.01 / 9.53 & 70.26 / 28.83 & 70.49 / 35.76 \\
-tweet\_topic & nltk & 40.01 / 9.53 & 70.99 / 28.56 & 72.32 / 36.95 \\
-tweet\_topic & tweet & 40.01 / 9.53 & 70.79 / 28.31 & 72.02 / 36.70 \\
-go\_emotions & whitespace & 34.99 / 1.85 & 37.73 / 4.93 & 53.51 / 31.40 \\
-go\_emotions & nltk & 34.99 / 1.85 & 37.78 / 4.88 & 55.27 / 33.86 \\
-go\_emotions & tweet & 34.99 / 1.85 & 37.80 / 4.86 & 55.47 / 34.02 \\
-ag\_news & whitespace & 25.00 / 10.00 & 90.14 / 90.12 & 91.43 / 91.42 \\
-ag\_news & nltk & 25.00 / 10.00 & 90.38 / 90.35 & 91.88 / 91.87 \\
-ag\_news & tweet & 25.00 / 10.00 & 90.22 / 90.20 & 91.84 / 91.83 \\
-\bottomrule
-\end{tabular}
-}
-\end{center}\vspace{4pt}
-\refstepcounter{table}\label{tab:4}\begin{center}{\footnotesize TABLE~\thetable}\\[1pt]{\footnotesize\textsc{Intrinsic metrics of the word-level tokenizers}}\\[3pt]
-\scriptsize
-\setlength{\tabcolsep}{3pt}
-\adjustbox{max width=\columnwidth}{%
-\begin{tabular}{lllll}
-\toprule
-\textbf{Dataset} & \textbf{Tokenizer} & \textbf{OOV rate \% (tokens)} & \textbf{Fertility} & \textbf{Vocabulary size} \\
-\midrule
-tweet\_topic & whitespace & 18.45 & 1.000 & 21,653 \\
-tweet\_topic & nltk & 8.74 & 1.431 & 15,712 \\
-tweet\_topic & tweet & 9.86 & 1.376 & 16,524 \\
-tweet\_topic & lexfront & 8.25 & 1.391 & 14,483 \\
-go\_emotions & whitespace & 6.04 & 1.000 & 44,476 \\
-go\_emotions & nltk & 2.57 & 1.220 & 26,410 \\
-go\_emotions & tweet & 2.56 & 1.195 & 25,907 \\
-go\_emotions & lexfront & 2.45 & 1.195 & 24,459 \\
-ag\_news & whitespace & 1.90 & 1.000 & 158,733 \\
-ag\_news & nltk & 0.96 & 1.158 & 98,994 \\
-ag\_news & tweet & 0.75 & 1.154 & 86,096 \\
-ag\_news & lexfront & 0.48 & 1.207 & 65,337 \\
-\bottomrule
-\end{tabular}
-}
-\end{center}\vspace{4pt}
-\refstepcounter{table}\label{tab:5}\begin{center}{\footnotesize TABLE~\thetable}\\[1pt]{\footnotesize\textsc{Proposed (LexFront+LR) versus existing (NLTK+NB), accuracy / macro-F1 (\%)}}\\[3pt]
-\scriptsize
-\setlength{\tabcolsep}{3pt}
-\adjustbox{max width=\columnwidth}{%
-\begin{tabular}{llllll}
-\toprule
-\textbf{Dataset} & \textbf{NLTK+NB} & \textbf{LexFront+LR} & \textbf{Delta acc (pts)} & \textbf{LexFront+NB} & \textbf{NLTK+LR} \\
-\midrule
-tweet\_topic & 70.99 / 28.56 & 70.73 / 36.18 & $-$0.26 & 70.43 / 27.84 & 72.32 / 36.95 \\
-go\_emotions & 37.78 / 4.88 & 55.36 / 33.97 & +17.58 & 37.78 / 4.81 & 55.27 / 33.86 \\
-ag\_news & 90.38 / 90.35 & 91.88 / 91.86 & +1.50 & 90.08 / 90.05 & 91.88 / 91.87 \\
-\bottomrule
-\end{tabular}
-}
-\end{center}\vspace{4pt}
-\refstepcounter{table}\label{tab:6}\begin{center}{\footnotesize TABLE~\thetable}\\[1pt]{\footnotesize\textsc{Per-rule ablation, accuracy change versus full LexFront+LR (points, 95\% CI), main setting}}\\[3pt]
-\scriptsize
-\setlength{\tabcolsep}{3pt}
-\adjustbox{max width=\columnwidth}{%
-\begin{tabular}{llll}
-\toprule
-\textbf{Variant removed} & \textbf{tweet\_topic} & \textbf{go\_emotions} & \textbf{ag\_news} \\
-\midrule
-url & +0.00 [+0.00, +0.00] & +0.00 [+0.00, +0.00] & +0.01 [$-$0.07, +0.09] \\
-mention & +0.41 [$-$0.03, +0.82] & $-$0.02 [$-$0.13, +0.07] & +0.00 [+0.00, +0.00] \\
-number & +0.50 [$-$0.03, +1.00] & $-$0.11 [$-$0.26, +0.04] & +0.07 [$-$0.07, +0.20] \\
-elongated & +0.09 [$-$0.09, +0.26] & +0.00 [$-$0.11, +0.13] & +0.04 [$-$0.04, +0.12] \\
-slang & $-$0.06 [$-$0.35, +0.24] & $-$0.04 [$-$0.24, +0.15] & +0.03 [$-$0.03, +0.09] \\
-all rules off & +1.09 [+0.50, +1.71] & $-$0.17 [$-$0.41, +0.07] & +0.11 [$-$0.04, +0.25] \\
-\bottomrule
-\end{tabular}
-}
-\end{center}\vspace{4pt}
-\end{minipage}\hfill\begin{minipage}[t]{0.485\textwidth}
-\refstepcounter{table}\label{tab:7}\begin{center}{\footnotesize TABLE~\thetable}\\[1pt]{\footnotesize\textsc{Case kept (TF-IDF lowercase=False): LexFront+LR minus NLTK+LR, accuracy points [95\% CI]}}\\[3pt]
-\footnotesize
-\setlength{\tabcolsep}{3pt}
-\adjustbox{max width=\columnwidth}{%
-\begin{tabular}{lll}
-\toprule
-\textbf{Dataset} & \textbf{Case kept} & \textbf{Main setting} \\
-\midrule
-tweet\_topic & $-$0.91 [$-$1.88, +0.09] & $-$1.59 [$-$2.38, $-$0.82] \\
-go\_emotions & +1.15 [+0.46, +1.85] & +0.09 [$-$0.35, +0.54] \\
-ag\_news & $-$0.18 [$-$0.55, +0.20] & +0.00 [$-$0.32, +0.33] \\
-\bottomrule
-\end{tabular}
-}
-\end{center}\vspace{4pt}
-\refstepcounter{table}\label{tab:8}\begin{center}{\footnotesize TABLE~\thetable}\\[1pt]{\footnotesize\textsc{Subword runs, Logistic Regression, accuracy / macro-F1 (\%), vocabulary 8000}}\\[3pt]
-\scriptsize
-\setlength{\tabcolsep}{3pt}
-\adjustbox{max width=\columnwidth}{%
-\begin{tabular}{lllllll}
-\toprule
-\textbf{Dataset} & \textbf{NLTK+LR} & \textbf{LexFront+LR} & \textbf{BPE+LR} & \textbf{LexFront+BPE+LR} & \textbf{WordPiece+LR} & \textbf{Unigram+LR} \\
-\midrule
-tweet\_topic & 72.32 / 36.95 & 70.73 / 36.18 & 71.90 / 35.09 & 69.90 / 33.56 & 71.61 / 34.88 & 73.05 / 36.49 \\
-go\_emotions & 55.27 / 33.86 & 55.36 / 33.97 & 55.23 / 33.29 & 54.64 / 32.59 & 55.12 / 33.12 & 55.71 / 35.12 \\
-ag\_news & 91.88 / 91.87 & 91.88 / 91.86 & 91.13 / 91.12 & 91.03 / 91.01 & 91.47 / 91.46 & 90.97 / 90.96 \\
-\bottomrule
-\end{tabular}
-}
-\end{center}\vspace{4pt}
-\refstepcounter{table}\label{tab:9}\begin{center}{\footnotesize TABLE~\thetable}\\[1pt]{\footnotesize\textsc{LexFront+LR minus NLTK+LR, accuracy points [95\% CI]; * = interval excludes 0}}\\[3pt]
-\footnotesize
-\setlength{\tabcolsep}{3pt}
-\adjustbox{max width=\columnwidth}{%
-\begin{tabular}{lll}
-\toprule
-\textbf{Dataset} & \textbf{Default settings} & \textbf{Tuned settings} \\
-\midrule
-tweet\_topic & $-$1.59 [$-$2.44, $-$0.79] * & $-$0.32 [$-$1.15, +0.47] \\
-go\_emotions & +0.18 [$-$0.29, +0.62] & +0.04 [$-$0.44, +0.55] \\
-ag\_news & $-$0.07 [$-$0.41, +0.28] & +0.07 [$-$0.21, +0.34] \\
-tweet\_eval sentiment & +0.59 [+0.08, +1.14] * & +0.36 [$-$0.28, +0.98] \\
-tweet\_eval emotion & $-$1.90 [$-$3.52, $-$0.35] * & +0.00 [$-$1.97, +1.83] \\
-tweet\_eval irony & +4.08 [+1.28, +6.89] * & +3.06 [+0.00, +6.25] \\
-tweet\_eval hate & $-$0.29 [$-$1.35, +0.73] & $-$0.66 [$-$1.68, +0.29] \\
-tweet\_eval offensive & $-$0.12 [$-$1.31, +1.07] & $-$0.24 [$-$1.54, +1.07] \\
-\bottomrule
-\end{tabular}
-}
-\end{center}\vspace{4pt}
-\refstepcounter{table}\label{tab:11}\begin{center}{\footnotesize TABLE~\thetable}\\[1pt]{\footnotesize\textsc{Sentiment140, Logistic Regression, default settings, accuracy (\%) with added test noise}}\\[3pt]
-\scriptsize
-\setlength{\tabcolsep}{3pt}
-\adjustbox{max width=\columnwidth}{%
-\begin{tabular}{llll}
-\toprule
-\textbf{Tokenizer} & \textbf{Clean} & \textbf{Light noise (10\%)} & \textbf{Heavy noise (30\%)} \\
-\midrule
-whitespace & 79.60 & 78.95 & 77.46 \\
-nltk & 79.88 & 79.27 & 77.87 \\
-tweet & 79.96 & 79.34 & 77.79 \\
-lexfront & 79.85 & 79.30 & 78.01 \\
-\bottomrule
-\end{tabular}
-}
-\end{center}\vspace{4pt}
-\end{minipage}
-\end{table*}
 
 \clearpage
 \balance

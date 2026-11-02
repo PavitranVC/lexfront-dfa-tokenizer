@@ -173,8 +173,16 @@ function algoPair(a, b) {
 }
 
 // ---- walk the blocks into sections ----
-const MAIN_FIGS = new Set([1, 3, 4, 5, 6, 7]);
-const MAIN_TABS = new Set([1, 3, 10, 12, 13, 14, 15]);
+const MAIN_FIGS = new Set(Array.from({ length: 19 }, (_, k) => k + 1));
+const MAIN_TABS = new Set(Array.from({ length: 29 }, (_, k) => k + 1));
+// former appendix items: shown at the end of the subsection they belong to
+const DEFER = { 'tab2': 'Existing tokenizers', 'fig2': 'Existing tokenizers', 'tab6': 'Normalizer and rule ablation', 'tab7': 'Normalizer and rule ablation',
+  'tab8': 'Subword stage', 'tab9': 'Tuned classifiers on the eight-dataset collection', 'tab11': 'Large-scale test on Sentiment140',
+  'tab5': 'Accuracy: existing versus proposed', 'tab4': 'Intrinsic measures and speed', 'fig8': 'Intrinsic measures and speed' };
+const pending = {};
+let curSub = null;
+function flushPending() { for (const blk of pending[curSub] || []) body.push(blk); delete pending[curSub]; }
+function pushTo(kind, n, blkKind, items) { const t = DEFER[kind + n]; if (t) (pending[t] = pending[t] || []).push({ kind: blkKind, items }); else body.push({ kind: blkKind, items }); }
 const WIDE_FIG = new Set(['architecture.png', 'architecture_nomod.png', 'tokenizers_accuracy.png', 'hq_module1_accuracy.png', 'hq_existing_vs_proposed.png', 'hq_intrinsic_metrics.png', 'ablation.png', 'subword.png']);
 const FIGFILE = (f) => f;                                  // PNG names in content.json are already the PNG files
 
@@ -191,13 +199,13 @@ while (i < B.length) {
   const b = B[i];
   if (b.type === 'h1' && b.text === 'Abstract') { inAbstract = true; i++; continue; }
   if (b.type === 'h1' && b.text === 'References') break;
-  if (b.type === 'h1') { inAbstract = false; push(body, 'flow', [sectionHead(b.text)]); i++; continue; }
+  if (b.type === 'h1') { inAbstract = false; flushPending(); curSub = null; push(body, 'flow', [sectionHead(b.text)]); i++; continue; }
   if (inAbstract) {
     if (b.type === 'p') { if (b.runs[0] && b.runs[0].t.startsWith('Keywords')) keywords = b.runs.slice(1).map((r) => r.t).join('').replace(/\.$/, ''); else abstractParas.push(b); }
     i++; continue;
   }
   if (b.type === 'gap') { i++; continue; }
-  if (b.type === 'h2') { push(body, 'flow', [subHead(b.text)]); i++; continue; }
+  if (b.type === 'h2') { flushPending(); curSub = b.text.replace(/^\d+\.\d+ /, ''); push(body, 'flow', [subHead(b.text)]); i++; continue; }
   if (b.type === 'h3') { push(body, 'flow', [new Paragraph({ keepNext: true, spacing: { before: 60, after: 20 }, children: [new TextRun({ text: fixText(b.text) + '.', font: FONT, size: S.body, italics: true })] })]); i++; continue; }
   if (b.type === 'p') { push(body, 'flow', [para(b.runs)]); i++; continue; }
   if (b.type === 'tcap') {
@@ -205,7 +213,7 @@ while (i < B.length) {
     const ncol = tb.rows[0].length, chars = Array.from({ length: ncol }, (_, j) => Math.max(...tb.rows.map((r) => String(r[j]).length))).reduce((a, c) => a + c, 0);
     const wide = TWO ? (MAIN_TABS.has(n) ? (ncol >= 5 || chars > 60) : false) : true;
     const items = [...tabCaption(n, stripCaption(b.text)), tableBlock(tb.rows, wide || !TWO ? (TWO ? TEXT_W : TEXT_W) : COL_W), new Paragraph({ spacing: { after: 100 }, children: [] })];
-    push(MAIN_TABS.has(n) ? body : appendix, wide ? 'wide' : 'flow', items);
+    pushTo('tab', n, wide ? 'wide' : 'flow', items);
     i += 2; continue;
   }
   if (b.type === 'img') {
@@ -219,7 +227,7 @@ while (i < B.length) {
     if (TWO && PANELS[file]) { const [stem, cnt] = PANELS[file]; imgs = Array.from({ length: cnt }, (_, k) => imageBlock(`${stem}_p${k + 1}.png`, COL_W)); }
     else imgs = [imageBlock(file, TWO ? COL_W : w)];
     const items = [...imgs, figCaption(n, stripCaption(cp.text))];
-    push(MAIN_FIGS.has(n) ? body : appendix, TWO ? 'flow' : (wide ? 'wide' : 'flow'), items);
+    pushTo('fig', n, TWO ? 'flow' : (wide ? 'wide' : 'flow'), items);
     i += 2; continue;
   }
   if (b.type === 'algo') { algoNo += 1; push(body, 'flow', [...algoParas(algoNo, fixText(b.title), b.lines, S.algo), new Paragraph({ spacing: { after: 100 }, children: [] })]); i++; continue; }
@@ -267,7 +275,8 @@ sections.push({ properties: { ...pageProps }, children: titleBlock });
 if (TWO) {
   let flow = [...absParas];
   const flush = () => { if (flow.length) { sections.push(twoCol(flow)); flow = []; } };
-  const all = [...body, { kind: 'flow', items: appHead }, ...appendix];
+  flushPending();
+  const all = [...body];
   for (const blk of all) {
     if (blk.kind === 'wide') { flush(); sections.push(oneCol(blk.items)); }
     else flow.push(...blk.items);
@@ -276,7 +285,7 @@ if (TWO) {
   flush();
 } else {
   const kids = [...absParas.map((p) => p)];
-  for (const blk of [...body, { kind: 'flow', items: appHead }, ...appendix]) kids.push(...blk.items);
+  for (const blk of [...body]) kids.push(...blk.items);
   kids.push(...refParas);
   sections.push(oneCol(kids));
 }
